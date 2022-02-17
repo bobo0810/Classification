@@ -1,0 +1,7 @@
+opencv-python
+numpy
+pycm #  统计指标
+timm  # 预训练模型库
+git+https://github.com/ufoym/imbalanced-dataset-sampler.git # 类别平衡采样库
+git+https://github.com/bobo0810/ToolsLib.git # 工具库
+
