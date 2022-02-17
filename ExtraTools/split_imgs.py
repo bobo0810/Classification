@@ -7,7 +7,9 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 import shutil
-from ToolLib.ToolLib import Img_Tools, TXT_Tools
+from ToolsLib.Img_Tools import Img_Tools
+from ToolsLib.TXT_Tools import TXT_Tools
+
 
 random.seed(224)
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -47,9 +49,9 @@ def split(imgs_path, ratio, prefix=None):
         test_list.extend(imgs_list[int(len(imgs_list) * ratio[0]) :])
 
     # 保存
-    TXT_Tools.write_lines(train_list, cur_path + "/../DataSets/" + "train.txt")
-    TXT_Tools.write_lines(test_list, cur_path + "/../DataSets/" + "test.txt")
-    print("train.txt | test.txt save in : ", cur_path + "/../DataSets/")
+    TXT_Tools.write_lines(train_list, cur_path + "/../Config/" + "train.txt")
+    TXT_Tools.write_lines(test_list, cur_path + "/../Config/" + "test.txt")
+    print("train.txt | test.txt save in : ", cur_path + "/../Config/")
 
 
 if __name__ == "__main__":
