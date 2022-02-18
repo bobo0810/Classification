@@ -18,7 +18,7 @@ mean = (0.485, 0.456, 0.406)
 std = (0.229, 0.224, 0.225)
 
 
-class Train(data.Dataset):
+class TrainSet(data.Dataset):
     """加载训练集和验证集"""
 
     def __init__(self, cfg, mode, txt_path=cur_path + "/../Config/train.txt"):
@@ -125,7 +125,7 @@ class Train(data.Dataset):
         return self.labels_list
 
 
-class Test(data.Dataset):
+class TestSet(data.Dataset):
     """加载测试集"""
 
     def __init__(self, cfg, txt_path=cur_path + "/../Config/test.txt"):
@@ -143,7 +143,9 @@ class Test(data.Dataset):
             [img_path.split("/")[-2] for img_path in self.imgs_list],
         )
         print("test data have  %d imgs" % (len(self.imgs_list)))
-        print(Counter(self.labels_name_list))  # 统计各类数量
+        print(
+            "The distribution of each category: ", Counter(self.labels_name_list)
+        )  # 统计各类数量
 
         # 测试集
         self.data_transform = transforms.Compose(
@@ -167,36 +169,34 @@ class Test(data.Dataset):
         return len(self.imgs_list)
 
 
-if __name__ == "__main__":
-    """
-    测试示例
-    """
-    file = open(cur_path + "/../Config/train.yaml", "r")
-    cfg = yaml.load(file, Loader=yaml.FullLoader)
+# def test():
+#     """测试示例"""
+#     file = open(cur_path + "/../Config/train.yaml", "r")
+#     cfg = yaml.load(file, Loader=yaml.FullLoader)
 
-    # ======normal采样======
-    # data_loader = torch.utils.data.DataLoader(
-    #     dataset=Train(cfg=cfg["DataSet"], mode="train"),
-    #     batch_size=8,
-    #     shuffle=True,
-    #     num_workers=4,
-    #     pin_memory=True,
-    #     drop_last=True,  # 无法整除时丢弃最后一批样本（影响BN）
-    # )
+#     ======normal采样======
+#     data_loader = torch.utils.data.DataLoader(
+#         dataset=Train(cfg=cfg["DataSet"], mode="train"),
+#         batch_size=8,
+#         shuffle=True,
+#         num_workers=4,
+#         pin_memory=True,
+#         drop_last=True,  # 无法整除时丢弃最后一批样本（影响BN）
+#     )
 
-    # ======类别平衡采样======
-    from torchsampler import ImbalancedDatasetSampler
+#     ======类别平衡采样======
+#     from torchsampler import ImbalancedDatasetSampler
 
-    data_set = Train(cfg=cfg["DataSet"], mode="train")
-    data_loader = torch.utils.data.DataLoader(
-        data_set,
-        sampler=ImbalancedDatasetSampler(data_set),
-        batch_size=8,
-        num_workers=4,
-        pin_memory=True,
-        # shuffle=True, # 禁用打乱
-        # drop_last=True,
-    )
+#     data_set = Train(cfg=cfg["DataSet"], mode="train")
+#     data_loader = torch.utils.data.DataLoader(
+#         data_set,
+#         sampler=ImbalancedDatasetSampler(data_set),
+#         batch_size=8,
+#         num_workers=4,
+#         pin_memory=True,
+#         # shuffle=True, # 禁用打乱
+#         # drop_last=True,
+#     )
 
-    for i, (imgs, labels) in enumerate(data_loader):
-        print()
+#     for i, (imgs, labels) in enumerate(data_loader):
+#         print()
