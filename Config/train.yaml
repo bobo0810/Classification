@@ -1,0 +1,29 @@
+# ========================================数据集===================================
+DataSet:
+  prefix: /dataset/lipengbo/ViolenceClass/V2/ # 数据集根路径
+  ratio: 0.9 # train:val比例
+  category: {"normal":0,"fire":1,"guns":2,"knife":3,"blood":4}
+  sampler: "balance" # normal:正常   balance:类别平衡采样(每轮重新采样，构建平衡数据集)
+
+
+
+
+# ========================================训练===================================
+# #网络
+# net:
+#   name: ResNeSt  # 支持[EfficientNet,MobileNetV3,ResNeSt]
+#   pretrain: null
+#   save_path: /checkpoint/exp1/
+
+# #优化器
+# optimizer:
+#   type: SGD # SGD or SAM
+#   lr: 0.001
+#   epochs: 100  # [60:42,54]
+#   milestones: [70,90] #学习率衰减 70%,90%   
+
+
+# train:
+#   batch_size: 128
+#   head_type: CrossEntropy #支持[CrossEntropy,FocalLoss]
+  
