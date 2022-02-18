@@ -1,14 +1,12 @@
 
 # ========================================数据集===================================
 DataSet:
-  prefix: /dataset/lipengbo/ViolenceClass/V2/ # 数据集根路径
-  category: {"normal":0,"fire":1,"guns":2,"knife":3,"blood":4}
+  prefix: /home/IMG_PATH/ # 数据集根路径
+  category: {"cat":0,"dog":1}
+  batch: 64
  
-
-
-
-# # others
-# batch_size: 120
-# net:
-#   name: ResNeSt
-#   pretrain: /code/lipengbo/ViolenceClass/checkpoint/exp1/ResNeSt/ResNeSt_099.pth
+# ========================================模型===================================
+Models: 
+  backbone: resnest50d
+  checkpoint: None
+  

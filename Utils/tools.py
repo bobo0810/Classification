@@ -1,46 +1,48 @@
 import torch
 import math
 import random
-import cv2
 from pycm import ConfusionMatrix  # 统计混淆矩阵
+import time
+import os
+from torch.utils.tensorboard import SummaryWriter
+
+cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
-def init_seed(seed: int):
+def init_env(cfg):
     """
-    设置随机种子
+    初始化训练环境
     """
+    # 固定随机种子
+    seed = 227
     random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    # 非确定性算法
+
+    # 设置CUDA
     torch.backends.cudnn.enabled = True
-    # 自动为每个卷积层搜索最适合的实现算法，加速训练
-    # 适用场景:网络结构固定（不是动态变化的），输入形状（batch size，img shape，channel）不变
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
 
+    # 创建日志路径
+    exp_path = (
+        cur_path
+        + "/../ExpLog/"
+        + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        + "/"
+    )
+    tb_path, checkpoint_path = [exp_path + "tb_log/", exp_path + "checkpoint/"]
+    os.makedirs(tb_path)
+    os.makedirs(checkpoint_path)
 
-@torch.no_grad()
-def eval_model(model, data_loader, device):
-    """
-    评估模型（验证集）
-    """
-    img_nums = 0  # 验证集总数量
-    correct_nums = 0  # 统计预测正确的数量
-    for batch_idx, (imgs, labels) in enumerate(data_loader):
-        imgs, labels = imgs.to(device), labels.to(device)
-        scores = model(imgs)
-        scores = torch.nn.functional.softmax(scores, dim=1)
-        _, indices = torch.sort(scores, dim=1, descending=True)
-        pred_label = indices[:, 0]
+    # 初始化TensorBoard
+    tb_writer = SummaryWriter(tb_path)
+    tb_writer.add_text("Config", str(cfg))
+    print("TensorBoard save to ", tb_path)
+    print("checkpoint save to ", checkpoint_path)
 
-        for i in range(len(imgs)):
-            if labels[i] == pred_label[i]:
-                correct_nums += 1
-        img_nums += len(imgs)
-    acc = correct_nums / img_nums
-    return acc  # ACC准确率
+    return tb_writer, checkpoint_path
 
 
 @torch.no_grad()

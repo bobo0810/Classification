@@ -3,7 +3,7 @@ import os
 import torch
 import time
 import yaml
-from DataSets.dataset import TestSet
+from DataSets import DataSets
 from Models.Backbone import Backbone
 from Utils.tools import eval_confusion_matrix
 
@@ -21,13 +21,7 @@ if __name__ == "__main__":
     model.to(device)
     model.eval()
 
-    test_dataloader = torch.utils.data.DataLoader(
-        dataset=TestSet(cfg["DataSet"]),
-        batch_size=cfg["Models"]["batch_size"],
-        shuffle=False,
-        num_workers=4,
-        pin_memory=True,
-    )
+    test_dataloader = DataSets(cfg["DataSet"], mode="test")
 
     # 测试
     acc = eval_confusion_matrix(model, test_dataloader, device)

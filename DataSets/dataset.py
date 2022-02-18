@@ -35,6 +35,7 @@ class TrainSet(data.Dataset):
         ]  # 图像完整路径=prefix+txt路径
 
         # 划分
+        random.shuffle(imgs_list)
         if mode == "train":
             self.imgs_list = imgs_list[: int(self.ratio * len(imgs_list))]
         elif mode == "val":
