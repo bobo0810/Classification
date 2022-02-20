@@ -48,9 +48,10 @@ class TrainSet(data.Dataset):
             [img_path.split("/")[-2] for img_path in self.imgs_list],
         )
 
-        print("%s data have  %d imgs" % (mode, len(self.imgs_list)))
+        print("*" * 28)
+        print("The nums of %sSet: %d" % (mode, len(self.imgs_list)))
         print(
-            "The distribution of each category: ", Counter(self.labels_name_list)
+            "The nums of each class: ", Counter(self.labels_name_list), "\n"
         )  # 统计各类数量
 
         if mode == "train":
@@ -143,9 +144,10 @@ class TestSet(data.Dataset):
             [self.category[img_path.split("/")[-2]] for img_path in self.imgs_list],
             [img_path.split("/")[-2] for img_path in self.imgs_list],
         )
-        print("test data have  %d imgs" % (len(self.imgs_list)))
+        print("*" * 28)
+        print("The nums of testSet: %d" % (len(self.imgs_list)))
         print(
-            "The distribution of each category: ", Counter(self.labels_name_list)
+            "The nums of each class: ", Counter(self.labels_name_list), "\n"
         )  # 统计各类数量
 
         # 测试集

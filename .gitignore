@@ -1,2 +1,5 @@
 .vscode
-Config/*txt
+**/__pycache__
+ExpLog
+Config
+

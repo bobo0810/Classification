@@ -11,7 +11,7 @@ from Models.Optimizer import Optimizer
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-    device = torch.device("cuda:0")  # 'cuda:0'
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
     file = open(cur_path + "/Config/train.yaml", "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
@@ -24,8 +24,8 @@ if __name__ == "__main__":
         cfg["Models"]["backbone"],
         class_nums=len(cfg["DataSet"]["category"]),
     )
-    model.to(device)
-    model.eval()
+    model = torch.nn.DataParallel(model).to(device)
+    model.train()
 
     # 损失函数
     criterion = Head(cfg["Models"]["head"])
