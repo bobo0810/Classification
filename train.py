@@ -1,5 +1,7 @@
 import sys
 import os
+
+
 import torch
 from DataSets import DataSets
 from Utils.tools import init_env, eval_confusion_matrix
@@ -7,14 +9,20 @@ import yaml
 from Models.Backbone import Backbone
 from Models.Head import Head
 from Models.Optimizer import Optimizer
+import argparse
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    parser = argparse.ArgumentParser(description="Train")
+    parser.add_argument("--yaml", help="训练配置", default=cur_path + "/Config/train.yaml")
+    parser.add_argument("--txt", help="训练集路径", default=cur_path + "/Config/train.txt")
+    args = parser.parse_args()
 
-    file = open(cur_path + "/Config/train.yaml", "r")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
+    cfg["DataSet"]["txt"] = args.txt
 
     # 初始化环境
     tb_writer, checkpoint_path = init_env(cfg)

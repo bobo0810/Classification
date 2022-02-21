@@ -21,15 +21,16 @@ std = (0.229, 0.224, 0.225)
 class TrainSet(data.Dataset):
     """加载训练集和验证集"""
 
-    def __init__(self, cfg, mode, txt_path=cur_path + "/../Config/train.txt"):
+    def __init__(self, cfg, mode):
         assert mode in ["train", "val"]
 
         self.prefix = cfg["prefix"]
         self.ratio = cfg["ratio"]
         self.category = cfg["category"]
+        self.txt = cfg["txt"]
 
         # 加载数据集
-        imgs_list = open(txt_path, "r").readlines()
+        imgs_list = open(self.txt, "r").readlines()
         imgs_list = [
             self.prefix + line.strip() for line in imgs_list
         ]  # 图像完整路径=prefix+txt路径
@@ -130,13 +131,14 @@ class TrainSet(data.Dataset):
 class TestSet(data.Dataset):
     """加载测试集"""
 
-    def __init__(self, cfg, txt_path=cur_path + "/../Config/test.txt"):
+    def __init__(self, cfg):
         # 接收参数
         self.prefix = cfg["prefix"]
         self.category = cfg["category"]
+        self.txt = cfg["txt"]
 
         # 加载数据集
-        self.imgs_list = open(txt_path, "r").readlines()
+        self.imgs_list = open(self.txt, "r").readlines()
         self.imgs_list = [
             self.prefix + line.strip() for line in self.imgs_list
         ]  # 图像完整路径=prefix+txt路径
@@ -176,6 +178,7 @@ class TestSet(data.Dataset):
 #     """测试示例"""
 #     file = open(cur_path + "/../Config/train.yaml", "r")
 #     cfg = yaml.load(file, Loader=yaml.FullLoader)
+#     cfg["DataSet"]["txt"] = cur_path + "/../Config/train.txt"
 
 #     ======normal采样======
 #     data_loader = torch.utils.data.DataLoader(

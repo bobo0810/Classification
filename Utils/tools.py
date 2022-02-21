@@ -40,7 +40,7 @@ def init_env(cfg):
     tb_writer = SummaryWriter(tb_path)
     tb_writer.add_text("Config", str(cfg))
     print("*" * 28)
-    print("TensorBoard|Checkpoint save to ", exp_path, "\n")
+    print("TensorBoard | Checkpoint save to ", exp_path, "\n")
     return tb_writer, checkpoint_path
 
 
