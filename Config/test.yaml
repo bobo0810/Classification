@@ -1,7 +1,7 @@
 
 # ========================================数据集===================================
 DataSet:
-  prefix: /home/IMG_PATH/ # 数据集根路径
+  prefix: ./CatDog/ # 数据集根路径 /home/IMG_PATH/ 
   category: {"cat":0,"dog":1}
   batch: 64
  

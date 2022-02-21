@@ -1,8 +1,8 @@
 # ========================================数据集===================================
 DataSet:
-  prefix: /home/IMG_PATH/  # 数据集根路径
-  ratio: 0.9 # train:val比例
+  prefix: ./CatDog/ # 数据集根路径 /home/IMG_PATH/ 
   category: {"cat":0,"dog":1}
+  ratio: 0.9 # train:val比例  
   sampler: "balance" # normal:正常   balance:类别平衡采样(每轮重新采样)
   batch: 32
 # ========================================模型===================================

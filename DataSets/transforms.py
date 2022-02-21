@@ -7,7 +7,7 @@ std = (0.229, 0.224, 0.225)
 
 def ImgTransforms(mode, img_shape=(224, 224)):
     """
-    数据增广入口
+    图像增广入口
     """
     assert mode in ["train", "val", "test"]
 
