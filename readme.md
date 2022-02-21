@@ -5,18 +5,38 @@
 pip install -r ./Package/requirements.txt 
 ```
 
-## 划分数据集
+# 训练
+
+### 数据
+
+pass
+
+### 训练
+
+pass
+
+### 测试
+
+pass
+
+## 框架
+
 ```bash
-python ./ExtraTools/split_imgs.py --ImgsPath="/HOME/IMAGE_PATH"  --Ratio=[0.8,0.2]  --Verify
+├── Config
+│   └── *.yaml 配置文件
+│   └── *.txt  图像列表 
+├── DataSets
+│   └── transforms.py 图像增广入口
+├── Models
+│   ├── Backbone/__init__.py  主干网络入口
+│   ├── Head/__init__.py      损失函数入口
+│   ├── Optimizer/__init__.py 优化器入口
+├── Utils
+├── test.py
+└── train.py
 ```
 
-- ImgsPath 数据集根路径 
-- Ratio  train与test的划分比例 
-- Verify(可选) 验证图像完整性(耗时)
+- 模型：集成[Timm预训练库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
+- 可视化: 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg)
 
-# 总结
-- 数据增广：集成Augment增广库
-- 模型：集成Timm预训练库
-- 可视化: 集成TensorBoard
-
-# 准备数据，开始训练
+- 数据增广：TODO
