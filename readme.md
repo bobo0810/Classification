@@ -5,19 +5,19 @@
 pip install -r ./Package/requirements.txt 
 ```
 
-# 训练
-
-### 数据
-
-pass
+# 示例
 
 ### 训练
 
-pass
+```python
+python train.py 
+```
 
 ### 测试
 
-pass
+```python
+python test.py 
+```
 
 ## 框架
 
