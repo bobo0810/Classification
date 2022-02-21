@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-from .dataset import TrainSet, TestSet
+from .dataset import ImgSet
 from torchsampler import ImbalancedDatasetSampler
 
 
@@ -10,11 +10,11 @@ def DataSets(cfg, mode):
     """
     assert mode in ["train", "val", "test"]
 
-    if mode == "train":
+    if mode == "train":  # 训练集
         # 常规采样
         if cfg["sampler"] == "normal":
             dataloader = DataLoader(
-                dataset=TrainSet(cfg, mode),
+                dataset=ImgSet(cfg, mode),
                 batch_size=cfg["batch"],
                 shuffle=True,
                 num_workers=4,
@@ -23,7 +23,7 @@ def DataSets(cfg, mode):
             )
         # 类别均衡采样
         elif cfg["sampler"] == "balance":
-            dataset = TrainSet(cfg, mode)
+            dataset = ImgSet(cfg, mode)
             dataloader = DataLoader(
                 dataset,
                 sampler=ImbalancedDatasetSampler(dataset),
@@ -35,22 +35,12 @@ def DataSets(cfg, mode):
             )
         else:
             raise NotImplementedError
-    elif mode == "val":
+    else:  # 验证集/测试集
         dataloader = DataLoader(
-            dataset=TrainSet(cfg, mode),
+            dataset=ImgSet(cfg, mode),
             batch_size=cfg["batch"],
             shuffle=False,
             num_workers=4,
             pin_memory=True,
         )
-    elif mode == "test":
-        dataloader = DataLoader(
-            dataset=TestSet(cfg),
-            batch_size=cfg["batch"],
-            shuffle=False,
-            num_workers=4,
-            pin_memory=True,
-        )
-    else:
-        raise NotImplementedError
     return dataloader
