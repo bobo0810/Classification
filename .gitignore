@@ -1,5 +1,7 @@
 .vscode
 **/__pycache__
+Docs/build
 ExpLog
 MyCode
 start*
+
