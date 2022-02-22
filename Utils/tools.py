@@ -27,8 +27,8 @@ def init_env(cfg):
 
     # 创建日志路径
     exp_path = (
-        cur_path
-        + "/../ExpLog/"
+        os.path.dirname(cur_path)
+        + "/ExpLog/"
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
