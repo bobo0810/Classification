@@ -5,7 +5,10 @@
 pip install -r ./Package/requirements.txt 
 ```
 
-# 示例
+## API文档
+https://bclassification.readthedocs.io/
+
+## 猫狗分类示例
 
 ### 训练
 
@@ -19,12 +22,13 @@ python train.py
 python test.py 
 ```
 
+
 ## 框架
 
 ```bash
 ├── Config
 │   └── *.yaml 配置文件
-│   └── *.txt  图像列表 
+│   └── *.txt  图像数据集 
 ├── DataSets
 │   └── transforms.py 图像增广入口
 ├── Models
@@ -35,6 +39,7 @@ python test.py
 ├── test.py
 └── train.py
 ```
+> 注：通常仅修改Config内数据集、配置文件即可。
 
 - 模型：集成[Timm预训练库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
 - 可视化: 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg)

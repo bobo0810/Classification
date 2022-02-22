@@ -59,9 +59,11 @@ if __name__ == "__main__":
     读取数据集根路径，划分训练集、测试集
     """
     parser = argparse.ArgumentParser(description="划分数据集")
-    parser.add_argument("--ImgsPath", required=True, help="数据集根路径  eg: /home/imgs")
+    parser.add_argument(
+        "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog"
+    )
     parser.add_argument("--Ratio", default=[0.8, 0.2], help="train:test比例")
-    parser.add_argument("--Verify", action="store_true", help="验证图像完整性")
+    parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时)")
 
     args = parser.parse_args()
 
