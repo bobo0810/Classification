@@ -57,9 +57,9 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         for batch_idx, (imgs, labels) in enumerate(train_dataloader):
 
-            if batch_idx == 0 and epoch == 0:
-                vis_imgs = PreProcess().convert_vis(imgs)
-                tb_writer.add_images("Train/transforms", vis_imgs, epoch)
+            # 可视化
+            if epoch + batch_idx == 0:
+                tb_writer.add_image("Train/augment", PreProcess().convert_vis(imgs))
 
             imgs, labels = imgs.to(device), labels.to(device)
             output = model(imgs)

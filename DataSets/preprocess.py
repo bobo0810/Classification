@@ -1,3 +1,4 @@
+import torchvision
 from torchvision import transforms
 from PIL import Image
 import torch
@@ -81,15 +82,19 @@ class PreProcess:
         return img_transforms(img)  # 增广
 
     @staticmethod
-    def convert_vis(bchw_imgs, img_shape=(224, 224)):
+    def convert_vis(bchw_imgs, img_shape=(224, 224), vis_nums=8):
         """
         转化格式，方便tensorboard可视化
         1.反归一化 2.恢复通道顺序
+
+        vis_nums: 最多显示的图像数
         """
-        imgs = bchw_imgs.clone()
         t_mean = torch.FloatTensor(mean).view(3, 1, 1).expand(3, 224, 224)
         t_std = torch.FloatTensor(std).view(3, 1, 1).expand(3, 224, 224)
 
+        imgs = bchw_imgs[:vis_nums].clone()
         imgs = imgs * t_std + t_mean  # 反归一化
         imgs = imgs[:, [2, 1, 0], :, :]  # RGB->BGR
+        imgs = torchvision.utils.make_grid(imgs)  # 拼成一张网格图 CHW
+        imgs = imgs[:, 0::2, 0::2]  # 分辨率下降2倍
         return imgs
