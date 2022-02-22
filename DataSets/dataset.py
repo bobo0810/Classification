@@ -1,12 +1,11 @@
 import os
 import sys
 import torch.utils.data as data
-from PIL import Image
 import cv2
 import numpy as np
 import random
 import yaml
-from .transforms import ImgTransforms
+from .preprocess import PreProcess
 import time
 import glob
 import torch
@@ -57,8 +56,7 @@ class ImgSet(data.Dataset):
         label = self.labels_list[index]
 
         image = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        image = Image.fromarray(image)
-        image = ImgTransforms(self.mode)(image)  # 增广
+        image = PreProcess().transforms(self.mode, image)  # 增广
         return image, int(label)
 
     def __len__(self):

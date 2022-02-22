@@ -1,15 +1,14 @@
 import sys
 import os
-
-
 import torch
 from DataSets import DataSets
+from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, eval_confusion_matrix
-import yaml
 from Models.Backbone import Backbone
 from Models.Head import Head
 from Models.Optimizer import Optimizer
 import argparse
+import yaml
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -57,6 +56,11 @@ if __name__ == "__main__":
 
         optimizer.zero_grad()
         for batch_idx, (imgs, labels) in enumerate(train_dataloader):
+
+            if batch_idx == 0 and epoch == 0:
+                vis_imgs = PreProcess().convert_vis(imgs)
+                tb_writer.add_images("Train/transforms", vis_imgs, epoch)
+
             imgs, labels = imgs.to(device), labels.to(device)
             output = model(imgs)
             loss = criterion(output, labels)

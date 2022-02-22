@@ -50,7 +50,7 @@ https://bclassification.readthedocs.io/
 │   └── *.yaml 参数配置
 │   └── *.txt  数据集列表 
 ├── DataSets
-│   └── transforms.py 图像增广入口
+│   └── preprocess.py 图像预处理入口
 ├── Models
 │   ├── Backbone/__init__.py  主干网络入口
 │   ├── Head/__init__.py      损失函数入口
