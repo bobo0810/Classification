@@ -89,8 +89,7 @@ class PreProcess:
         imgs = bchw_imgs.clone()
         t_mean = torch.FloatTensor(mean).view(3, 1, 1).expand(3, 224, 224)
         t_std = torch.FloatTensor(std).view(3, 1, 1).expand(3, 224, 224)
-        for i in range(len(imgs)):
-            npy_img = (imgs[i] * t_std + t_mean).numpy()  # 反归一化
-            npy_img = npy_img[::-1, :, :]
-            imgs[i] = torch.from_numpy(npy_img.copy())  # # 恢复通道顺序
+
+        imgs = imgs * t_std + t_mean  # 反归一化
+        imgs = imgs[:, [2, 1, 0], :, :]  # RGB->BGR
         return imgs
