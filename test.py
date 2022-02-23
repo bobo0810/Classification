@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     model = Backbone(
         cfg["Models"]["backbone"],
-        class_nums=len(cfg["DataSet"]["category"]),
+        num_classes=len(cfg["DataSet"]["category"]),
         checkpoint=cfg["Models"]["checkpoint"],
     )
     model.to(device)
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     test_dataloader = DataSets(cfg["DataSet"], mode="test")
 
-    # 测试
+    # 测试,输出acc及混淆矩阵
     acc = eval_confusion_matrix(model, test_dataloader, device)
     print("acc is " + str(acc.Overall_ACC))
     acc.print_matrix()

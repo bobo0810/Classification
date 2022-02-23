@@ -3,10 +3,10 @@
 DataSet:
   prefix: ./CatDog/ # 数据集根路径 /home/IMG_PATH/ 
   category: {"cat":0,"dog":1} # 类别
-  batch: 32
+  batch: 8
  
 # ========================================模型===================================
 Models: 
-  backbone: resnest50d # 主干网络
+  backbone: resnet18 # 主干网络
   checkpoint: None     # 权重路径  /home/xxx/xxx.pth
   

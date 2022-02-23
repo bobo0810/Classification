@@ -33,19 +33,15 @@ class PreProcess:
         if mode == "train":
             img_transforms = transforms.Compose(
                 [
-                    transforms.Resize(img_shape),
+                    transforms.Resize(
+                        (int(img_shape[0] * 1.2), int(img_shape[1] * 1.2))
+                    ),
+                    transforms.RandomCrop(img_shape),
                     # 翻转
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomVerticalFlip(),
                     # 旋转
-                    transforms.RandomChoice(
-                        [
-                            # 在 (-a, a) 之间随机选择
-                            transforms.RandomRotation(30),
-                            transforms.RandomRotation(60),
-                            transforms.RandomRotation(90),
-                        ]
-                    ),
+                    transforms.RandomRotation(90),
                     # 颜色
                     transforms.RandomChoice(
                         [
@@ -66,7 +62,7 @@ class PreProcess:
                     ),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=mean, std=std),
-                    transforms.RandomErasing(),  # 遮挡
+                    transforms.RandomErasing(),
                 ]
             )
         # =========================验证集/测试集==================================

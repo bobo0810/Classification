@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # 模型
     model = Backbone(
         cfg["Models"]["backbone"],
-        class_nums=len(cfg["DataSet"]["category"]),
+        num_classes=len(cfg["DataSet"]["category"]),
     )
     model = torch.nn.DataParallel(model).to(device)
     model.train()
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
             # 各类可视化
-            if epoch % 20 == 0:
+            if epoch % 10 == 0:
                 vis_list = PreProcess().convert(imgs, names)
                 for vis_name, vis_img in zip(set(names), vis_list):
                     tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
