@@ -55,11 +55,13 @@ if __name__ == "__main__":
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
 
         optimizer.zero_grad()
-        for batch_idx, (imgs, labels) in enumerate(train_dataloader):
+        for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
-            # 可视化
-            if epoch + batch_idx == 0:
-                tb_writer.add_image("Train/augment", PreProcess().convert_vis(imgs))
+            # 各类可视化
+            if epoch % 20 == 0:
+                vis_list = PreProcess().convert(imgs, names)
+                for vis_name, vis_img in zip(set(names), vis_list):
+                    tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
 
             imgs, labels = imgs.to(device), labels.to(device)
             output = model(imgs)

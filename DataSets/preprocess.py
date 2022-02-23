@@ -82,19 +82,30 @@ class PreProcess:
         return img_transforms(img)  # 增广
 
     @staticmethod
-    def convert_vis(bchw_imgs, img_shape=(224, 224), vis_nums=8):
+    def convert(imgs, names, per_nums=4, scale=2):
         """
         转化格式，方便tensorboard可视化
         1.反归一化 2.恢复通道顺序
 
-        vis_nums: 最多显示的图像数
+        imgs(tensor): [B,C,H,W]
+        names(list):[batch]
+        per_nums: batch内每类最多显示的图像数.默认为4
+        scale: 分辨率下降比例。默认为2
         """
         t_mean = torch.FloatTensor(mean).view(3, 1, 1).expand(3, 224, 224)
         t_std = torch.FloatTensor(std).view(3, 1, 1).expand(3, 224, 224)
 
-        imgs = bchw_imgs[:vis_nums].clone()
-        imgs = imgs * t_std + t_mean  # 反归一化
-        imgs = imgs[:, [2, 1, 0], :, :]  # RGB->BGR
-        imgs = torchvision.utils.make_grid(imgs)  # 拼成一张网格图 CHW
-        imgs = imgs[:, 0::2, 0::2]  # 分辨率下降2倍
-        return imgs
+        index_list = []
+        for name in set(names):
+            index_list.append(
+                [i for i, name_i in enumerate(names) if name_i == name][:per_nums]
+            )  # 按类别划分
+        imgs_list = [imgs[index].clone() for index in index_list]
+        imgs_list = [
+            (line * t_std + t_mean)[:, [2, 1, 0], :, :] for line in imgs_list
+        ]  # 反归一化 + RGB->BGR
+        imgs_list = [
+            torchvision.utils.make_grid(line)[:, 0::scale, 0::scale]
+            for line in imgs_list
+        ]  # 拼成网格图CHW + 分辨率下降
+        return imgs_list

@@ -48,7 +48,7 @@ def init_env(cfg):
 def eval_confusion_matrix(model, data_loader, device):
     """统计混淆矩阵"""
     pred_list, label_list = [], []
-    for batch_idx, (imgs, labels) in enumerate(data_loader):
+    for batch_idx, (imgs, labels, _) in enumerate(data_loader):
         imgs = imgs.to(device)
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)

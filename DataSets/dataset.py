@@ -54,10 +54,11 @@ class ImgSet(data.Dataset):
 
         img_path = self.imgs_list[index]
         label = self.labels_list[index]
+        name = self.labels_name_list[index]
 
         image = cv2.imread(img_path, cv2.IMREAD_COLOR)
         image = PreProcess().transforms(self.mode, image)  # 增广
-        return image, int(label)
+        return image, int(label), name
 
     def __len__(self):
         return len(self.imgs_list)
