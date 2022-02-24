@@ -4,7 +4,7 @@
   - 简单：新任务仅修改`Config/`即可。
 - 模型：集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
 - 可视化: 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg)
-<div align=center><img src="./Package/tsdb.gif" ></div>
+<div align=center><img src="./Docs/source/imgs/tsdb.gif" ></div>
 
 ## 安装依赖
 

@@ -10,7 +10,7 @@ Welcome to Classification's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   custom_datasets
+   best_practice
 
 Indices and tables
 ==================
