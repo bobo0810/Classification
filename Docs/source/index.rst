@@ -7,10 +7,12 @@ Welcome to Classification's documentation!
 ==========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
    
    best_practice
+   dataset
+   backbone
 
 Indices and tables
 ==================

@@ -13,26 +13,17 @@ pip install    ./Package/*zip
 pip install -r ./Package/requirements.txt 
 ```
 
-## 示例(猫狗2分类)
-
-#### 1. 训练
-
-```python
-python train.py  --yaml ./Config/train.yaml  --txt ./Config/train.txt
-```
-
-#### 2. 测试
-
-```python
-# yaml配置模型权重
-python test.py   --yaml ./Config/test.yaml   --txt ./Config/test.txt
-```
-
 ## API文档
 
 https://bclassification.readthedocs.io/
 
+- 最佳实践
+- 自定义数据集
 
+- 自定义主干网络
+- 自定义 图像增广 | 损失函数 | 优化器
+
+  - 各自对应的`__init__.py`入口修改即可。
 
 ## 框架
 
@@ -49,18 +40,4 @@ https://bclassification.readthedocs.io/
 ├── test.py
 └── train.py
 ```
-
-- 自定义数据集
-
-  （1）准备数据：格式类似`CatDog/`文件夹，并修改*.yaml的`prefix`属性。
-
-  （2）划分数据集：`ExtraTools/split_imgs.py`划分训练集/测试集，生成*.txt。
-
-- 自定义主干网络
-  - 自定义：（1）仿照`Backbone/__init__.py`内`MyNet` （2）修改*.yaml内`backbone`属性。
-  - timm库: （1）查询支持的[模型名称](https://rwightman.github.io/pytorch-image-models/)  （2）修改*.yaml内`backbone`属性。
-
-- 自定义 图像增广 | 损失函数 | 优化器
-
-  - 均在各自入口修改即可，即`__init__.py`。
 
