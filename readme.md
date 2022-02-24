@@ -21,11 +21,9 @@ https://bclassification.readthedocs.io/
 - 自定义数据集
 
 - 自定义主干网络
-  - 自定义：（1）仿照`Backbone/__init__.py`内`MyNet` （2）修改*.yaml内`backbone`属性。
-  - timm库: （1）查询支持的[模型名称](https://rwightman.github.io/pytorch-image-models/)  （2）修改*.yaml内`backbone`属性。
 - 自定义 图像增广 | 损失函数 | 优化器
 
-  - 在各自对应的`__init__.py`入口修改即可。
+  - 各自对应的`__init__.py`入口修改即可。
 
 ## 框架
 
