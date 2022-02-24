@@ -1,8 +1,8 @@
 # 自定义数据集
 
-## 1. 准备数据
+## 一. 准备数据
 
-假设数据集根路径为`/home/xxx/CatDog`  ，格式如下
+1.假设数据集根路径为`/home/xxx/CatDog`  ，格式如下
 
 ```bash
 ├── cat
@@ -15,7 +15,7 @@
     ├── ....
 ```
 
-2. 划分数据集，默认`Config/`下生成train.txt、test.txt。
+2.划分数据集，默认`Config/`下生成train.txt、test.txt。
 
 ```bash
 python  ./ExtraTools/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  --Verify
@@ -23,7 +23,7 @@ python  ./ExtraTools/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.
 
 - --ImgsPath    数据集根路径
 - --Ratio           各类别均按指定比例分配train:test，默认[0.8, 0.2]
-- --Verify          验证图像完整性(耗时，可选)
+- --Verify          验证图像完整性(耗时，可去掉)
 
 
 
