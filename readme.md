@@ -13,7 +13,7 @@ pip install    ./Package/*zip
 pip install -r ./Package/requirements.txt 
 ```
 
-## 示例(猫狗二分类)
+## 示例(猫狗2分类)
 
 #### 1. 训练
 
@@ -50,7 +50,7 @@ https://bclassification.readthedocs.io/
 └── train.py
 ```
 
-- 数据集
+- 自定义数据集
 
   （1）准备数据：格式类似`CatDog/`文件夹，并修改*.yaml的`prefix`属性。
 
@@ -62,5 +62,5 @@ https://bclassification.readthedocs.io/
 
 - 自定义 图像增广 | 损失函数 | 优化器
 
-  均在各自入口修改即可，即`__init__.py`。
+  - 均在各自入口修改即可，即`__init__.py`。
 
