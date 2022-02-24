@@ -33,6 +33,8 @@ class Backbone(nn.Module):
         if model_name == "MyNet":
             model = MyNet(pretrained=True, num_classes=num_classes)
         else:
+            print("*" * 28)
+            print("Backbone come from timm\n")
             model = timm.create_model(
                 model_name,
                 pretrained=True,
