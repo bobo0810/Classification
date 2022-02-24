@@ -20,7 +20,7 @@
 2. 划分数据集，默认`Config/`下生成train.txt、test.txt。
 
 ```bash
-python  ./ExtraTools/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  --Verify
+python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  --Verify
 ```
 
 - --ImgsPath    数据集根路径
