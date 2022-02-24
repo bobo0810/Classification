@@ -48,7 +48,7 @@ class ImgSet(data.Dataset):
 
         print("*" * 28)
         print("The nums of %sSet: %d" % (mode, len(self.imgs_list)))
-        print("The nums of each class: ", Counter(self.labels_name_list), "\n")
+        print("The nums of each class: ", dict(Counter(self.labels_name_list)), "\n")
 
     def __getitem__(self, index):
 

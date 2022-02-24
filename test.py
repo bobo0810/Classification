@@ -30,8 +30,8 @@ if __name__ == "__main__":
 
     test_dataloader = DataSets(cfg["DataSet"], mode="test")
 
-    # 测试,输出acc及混淆矩阵
+    # 测试,输出ACC及混淆矩阵
     acc = eval_confusion_matrix(model, test_dataloader, device)
-    print("acc is " + str(acc.Overall_ACC))
+    print("accuracy is %.3f \n" % acc.Overall_ACC)
     acc.print_matrix()
     acc.print_normalized_matrix()
