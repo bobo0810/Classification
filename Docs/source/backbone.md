@@ -21,9 +21,11 @@
 
    
 
-## 方案2：Timm库
+## 方案2：Timm库（推荐⭐️）
 
-持续提供最新SOTA的预训练模型。[官方文档](https://rwightman.github.io/pytorch-image-models/)
+持续更新SOTA的预训练模型(当前模型数>600)。
+[官方文档](https://rwightman.github.io/pytorch-image-models/)
+ 
 
 1. 查询模型名称 
 

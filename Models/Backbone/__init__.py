@@ -34,7 +34,7 @@ class create_backbone(nn.Module):
             model = MyNet(pretrained=True, num_classes=num_classes)
         else:
             print("*" * 28)
-            print("Backbone come from timm\n")
+            print(model_name, " come from timm\n")
             model = timm.create_model(
                 model_name,
                 pretrained=True,
