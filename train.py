@@ -58,7 +58,7 @@ if __name__ == "__main__":
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
             # 网络可视化
-            if epoch == 0:
+            if epoch + batch_idx == 0:
                 tb_writer.add_graph(model, imgs.clone())
             # 各类增广可视化
             if epoch % 10 == 0:
