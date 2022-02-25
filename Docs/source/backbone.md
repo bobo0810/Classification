@@ -25,25 +25,17 @@
 
 持续提供最新SOTA的预训练模型。[官方文档](https://rwightman.github.io/pytorch-image-models/)
 
-1. 查询网络名称 
+1. 查询模型名称 
 
    ```python
    import timm
    from pprint import pprint
-   
-   # 所有预训练模型
-   model_names = timm.list_models(pretrained=True)
+
+   model_names = timm.list_models(pretrained=True)  # 查询模型名称
+   # model_names = timm.list_models('*resne*t*')  # 支持通配符
    pprint(model_names)
    >>> ['resnet18',
     'resnet50',
-   ...
-   ]
-   
-   # 通配符查询
-   model_names = timm.list_models('*resne*t*')
-   pprint(model_names)
-   >>> ['cspresnet50',
-    'cspresnet50d',
    ...
    ]
    ```
@@ -55,7 +47,4 @@
      backbone: resnet18 
    ```
 
-## 方案3：TorchHub库
-
-[地址](https://pytorch.org/hub/research-models)
 
