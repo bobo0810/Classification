@@ -64,6 +64,9 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
 
    ```bash
    ****************************
+   Backbone come from timm
+   
+   ****************************
    TensorBoard | Checkpoint save to  /xxx/Classification/ExpLog/2022-02-24_15:20:41/ 
    
    ****************************

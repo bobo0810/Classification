@@ -57,7 +57,10 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
-            # 各类可视化
+            # 网络可视化
+            if epoch == 0:
+                tb_writer.add_graph(model, imgs.clone())
+            # 各类增广可视化
             if epoch % 10 == 0:
                 vis_list = PreProcess().convert(imgs, names)
                 for vis_name, vis_img in zip(set(names), vis_list):
