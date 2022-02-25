@@ -1,11 +1,11 @@
 from torch.utils.data import DataLoader
-from .dataset import ImgSet
+from .dataset import create_datasets
 from torchsampler import ImbalancedDatasetSampler
 
 
-def DataSets(cfg, mode):
+def create_dataloader(cfg, mode):
     """
-    数据集入口
+    数据集加载器入口
     加载train/val/test
     """
     assert mode in ["train", "val", "test"]
@@ -14,7 +14,7 @@ def DataSets(cfg, mode):
         # 常规采样
         if cfg["sampler"] == "normal":
             dataloader = DataLoader(
-                dataset=ImgSet(cfg, mode),
+                dataset=create_datasets(cfg, mode),
                 batch_size=cfg["batch"],
                 shuffle=True,
                 num_workers=4,
@@ -23,7 +23,7 @@ def DataSets(cfg, mode):
             )
         # 类别均衡采样
         elif cfg["sampler"] == "balance":
-            dataset = ImgSet(cfg, mode)
+            dataset = create_datasets(cfg, mode)
             dataloader = DataLoader(
                 dataset,
                 sampler=ImbalancedDatasetSampler(dataset),
@@ -37,7 +37,7 @@ def DataSets(cfg, mode):
             raise NotImplementedError
     else:  # 验证集/测试集
         dataloader = DataLoader(
-            dataset=ImgSet(cfg, mode),
+            dataset=create_datasets(cfg, mode),
             batch_size=cfg["batch"],
             shuffle=False,
             num_workers=4,

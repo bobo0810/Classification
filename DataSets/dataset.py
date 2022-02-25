@@ -14,7 +14,7 @@ from collections import Counter
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
-class ImgSet(data.Dataset):
+class create_datasets(data.Dataset):
     """加载数据集"""
 
     def __init__(self, cfg, mode):

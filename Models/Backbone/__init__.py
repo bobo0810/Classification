@@ -5,7 +5,7 @@ from collections import OrderedDict
 from .mynet import MyNet
 
 
-class Backbone(nn.Module):
+class create_backbone(nn.Module):
     """
     主干网络入口
     """
@@ -15,7 +15,7 @@ class Backbone(nn.Module):
         model_name: 模型名称,即yaml文件backbone属性值
         num_classes: 类别数,即yaml文件category属性值的长度
         """
-        super(Backbone, self).__init__()
+        super(create_backbone, self).__init__()
         self.model = self.init_model(model_name, num_classes)
         if checkpoint:
             print("checkpoint load {}".format(checkpoint))

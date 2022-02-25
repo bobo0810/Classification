@@ -1,12 +1,12 @@
 import sys
 import os
 import torch
-from DataSets import DataSets
+from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, eval_confusion_matrix
-from Models.Backbone import Backbone
-from Models.Head import Head
-from Models.Optimizer import Optimizer
+from Models.Backbone import create_backbone
+from Models.Head import create_head
+from Models.Optimizer import create_optimizer
 import argparse
 import yaml
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     tb_writer, checkpoint_path = init_env(cfg)
 
     # 模型
-    model = Backbone(
+    model = create_backbone(
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["category"]),
     )
@@ -35,10 +35,12 @@ if __name__ == "__main__":
     model.train()
 
     # 损失函数
-    criterion = Head(cfg["Models"]["head"])
+    criterion = create_head(cfg["Models"]["head"])
 
     # 优化器
-    optimizer = Optimizer(model, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"])
+    optimizer = create_optimizer(
+        model, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
+    )
 
     # 学习率
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
@@ -46,8 +48,8 @@ if __name__ == "__main__":
     )
 
     # 数据集
-    train_dataloader = DataSets(cfg["DataSet"], mode="train")
-    val_dataloader = DataSets(cfg["DataSet"], mode="val")
+    train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
+    val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))

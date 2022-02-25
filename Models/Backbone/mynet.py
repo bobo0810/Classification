@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 from typing import Any
-class AlexNet(nn.Module):
 
+
+class AlexNet(nn.Module):
     def __init__(self, num_classes: int = 1000) -> None:
         super(AlexNet, self).__init__()
         self.features = nn.Sequential(
@@ -48,6 +49,3 @@ def MyNet(pretrained=True, num_classes=1000):
         # 加载与训练权重
         pass
     return model
-
-
-

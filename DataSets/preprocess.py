@@ -82,7 +82,7 @@ class PreProcess:
         return img_transforms(img)  # 增广
 
     @staticmethod
-    def convert(imgs, names, per_nums=4, scale=2):
+    def convert(imgs, names, per_nums=4, scale=1):
         """
         转化格式，方便tensorboard可视化
         1.反归一化 2.恢复通道顺序
@@ -90,7 +90,7 @@ class PreProcess:
         imgs(tensor): [B,C,H,W]
         names(list):[batch]
         per_nums: batch内每类最多显示的图像数.默认为4
-        scale: 分辨率下降比例。默认为2
+        scale: 分辨率下降比例。默认为1
         """
         t_mean = torch.FloatTensor(mean).view(3, 1, 1).expand(3, 224, 224)
         t_std = torch.FloatTensor(std).view(3, 1, 1).expand(3, 224, 224)

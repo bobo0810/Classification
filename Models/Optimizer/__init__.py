@@ -3,7 +3,7 @@ import torch.nn as nn
 from .sam import SAM
 
 
-def Optimizer(model, name, lr):
+def create_optimizer(model, name, lr):
     """
     优化器入口
     """

@@ -3,8 +3,8 @@ import os
 import torch
 import time
 import yaml
-from DataSets import DataSets
-from Models.Backbone import Backbone
+from DataSets import create_dataloader
+from Models.Backbone import create_backbone
 from Utils.tools import eval_confusion_matrix
 import argparse
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     cfg = yaml.load(file, Loader=yaml.FullLoader)
     cfg["DataSet"]["txt"] = args.txt
 
-    model = Backbone(
+    model = create_backbone(
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["category"]),
         checkpoint=cfg["Models"]["checkpoint"],
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     model.to(device)
     model.eval()
 
-    test_dataloader = DataSets(cfg["DataSet"], mode="test")
+    test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
     # 测试,输出ACC及混淆矩阵
     acc = eval_confusion_matrix(model, test_dataloader, device)
