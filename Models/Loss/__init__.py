@@ -3,27 +3,27 @@ import torch.nn as nn
 from .focal_loss import FocalLoss
 
 
-class create_head(nn.Module):
+class create_loss(nn.Module):
     """
     损失函数入口
     """
 
     def __init__(self, name):
-        super(create_head, self).__init__()
-        self.head = self.init_head(name)
+        super(create_loss, self).__init__()
+        self.loss = self.init_loss(name)
 
     def forward(self, predict, target):
-        return self.head(predict, target)
+        return self.loss(predict, target)
 
     @staticmethod
-    def init_head(name):
+    def init_loss(name):
         """
         初始化损失函数
         """
         if name == "cross_entropy":
-            head = nn.CrossEntropyLoss()
+            loss = nn.CrossEntropyLoss()
         elif name == "focal_loss":
-            head = FocalLoss()
+            loss = FocalLoss()
         else:
             raise NotImplementedError
-        return head
+        return loss

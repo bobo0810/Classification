@@ -5,7 +5,7 @@ from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, eval_confusion_matrix
 from Models.Backbone import create_backbone
-from Models.Head import create_head
+from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
 import argparse
 import yaml
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     model.train()
 
     # 损失函数
-    criterion = create_head(cfg["Models"]["head"])
+    criterion = create_loss(cfg["Models"]["loss"])
 
     # 优化器
     optimizer = create_optimizer(

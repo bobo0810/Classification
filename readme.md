@@ -42,8 +42,8 @@ https://bclassification.readthedocs.io/
 │   └── preprocess.py 图像增广入口
 ├── Models
 │   ├── Backbone/__init__.py  主干网络入口
-│   ├── Head/__init__.py      损失函数入口
 │   ├── Optimizer/__init__.py 优化器入口
+│   ├── Loss/__init__.py      损失函数入口
 ├── test.py
 └── train.py
 ```
