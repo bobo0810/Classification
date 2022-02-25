@@ -55,15 +55,15 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
-            if batch_idx == 0:
-                # 网络可视化
-                if epoch == 0:
-                    tb_writer.add_graph(model, imgs.clone())
-                # 各类增广可视化
-                if epoch % 10 == 0:
-                    vis_list = PreProcess().convert(imgs, names)
-                    for vis_name, vis_img in zip(set(names), vis_list):
-                        tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
+            # 网络结构可视化
+            if epoch + batch_idx == 0:
+                tb_writer.add_graph(model, imgs.clone())
+            # 图像可视化
+            if epoch % 10 + batch_idx == 0:
+                vis_list = PreProcess().convert(imgs, names)
+                for vis_name, vis_img in zip(set(names), vis_list):
+                    tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
+
             imgs, labels = imgs.to(device), labels.to(device)
             output = model(imgs)
             loss = criterion(output, labels)
