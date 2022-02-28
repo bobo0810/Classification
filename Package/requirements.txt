@@ -8,6 +8,7 @@ pycm  #  统计指标
 
 
 # ======模型转换======
-# TODO
+onnx
+onnx-simplifier
 
 
