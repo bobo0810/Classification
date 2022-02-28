@@ -4,8 +4,8 @@
 opencv-python >= 4.5.3
 numpy
 timm  # 预训练模型库
-pycm  #  统计指标
-
+pycm  # 统计指标
+tensorboard # 可视化
 
 # ======模型转换======
 onnx
