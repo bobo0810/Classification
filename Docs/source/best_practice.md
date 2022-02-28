@@ -37,6 +37,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
    # ========================================数据集===================================
    DataSet:
      prefix: /home/xxx/CatDog # 数据集根路径 
+     size: [224,224]  # 训练尺寸
      category: {"cat":0,"dog":1} # 类别
      ratio: 0.9 # train:val比例  
      sampler: "balance" # 采样策略  balance:类别平衡采样
@@ -92,6 +93,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
    # ========================================数据集===================================
    DataSet:
      prefix: /home/xxx/CatDog # 数据集根路径 
+     size: [224,224]  # 训练尺寸
      category: {"cat":0,"dog":1} # 类别
      batch: 8 # batch size
     

@@ -18,13 +18,13 @@ class PreProcess:
         pass
 
     @staticmethod
-    def transforms(mode, img, img_shape=(224, 224)):
+    def transforms(mode, img, size=(224, 224)):
         """
         数据增广
 
         mode: 增广类型
         img: cv2读取的原图
-        img_shape：训练图像尺寸
+        size：训练图像尺寸
         """
         assert mode in ["train", "val", "test"]
         img = Image.fromarray(img)
@@ -33,7 +33,7 @@ class PreProcess:
         if mode == "train":
             img_transforms = transforms.Compose(
                 [
-                    transforms.Resize(img_shape),
+                    transforms.Resize(size),
                     # 翻转
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomVerticalFlip(),
@@ -73,7 +73,7 @@ class PreProcess:
         else:
             img_transforms = transforms.Compose(
                 [
-                    transforms.Resize(img_shape),
+                    transforms.Resize(size),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=mean, std=std),
                 ]

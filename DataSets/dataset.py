@@ -22,6 +22,7 @@ class create_datasets(data.Dataset):
         self.prefix = cfg["prefix"]
         self.category = cfg["category"]
         self.txt = cfg["txt"]
+        self.size = tuple(cfg["size"])
         self.mode = mode
         if not mode == "test":
             self.ratio = cfg["ratio"]
@@ -57,7 +58,7 @@ class create_datasets(data.Dataset):
         name = self.labels_name_list[index]
 
         image = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        image = PreProcess().transforms(self.mode, image)  # 增广
+        image = PreProcess().transforms(self.mode, image, self.size)  # 增广
         return image, int(label), name
 
     def __len__(self):

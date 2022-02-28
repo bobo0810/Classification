@@ -35,5 +35,6 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
 DataSet:
   prefix: /home/xxx/CatDog # 数据集根路径 
   category: {"cat":0,"dog":1} # 类别
+  size: [224,224]  # 训练尺寸
 ```
 
