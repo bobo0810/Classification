@@ -42,7 +42,7 @@ if __name__ == "__main__":
         model, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
 
-    # 学习率
+    # 学习率调度器
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
         optimizer, milestones=cfg["Train"]["milestones"], gamma=0.1
     )
@@ -71,15 +71,8 @@ if __name__ == "__main__":
             loss = criterion(output, labels)
             loss.backward()
 
-            if cfg["Models"]["optimizer"] == "SGD":
-                optimizer.step()
-                optimizer.zero_grad()
-            elif cfg["Models"]["optimizer"] == "SAM":
-                optimizer.first_step(zero_grad=True)
-                criterion(model(imgs), labels).backward()
-                optimizer.second_step(zero_grad=True)
-            else:
-                raise NotImplementedError
+            optimizer.step()
+            optimizer.zero_grad()
 
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
