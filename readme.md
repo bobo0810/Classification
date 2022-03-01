@@ -30,7 +30,7 @@ https://bclassification.readthedocs.io/
 
 - 自定义 图像增广 | 损失函数 | 优化器
 
-  > 在各自对应的`__init__.py`入口修改即可。
+  > 在各自统一入口修改即可。
 
 ## 框架
 
