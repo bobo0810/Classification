@@ -22,7 +22,7 @@ class create_datasets(data.Dataset):
         self.prefix = cfg["prefix"]
         self.category = cfg["category"]
         self.txt = cfg["txt"]
-        self.size = tuple(cfg["size"])
+        self.size = cfg["size"]
         self.mode = mode
         if not mode == "test":
             self.ratio = cfg["ratio"]
