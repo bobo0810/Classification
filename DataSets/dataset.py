@@ -29,10 +29,7 @@ class create_datasets(data.Dataset):
 
         # 读取图像列表
         imgs_list = open(self.txt, "r").readlines()
-        imgs_list = [
-            self.prefix + line.strip() for line in imgs_list
-        ]  # 图像完整路径=prefix+txt路径
-
+        imgs_list = [os.path.join(self.prefix, line.strip()) for line in imgs_list]
         # 划分
         random.shuffle(imgs_list)
         if mode == "train":
