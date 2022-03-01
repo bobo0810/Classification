@@ -6,7 +6,7 @@ import timm
 
 class MyNet(nn.Module):
     """
-    示例：自定义backbone = timm特征提取层 + 自定义分类层
+    示例: 自定义backbone = timm特征提取层 + 自定义分类层
     """
 
     def __init__(self, pretrained, num_classes):
