@@ -27,7 +27,7 @@ class PreProcess:
         img = Image.fromarray(img)
         # =========================训练集========================================
         if mode == "train":
-            img_transforms = timm_transform(img_size, is_train=True)
+            img_transforms = timm_transform(img_size, is_training=True)
         # =========================验证集/测试集==================================
         else:
             img_transforms = timm_transform(img_size)  # resize -> ToTensor -> Normalize
