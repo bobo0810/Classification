@@ -39,7 +39,6 @@ class create_backbone(nn.Module):
                 model_name,
                 pretrained=True,
                 num_classes=num_classes,
-                in_chans=3,  # 输入尺寸，支持自定义
             )
         return model
 

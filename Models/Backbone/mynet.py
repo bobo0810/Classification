@@ -4,13 +4,13 @@ from typing import Any
 import timm
 
 
-class Net(nn.Module):
+class MyNet(nn.Module):
     """
     示例：自定义backbone = timm特征提取层 + 自定义分类层
     """
 
     def __init__(self, pretrained, num_classes):
-        super(Net, self).__init__()
+        super(MyNet, self).__init__()
 
         # timm特征提取层
         self.features = timm.create_model("efficientnet_b0", pretrained=pretrained)
@@ -27,10 +27,3 @@ class Net(nn.Module):
         x = self.act3(x)
         x = self.classifier(x)
         return x
-
-
-def MyNet(pretrained, num_classes):
-    """
-    自定义backbone
-    """
-    return Net(pretrained, num_classes)
