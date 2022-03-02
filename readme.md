@@ -11,12 +11,17 @@
 
 
 
-## 安装依赖
 
-```bash
-pip install    ./Package/*zip
-pip install -r ./Package/requirements.txt 
-```
+## 快速开始
+1. 下载源码，安装依赖。
+    ```bash
+    pip install    ./Package/*zip
+    pip install -r ./Package/requirements.txt 
+    ```
+    注：示例数据集和参数已配好
+
+2. 训练：执行`python train.py`
+3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
 
 ## API文档
 

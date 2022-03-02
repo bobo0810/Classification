@@ -4,7 +4,7 @@
 
 > 注：项目根目录已包含`CatDog/`数据集并配置参数，可直接开始训练。
 
-1. 假设数据集根路径为`/home/xxx/CatDog`  ，格式如下
+1. 假设数据集根路径为`/home/xxx/CatDog/`  ，格式如下
 
 ```bash
 ├── cat
@@ -20,7 +20,7 @@
 2. 划分数据集，默认`Config/`下生成train.txt、test.txt。
 
 ```bash
-python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  --Verify
+python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  --Verify
 ```
 
 - --ImgsPath    数据集根路径
@@ -36,7 +36,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
    ```yaml
    # ========================================数据集===================================
    DataSet:
-     prefix: /home/xxx/CatDog # 数据集根路径 
+     prefix: /home/xxx/CatDog/ # 数据集根路径 
      size: [224,224]  # 训练尺寸
      category: {"cat":0,"dog":1} # 类别
      ratio: 0.9 # train:val比例  
@@ -92,7 +92,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
    ```yaml
    # ========================================数据集===================================
    DataSet:
-     prefix: /home/xxx/CatDog # 数据集根路径 
+     prefix: /home/xxx/CatDog/ # 数据集根路径 
      size: [224,224]  # 训练尺寸
      category: {"cat":0,"dog":1} # 类别
      batch: 8 # batch size

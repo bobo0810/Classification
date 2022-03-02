@@ -2,7 +2,7 @@
 
 ## 一. 准备数据
 
-1.假设数据集根路径为`/home/xxx/CatDog`  ，格式如下
+1.假设数据集根路径为`/home/xxx/CatDog/`  ，格式如下
 
 ```bash
 ├── cat
@@ -18,12 +18,12 @@
 2.划分数据集，默认`Config/`下生成train.txt、test.txt。
 
 ```bash
-python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  --Verify
+python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  --Verify
 ```
 
 - --ImgsPath    数据集根路径
 - --Ratio           各类别均按指定比例分配train:test，默认[0.8, 0.2]
-- --Verify          验证图像完整性(耗时，可去掉)
+- --Verify          验证图像完整性(耗时，可选)
 
 
 
@@ -33,7 +33,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog  --Ratio=[0.8,0.2]  -
 
 ```yaml
 DataSet:
-  prefix: /home/xxx/CatDog # 数据集根路径 
+  prefix: /home/xxx/CatDog/ # 数据集根路径 
   category: {"cat":0,"dog":1} # 类别
   size: [224,224]  # 训练尺寸
 ```

@@ -20,6 +20,10 @@ if __name__ == "__main__":
     cfg = yaml.load(file, Loader=yaml.FullLoader)
     cfg["DataSet"]["txt"] = args.txt
 
+    assert (
+        cfg["Models"]["checkpoint"] == None
+    ), "test.yaml checkpoint should not be None"
+
     model = create_backbone(
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["category"]),

@@ -20,7 +20,7 @@ def verifyImgs(imgs_path):
     验证图像可读性
     imgs_path目录下
     """
-    imgs_list = glob.glob(imgs_path + "/*/*")  # 所有图片列表
+    imgs_list = glob.glob(os.path.join(imgs_path, "*/*"))  # 所有图片列表
     error_list = Img_Tools.verify_integrity(imgs_list)
     if len(error_list) > 0:
         print("Strongly recommended: Delete the wrong image")
@@ -35,14 +35,15 @@ def split(imgs_path, ratio, prefix=None):
     prefix: 若存在，则图片路径去掉前缀
     """
     assert sum(ratio) == 1.0
-    class_list = glob.glob(imgs_path + "/*")  # 所有类别
+    class_list = glob.glob(os.path.join(imgs_path, "*"))  # 所有类别
     train_list, test_list = [], []
 
     # 每类均按比例分配
     for class_path in class_list:
-        imgs_list = glob.glob(class_path + "/*")
+        imgs_list = glob.glob(os.path.join(class_path, "*"))
         if prefix:
-            imgs_list = [line.replace(prefix, "") for line in imgs_list]  # 去掉前缀
+            prefix = prefix + "/" if prefix[-1] != "/" else prefix
+            imgs_list = [line.replace(prefix, "") for line in imgs_list]  # eg: 类别名/图片名
         random.shuffle(imgs_list)
 
         train_list.extend(imgs_list[: int(len(imgs_list) * ratio[0])])
@@ -60,7 +61,7 @@ if __name__ == "__main__":
     """
     parser = argparse.ArgumentParser(description="划分数据集")
     parser.add_argument(
-        "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog"
+        "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog/"
     )
     parser.add_argument("--Ratio", default=[0.8, 0.2], help="train:test比例")
     parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时)")
