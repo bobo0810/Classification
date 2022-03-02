@@ -57,3 +57,9 @@ https://bclassification.readthedocs.io/
 └── train.py
 ```
 
+
+
+## 参考
+
+-  [Getting Started with PyTorch Image Models (timm): A Practitioner’s Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+
