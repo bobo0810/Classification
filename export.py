@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_classes", type=int, help="类别数", required=True)
     # onnx
     parser.add_argument("--simplify", action="store_true", help="(可选)简化onnx,默认关闭")
-    parser.add_argument("--dynamic", action="store_true", help="(可选)batch动态维度,默认关闭")
+    parser.add_argument("--dynamic", action="store_true", help="(可选)batch轴设为动态,默认关闭")
     cfg = parser.parse_args()
 
     # 加载模型
