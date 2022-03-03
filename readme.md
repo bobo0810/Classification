@@ -52,6 +52,7 @@ https://bclassification.readthedocs.io/
 │   ├── Backbone/__init__.py  主干网络入口
 │   ├── Optimizer/__init__.py 优化器入口
 │   ├── Loss/__init__.py      损失函数入口
+│   ├── Backend               模型转换入口
 ├── export.py
 ├── test.py
 └── train.py
@@ -60,6 +61,7 @@ https://bclassification.readthedocs.io/
 
 
 ## 参考
+- [pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
 
 -  [Getting Started with PyTorch Image Models (timm): A Practitioner’s Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
 
