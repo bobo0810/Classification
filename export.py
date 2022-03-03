@@ -4,6 +4,7 @@ from Models.Backbone import create_backbone
 import torch
 import onnx
 import onnxsim
+import onnxruntime
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
@@ -22,9 +23,7 @@ if __name__ == "__main__":
     model = create_backbone(cfg.backbone, cfg.num_classes, checkpoint=cfg.weights)
     model.eval()
 
-    # 输入图像
     img = torch.ones(tuple(cfg.img_size))
-    print("output shape is ", model(img).shape)
 
     # ==========================导出ONNX===============================
     print("\n onnx version is %s" % onnx.__version__)
@@ -60,3 +59,18 @@ if __name__ == "__main__":
 
     print("ONNX export success, saved as %s" % onnx_weights)
     print("\nVisualize onnx with https://github.com/lutzroeder/netron.")
+
+    # torch推理
+    output_torch = model(img).detach().numpy()
+
+    # onnx推理
+    session = onnxruntime.InferenceSession(
+        onnx_weights, providers=["CPUExecutionProvider"]
+    )
+    output_onnx = session.run(
+        [session.get_outputs()[0].name], {session.get_inputs()[0].name: img.numpy()}
+    )[0]
+
+    # ==========================验证结果===============================
+    max_diff = (output_torch - output_onnx).max()
+    print("*" * 28, "\nThe maximum difference between elements is", max_diff)

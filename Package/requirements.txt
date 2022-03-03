@@ -9,6 +9,7 @@ pycm  # 统计指标
 
 # ======模型转换======
 onnx
+onnxruntime
 onnx-simplifier
 
 

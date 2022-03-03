@@ -30,7 +30,8 @@ class PreProcess:
             img_transforms = timm_transform(img_size, is_training=True)
         # =========================验证集/测试集==================================
         else:
-            img_transforms = timm_transform(img_size)  # resize -> ToTensor -> Normalize
+            # resize256 -> centercrop224 -> ToTensor -> Normalize
+            img_transforms = timm_transform(img_size)
         # print(img_transforms)
         return img_transforms(img)  # 增广
 
@@ -38,10 +39,9 @@ class PreProcess:
     def convert(imgs, names, per_nums=4):
         """
         转化格式，方便tensorboard可视化
-        1.反归一化 2.恢复通道顺序
 
         imgs(tensor): [B,C,H,W]
-        names(list):[batch]
+        names(list):[B]
         per_nums: batch内每类最多显示的图像数.默认为4
         """
         mean = (0.485, 0.456, 0.406)
