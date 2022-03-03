@@ -25,7 +25,9 @@
 
 ## API文档
 
-https://bclassification.readthedocs.io/
+https://bclassification.readthedocs.io/ 
+
+文档内容如下：
 
 - 最佳实践
 
@@ -36,9 +38,8 @@ https://bclassification.readthedocs.io/
   - 方案2：自定义
   - 附：基于Timm库定制
 
-- 自定义 图像增广 | 损失函数 | 优化器
-
-  > 在各自入口修改即可。
+- 自定义 图像增广 | 损失函数 | 优化器| 模型转换
+  - 在各自入口修改即可。
 
 ## 框架
 
