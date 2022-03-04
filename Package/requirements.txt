@@ -11,5 +11,6 @@ pycm  # 统计指标
 onnx
 onnxruntime
 onnx-simplifier
+# pycuda 
 
 

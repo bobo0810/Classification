@@ -51,7 +51,7 @@ class OnnxBackend:
 
         print("*" * 28)
         print("ONNX export success, saved as %s" % weights)
-        print("\nVisualize onnx with https://github.com/lutzroeder/netron.")
+        print("Visualize onnx with https://github.com/lutzroeder/netron.\n")
 
     @staticmethod
     def infer(weights, imgs):

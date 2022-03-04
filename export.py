@@ -41,11 +41,10 @@ if __name__ == "__main__":
     )
     # 加载模型并推理
     output_onnx = OnnxBackend.infer(weights=onnx_weights, imgs=imgs.numpy())
-    print("*" * 28)
-    print("difference between torch and onnx is ", (output_torch - output_onnx).max())
 
     # ==========================导出TensorRT===============================
     if cfg.onnx2trt:
+        assert cfg.dynamic == False, "Currently tensorrt only supported  fixed shapes"
         from Models.Backend.tensorrt import TensorrtBackend
 
         trt_weights = onnx_weights.split(".")[0] + ".trt"
@@ -54,12 +53,13 @@ if __name__ == "__main__":
             onnx_weights=onnx_weights,
             trt_weights=trt_weights,
             fp16=cfg.fp16,
-            output_shape=output_onnx.shape,
         )
         # 加载模型并推理
-        output_trt = TensorrtBackend.infer(weights=trt_weights, imgs=imgs.numpy())
-        print("*" * 28)
-        print(
-            "difference between torch and tensorrt is ",
-            (output_torch - output_trt).max(),
+        output_trt = TensorrtBackend.infer(
+            weights=trt_weights, imgs=imgs.numpy(), output_shape=output_onnx.shape
         )
+
+    # ==========================验证结果===============================
+    print("\n", "*" * 28)
+    print("output_torch - output_onnx = ", (output_torch - output_onnx).max())
+    print("output_torch - output_trt = ", (output_torch - output_trt).max())
