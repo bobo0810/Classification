@@ -10,17 +10,17 @@ if __name__ == "__main__":
 
     # torch
     parser.add_argument("--img_size", default=[1, 3, 224, 224], help="推理尺寸")
-    parser.add_argument("--backbone", help="模型名称", default="resnet18")
+    parser.add_argument("--backbone", help="模型名称", default="mynet")
+    parser.add_argument("--num_classes", type=int, help="类别数", default=2)
     parser.add_argument("--weights", help="模型权重", required=True)
-    parser.add_argument("--num_classes", type=int, help="类别数", required=True)
 
     # onnx
     parser.add_argument("--simplify", action="store_true", help="(可选)简化onnx")
     parser.add_argument("--dynamic", action="store_true", help="(可选)batch轴设为动态")
 
     # tensorrt
-    parser.add_argument("--onnx2trt", action="store_true", help="(可选)onnx转为tensorrt")
-    parser.add_argument("--fp16", action="store_true", help="(可选)fp16预测")
+    parser.add_argument("--onnx2trt", action="store_true", help="(可选)onnx是否转为tensorrt")
+    parser.add_argument("--fp16", action="store_true", help="(可选)开启fp16预测")
     cfg = parser.parse_args()
 
     # ==========================torch===============================
@@ -62,4 +62,5 @@ if __name__ == "__main__":
     # ==========================验证结果===============================
     print("\n", "*" * 28)
     print("output_torch - output_onnx = ", (output_torch - output_onnx).max())
-    print("output_torch - output_trt = ", (output_torch - output_trt).max())
+    if cfg.onnx2trt:
+        print("output_torch - output_trt = ", (output_torch - output_trt).max())
