@@ -29,7 +29,7 @@ https://bclassification.readthedocs.io/
 
 文档内容如下：
 
-- 最佳实践(训练->测试->部署)
+- 最佳实践(训练+测试)
 
 - 自定义数据集
 
@@ -40,6 +40,9 @@ https://bclassification.readthedocs.io/
 
 - 自定义 图像增广 | 损失函数 | 优化器| 模型转换
   - 在各自入口修改即可。
+- 模型部署
+  - Torch转为ONNX并推理
+  - ONNX转为TensorRT并推理
 
 ## 框架
 
@@ -53,7 +56,7 @@ https://bclassification.readthedocs.io/
 │   ├── Backbone/__init__.py  主干网络入口
 │   ├── Optimizer/__init__.py 优化器入口
 │   ├── Loss/__init__.py      损失函数入口
-│   ├── Backend               模型转换入口
+│   ├── Backend               模型部署入口
 ├── export.py
 ├── test.py
 └── train.py
