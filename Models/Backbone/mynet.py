@@ -30,7 +30,13 @@ class MyNet(nn.Module):
         return x
 
 
-# 注册为timm模型
+"""
+注意:
+1. @register_model注册为timm模型
+2. 命名尽量避免与timm模型重名
+"""
+
+
 @register_model
 def mynet(pretrained, num_classes):
     print("Backbone come from user-defined")
