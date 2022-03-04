@@ -64,5 +64,10 @@ https://bclassification.readthedocs.io/
 ## 参考
 - [pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
 
--  [Getting Started with PyTorch Image Models (timm): A Practitioner’s Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+- [yolov5](https://github.com/ultralytics/yolov5)
+
+- [Getting Started with PyTorch Image Models (timm): A Practitioner’s Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+
+- [TensorRT8安装教程](https://www.codeleading.com/article/48816068405/)
+
 

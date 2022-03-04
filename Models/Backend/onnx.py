@@ -6,7 +6,7 @@ import onnxsim
 
 class OnnxBackend:
     """
-    onnx后端
+    ONNX后端
     """
 
     def __init__(self):
@@ -15,7 +15,7 @@ class OnnxBackend:
     @staticmethod
     def convert(model, imgs, weights, dynamic, simplify):
         """
-        torch转为onnx
+        torch模型转为onnx模型
 
         model: torch模型
         imgs: [B,C,H,W]Tensor
@@ -49,6 +49,7 @@ class OnnxBackend:
             except Exception as e:
                 print(f"simplifer failure: {e}")
 
+        print("*" * 28)
         print("ONNX export success, saved as %s" % weights)
         print("\nVisualize onnx with https://github.com/lutzroeder/netron.")
 

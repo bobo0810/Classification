@@ -17,15 +17,21 @@ if __name__ == "__main__":
     # onnx
     parser.add_argument("--simplify", action="store_true", help="(可选)简化onnx")
     parser.add_argument("--dynamic", action="store_true", help="(可选)batch轴设为动态")
+
+    # tensorrt
+    parser.add_argument("--onnx2trt", action="store_true", help="(可选)onnx转为tensorrt")
+    parser.add_argument("--fp16", action="store_true", help="(可选)fp16预测")
     cfg = parser.parse_args()
 
-    # ==========================导出ONNX===============================
+    # ==========================torch===============================
     imgs = torch.ones(tuple(cfg.img_size))
-    # 加载torch模型
     model = create_backbone(cfg.backbone, cfg.num_classes, checkpoint=cfg.weights)
     model.eval()
+    output_torch = model(imgs).detach().numpy()
 
+    # ==========================导出ONNX===============================
     onnx_weights = cfg.weights.split(".")[0] + ".onnx"
+    # torch转onnx
     OnnxBackend.convert(
         model=model,
         imgs=imgs,
@@ -33,10 +39,27 @@ if __name__ == "__main__":
         dynamic=cfg.dynamic,
         simplify=cfg.simplify,
     )
-
-    # ==========================验证===============================
-    output_torch = model(imgs).detach().numpy()  # torch输出
-    output_onnx = OnnxBackend.infer(weights=onnx_weights, imgs=imgs.numpy())  # onnx输出
-
+    # 加载模型并推理
+    output_onnx = OnnxBackend.infer(weights=onnx_weights, imgs=imgs.numpy())
     print("*" * 28)
     print("difference between torch and onnx is ", (output_torch - output_onnx).max())
+
+    # ==========================导出TensorRT===============================
+    if cfg.onnx2trt:
+        from Models.Backend.tensorrt import TensorrtBackend
+
+        trt_weights = onnx_weights.split(".")[0] + ".trt"
+        # onnx转tensorrt
+        TensorrtBackend.convert(
+            onnx_weights=onnx_weights,
+            trt_weights=trt_weights,
+            fp16=cfg.fp16,
+            output_shape=output_onnx.shape,
+        )
+        # 加载模型并推理
+        output_trt = TensorrtBackend.infer(weights=trt_weights, imgs=imgs.numpy())
+        print("*" * 28)
+        print(
+            "difference between torch and tensorrt is ",
+            (output_torch - output_trt).max(),
+        )
