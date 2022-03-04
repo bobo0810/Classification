@@ -8,6 +8,6 @@ DataSet:
  
 # ========================================模型===================================
 Models: 
-  backbone: MyNet # 主干网络
+  backbone: mynet # 主干网络
   checkpoint: None     # 权重路径  /home/xxx/xxx.pth
   

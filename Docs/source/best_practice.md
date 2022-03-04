@@ -40,7 +40,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  
      size: [224,224]  # 训练尺寸
      category: {"cat":0,"dog":1} # 类别
      ratio: 0.9 # train:val比例  
-     sampler: "balance" # 采样策略  balance:类别平衡采样
+     sampler: "normal" # 采样策略  
      batch: 8  # batch size
    # ========================================模型===================================
    Models: 
@@ -64,9 +64,6 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  
    控制台输出
 
    ```bash
-   ****************************
-   Backbone come from timm
-   
    ****************************
    TensorBoard | Checkpoint save to  /xxx/ExpLog/2022-02-24_15:20:41/ 
    

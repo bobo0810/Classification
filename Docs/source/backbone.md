@@ -36,15 +36,13 @@
 
 1. 定义网络结构
 
-   （1）`/Models/Backbone/`创建`mynet.py`
-
-   （2）`/Models/Backbone/__init__.py`的`init_model()`加载自定义网络
+   参考`/Models/Backbone/mynet.py`
 
 2. 修改`Config/train.yaml`
 
    ```yaml
    Models: 
-     backbone: MyNet
+     backbone: mynet
    ```
 
 

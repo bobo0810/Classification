@@ -2,7 +2,6 @@ import torch.nn as nn
 import timm
 import torch
 from collections import OrderedDict
-from .mynet import MyNet
 
 
 class create_backbone(nn.Module):
@@ -28,19 +27,12 @@ class create_backbone(nn.Module):
     def init_model(model_name, num_classes):
         """
         初始化主干网络
-        优先级：自定义>timm库
         """
-        if model_name == "MyNet":
-            model = MyNet(pretrained=True, num_classes=num_classes)
-        else:
-            print("*" * 28)
-            print(model_name, " come from timm\n")
-            model = timm.create_model(
-                model_name,
-                pretrained=True,
-                num_classes=num_classes,
-            )
-        return model
+        return timm.create_model(
+            model_name,
+            pretrained=True,
+            num_classes=num_classes,
+        )
 
     @staticmethod
     def load_checkpoint(model, checkpoint):

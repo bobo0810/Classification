@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from typing import Any
 import timm
+from timm.models import register_model
 
 
 class MyNet(nn.Module):
@@ -27,3 +28,11 @@ class MyNet(nn.Module):
         x = self.act3(x)
         x = self.classifier(x)
         return x
+
+
+# 注册为timm模型
+@register_model
+def mynet(pretrained, num_classes):
+    print("Backbone come from user-defined")
+    model = MyNet(pretrained, num_classes)
+    return model
