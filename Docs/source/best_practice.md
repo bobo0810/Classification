@@ -23,9 +23,9 @@
 python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  --Verify
 ```
 
-- --ImgsPath    数据集根路径
-- --Ratio           各类别均按指定比例分配train:test，默认[0.8, 0.2]
-- --Verify          验证图像完整性(耗时，可选)
+- ImgsPath    数据集根路径
+- Ratio           各类别均按指定比例分配train:test，默认[0.8, 0.2]
+- Verify          验证图像完整性(耗时，可选)
 
 
 

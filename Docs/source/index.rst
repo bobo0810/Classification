@@ -13,6 +13,7 @@ Welcome to Classification's documentation!
    best_practice
    dataset
    backbone
+   deploy
 
 Indices and tables
 ==================

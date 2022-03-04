@@ -1,10 +1,8 @@
 # 自定义主干网络
 
-匹配优先级：自定义 > Timm库
-
 ## 方案1：Timm库（推荐⭐️）
 
-持续更新SOTA的预训练模型(当前模型数>600)。[官方文档](https://rwightman.github.io/pytorch-image-models/) 
+持续更新SOTA的预训练模型(>600)。[官方文档](https://rwightman.github.io/pytorch-image-models/) 
 
 **适用场景**：仅更改预测类别数。
 
