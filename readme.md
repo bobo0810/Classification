@@ -3,7 +3,7 @@
 |          | 功能                                                         | 备注                                                         |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 抽象     | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
-| 模型     | 集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 持续更新SOTA的预训练模型。（模型数>600）                                   |
+| 模型     | 集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
 | 部署 | 服务器/移动端加速                                                        | 1. ONNX ✅<br/>2. TensorRT✅<br/>3. todo |
 
@@ -25,11 +25,9 @@
 
 ## API文档
 
-https://bclassification.readthedocs.io/ 
+https://bclassification.readthedocs.io/   文档内容包含：
 
-文档内容如下：
-
-- 最佳实践(训练+测试)
+- 最佳实践
 
 - 自定义数据集
 
