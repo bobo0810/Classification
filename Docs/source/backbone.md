@@ -36,7 +36,10 @@
 
 1. 定义网络结构
 
-   参考`/Models/Backbone/mynet.py`
+   （1）自定义:`/Models/Backbone/mynet.py`，避免与timm模型库重名。
+
+   （2）注册到timm: `/Models/Backbone/__init__.py`添加`from .mynet import mynet`
+
 
 2. 修改`Config/train.yaml`
 

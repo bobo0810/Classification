@@ -8,7 +8,7 @@ DataSet:
   batch: 8
 # ========================================模型===================================
 Models: 
-  backbone: mynet # 主干网络  优先级：自定义 > timm库
+  backbone: mynet # 主干网络  
   loss: cross_entropy  # 损失函数  支持['cross_entropy','focal_loss']
   optimizer: SGD       # 优化器    支持['SGD','Adam']
 
