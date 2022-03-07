@@ -96,7 +96,6 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  
     
    # ========================================模型===================================
    Models: 
-     backbone: resnet18 # 主干网络 
      checkpoint: /xxx/resnet18.pth # 权重路径  	
    ```
 

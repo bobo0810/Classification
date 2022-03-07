@@ -21,14 +21,18 @@ if __name__ == "__main__":
     cfg["DataSet"]["txt"] = args.txt
 
     assert (
-        cfg["Models"]["checkpoint"] == None
+        cfg["Models"]["checkpoint"] != None
     ), "test.yaml checkpoint should not be None"
 
-    model = create_backbone(
-        cfg["Models"]["backbone"],
-        num_classes=len(cfg["DataSet"]["category"]),
-        checkpoint=cfg["Models"]["checkpoint"],
-    )
+    # 方案1. 加载model.state_dict
+    # model = create_backbone(
+    #     cfg["Models"]["backbone"],
+    #     num_classes=len(cfg["DataSet"]["category"]),
+    #     checkpoint=cfg["Models"]["checkpoint"],
+    # )
+    # 方案2. 直接加载model
+    model = torch.load(cfg["Models"]["checkpoint"])
+
     model.to(device)
     model.eval()
 

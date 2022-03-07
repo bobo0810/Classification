@@ -79,7 +79,7 @@ if __name__ == "__main__":
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
         # 保存
         torch.save(
-            model.state_dict(),
+            model, # model.state_dict()
             checkpoint_path + cfg["Models"]["backbone"] + "_" + "%03d" % epoch + ".pth",
         )
         # 评估

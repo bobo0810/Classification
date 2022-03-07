@@ -10,9 +10,7 @@ if __name__ == "__main__":
 
     # torch
     parser.add_argument("--img_size", default=[1, 3, 224, 224], help="推理尺寸")
-    parser.add_argument("--backbone", help="模型名称", default="mynet")
-    parser.add_argument("--num_classes", type=int, help="类别数", default=2)
-    parser.add_argument("--weights", help="模型权重", required=True)
+    parser.add_argument("--weights", help="模型权重", required=True) 
 
     # onnx
     parser.add_argument("--simplify", action="store_true", help="(可选)简化onnx")
@@ -25,7 +23,8 @@ if __name__ == "__main__":
 
     # ==========================torch===============================
     imgs = torch.ones(tuple(cfg.img_size))
-    model = create_backbone(cfg.backbone, cfg.num_classes, checkpoint=cfg.weights)
+    # model = create_backbone(cfg.backbone, cfg.num_classes, checkpoint=cfg.weights) # 加载model.state_dict
+    model = torch.load(cfg["Models"]["checkpoint"]) # 直接加载model
     model.eval()
     output_torch = model(imgs).detach().numpy()
 

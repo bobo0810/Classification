@@ -15,7 +15,7 @@
 ## 快速开始
 1. 下载源码，安装依赖。
     ```bash
-    pip install    ./Package/*zip
+    pip install    ./Package/*zip  &&
     pip install -r ./Package/requirements.txt 
     ```
     注：示例数据集和参数已配好
