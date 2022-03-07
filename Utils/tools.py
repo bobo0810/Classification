@@ -52,9 +52,18 @@ def eval_confusion_matrix(model, data_loader, device):
         imgs = imgs.to(device)
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
-        _, indices = torch.sort(scores, dim=1, descending=True)
+
+        sorted_scores, indices = torch.sort(scores, dim=1, descending=True)
         pred_label = indices[:, 0]
+        pred_prob = sorted_scores[:, 0]
         for i in range(len(imgs)):
-            pred_list.append(pred_label[i].cpu().item())
+            pred = pred_label[i].cpu().item()
+            prob = pred_prob[i].cpu().item()
+
+            # threshold = 0.98
+            # if pred != 0 and prob < threshold:
+            #     pred = 0
+
+            pred_list.append(pred)
             label_list.append(labels[i].cpu().item())
     return ConfusionMatrix(actual_vector=label_list, predict_vector=pred_list)
