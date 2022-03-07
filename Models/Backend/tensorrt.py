@@ -1,7 +1,9 @@
 import pycuda.autoinit
 import pycuda.driver as cuda
-import tensorrt as trt
 import numpy as np
+import tensorrt as trt
+# tensorrt版本最低版本8.0
+assert int((tensorrt.__version__).split(".")[0]) >=8,"Warn: TensorRT version must >=8.0"
 
 
 class TensorrtBackend:
