@@ -42,8 +42,8 @@ if __name__ == "__main__":
     output_onnx = OnnxBackend.infer(weights=onnx_weights, imgs=imgs.numpy())
 
     # ==========================导出TensorRT===============================
-    if cfg.onnx2trt:
-        assert cfg.dynamic == False, "Currently tensorrt only supported  fixed shapes"
+    if cfg.onnx2trt: 
+        assert cfg.dynamic == False, "Warn: only supported  fixed shapes"
         from Models.Backend.tensorrt import TensorrtBackend
 
         trt_weights = onnx_weights.split(".")[0] + ".trt"

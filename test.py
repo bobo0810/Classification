@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     assert (
         cfg["Models"]["checkpoint"] != None
-    ), "test.yaml checkpoint should not be None"
+    ), "Warn: test.yaml checkpoint should not be None"
 
     # 方案1. 加载model.state_dict
     # model = create_backbone(
