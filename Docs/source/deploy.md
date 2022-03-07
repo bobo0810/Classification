@@ -1,17 +1,28 @@
 # 模型部署
 
-## 1. Torch->ONNX
+推荐`export.py`查看完整参数
 
+## 1.TorchScript
 ```bash
-python export.py  --weights="xxx.pth" --simplify
+python export.py  --weights="xxx.pt"  --torch2script
+```
+- torch2script       (可选)转为torchscript
+```bash
+****************************
+TorchScript export success, saved as /xxx/mynet.torchscript
+
+****************************
+output_torch - output_script =  0.0
 ```
 
-- img_size           推理尺寸，默认[1, 3, 224, 224]
-- weights           （必选）模型权重，已包含网络结构和参数，可直接加载。
+## 2. ONNX
 
-- onnx相关参数
-  - simplify     (可选)简化onnx模型，默认关闭
-  - dynamic   (可选)batch轴设为动态，默认关闭
+```bash
+python export.py  --weights="xxx.pt" --torch2onnx
+```
+- torch2onnx   (可选)转为onnx
+- simplify     (可选)简化onnx模型
+- dynamic      (可选)batch轴设为动态
 
 
 
@@ -19,7 +30,7 @@ python export.py  --weights="xxx.pth" --simplify
 
 ```bash
 ****************************
-ONNX export success, saved as /xxx/mynet_099.onnx
+ONNX export success, saved as /xxx/mynet.onnx
 Visualize onnx with https://github.com/lutzroeder/netron.
 
 ****************************
@@ -28,17 +39,15 @@ output_torch - output_onnx =  5.379319e-06
 
 
 
-## 2. ONNX-> TensorRT
+## 3. TensorRT
 
 注意：（1）传入的onnx模型必须固定尺度 （2）TensorRT版本>=8.0
 
 ```bash
-python export.py --weights="xxx.pth" --simplify --onnx2trt 
+python export.py --weights="xxx.pt" --torch2onnx --onnx2trt 
 ```
-
-- tensorrt相关参数
-  - onnx2trt  （可选）onnx是否转为tensorrt，默认关闭
-  - fp16       (可选）开启fp16预测，默认关闭
+- onnx2trt  （可选）onnx是否转为tensorrt
+- fp16       (可选）开启fp16预测
 
 
 
@@ -46,11 +55,11 @@ python export.py --weights="xxx.pth" --simplify --onnx2trt
 
 ```bash
 ****************************
-ONNX export success, saved as /xxx/mynet_099.onnx
+ONNX export success, saved as /xxx/mynet.onnx
 Visualize onnx with https://github.com/lutzroeder/netron.
 
 ****************************
-TensorRT export success, saved as /xxx/mynet_099.trt
+TensorRT export success, saved as /xxx/mynet.trt
 
 ****************************
 output_torch - output_onnx =  5.379319e-06
