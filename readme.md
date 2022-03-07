@@ -5,7 +5,7 @@
 | 抽象     | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
 | 模型     | 集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
-| 部署 | 服务器/移动端加速                                                        | 1. ONNX ✅<br/>2. TensorRT✅<br/>3. todo |
+| 部署 | 服务器/移动端加速                                                        | 1. TorchScript✅<br/>2. ONNX ✅<br/>3. TensorRT✅<br/>|
 
 <div align=center><img src="./Docs/source/imgs/tsdb.gif" ></div>
 
@@ -39,8 +39,9 @@ https://bclassification.readthedocs.io/   文档内容包含：
 - 自定义 图像增广 | 损失函数 | 优化器| 模型转换
   - 在各自入口修改即可。
 - 模型部署
-  - Torch转为ONNX并推理
-  - ONNX转为TensorRT并推理
+  - Torch->TorchScript
+  - Torch->ONNX
+  - ONNX ->TensorRT
 
 ## 框架
 
