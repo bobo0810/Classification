@@ -20,13 +20,13 @@
 2. 划分数据集，默认`Config/`下生成train.txt、test.txt。
 
 ```bash
-python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  --Verify
+python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/   
 ```
 
 - ImgsPath    数据集根路径
-- Ratio           各类别均按指定比例分配train:test，默认[0.8, 0.2]
-- Verify          验证图像完整性(耗时，可选)
-
+- Ratio       各类别均按指定比例分配train:test，默认0.8
+- Verify      验证图像完整性(耗时，可选)
+- TxtPath     train/test.txt保存路径,默认保存到`Config/`
 
 
 ## 二. 训练

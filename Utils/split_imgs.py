@@ -27,14 +27,15 @@ def verifyImgs(imgs_path):
         print(error_list)
 
 
-def split(imgs_path, ratio, prefix=None):
+def split(imgs_path, ratio, txt_path, prefix=None):
     """
     划分数据集
     每类均按比例分配train、test
 
+    txt_path: train/test.txt保存路径
     prefix: 若存在，则图片路径去掉前缀
     """
-    assert sum(ratio) == 1.0
+
     class_list = glob.glob(os.path.join(imgs_path, "*"))  # 所有类别
     train_list, test_list = [], []
 
@@ -46,13 +47,12 @@ def split(imgs_path, ratio, prefix=None):
             imgs_list = [line.replace(prefix, "") for line in imgs_list]  # eg: 类别名/图片名
         random.shuffle(imgs_list)
 
-        train_list.extend(imgs_list[: int(len(imgs_list) * ratio[0])])
-        test_list.extend(imgs_list[int(len(imgs_list) * ratio[0]) :])
+        train_list.extend(imgs_list[: int(len(imgs_list) * ratio)])
+        test_list.extend(imgs_list[int(len(imgs_list) * ratio) :])
 
     # 保存
-    TXT_Tools.write_lines(train_list, cur_path + "/../Config/" + "train.txt")
-    TXT_Tools.write_lines(test_list, cur_path + "/../Config/" + "test.txt")
-    print("train.txt | test.txt save in : ", cur_path + "/../Config/")
+    TXT_Tools.write_lines(train_list, os.path.join(txt_path, "train.txt"))
+    TXT_Tools.write_lines(test_list, os.path.join(txt_path, "test.txt"))
 
 
 if __name__ == "__main__":
@@ -63,12 +63,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog/"
     )
-    parser.add_argument("--Ratio", default=[0.8, 0.2], help="train:test比例")
+    parser.add_argument("--Ratio", type=float, default=0.8, help="train:test=0.8:0.2")
     parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时)")
+    parser.add_argument(
+        "--TxtPath", default=cur_path + "/../Config/", help="train/test.txt保存路径"
+    )
 
     args = parser.parse_args()
 
     if args.Verify:
         verifyImgs(args.ImgsPath)
 
-    split(imgs_path=args.ImgsPath, ratio=args.Ratio, prefix=args.ImgsPath)
+    split(
+        imgs_path=args.ImgsPath,
+        ratio=args.Ratio,
+        txt_path=args.TxtPath,
+        prefix=args.ImgsPath,
+    )
