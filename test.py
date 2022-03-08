@@ -4,7 +4,6 @@ import torch
 import time
 import yaml
 from DataSets import create_dataloader
-from Models.Backbone import create_backbone
 from Utils.tools import eval_confusion_matrix
 import argparse
 
@@ -24,13 +23,7 @@ if __name__ == "__main__":
         cfg["Models"]["checkpoint"] != None
     ), "Warn: test.yaml checkpoint should not be None"
 
-    # 方案1. 加载model.state_dict
-    # model = create_backbone(
-    #     cfg["Models"]["backbone"],
-    #     num_classes=len(cfg["DataSet"]["category"]),
-    #     checkpoint=cfg["Models"]["checkpoint"],
-    # )
-    # 方案2. 直接加载model
+    # 直接加载model,而非model.state_dict
     model = torch.load(cfg["Models"]["checkpoint"])
 
     model.to(device)
