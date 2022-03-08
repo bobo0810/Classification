@@ -10,7 +10,8 @@ DataSet:
 Models: 
   backbone: mynet # 主干网络  
   loss: cross_entropy  # 损失函数  支持['cross_entropy','focal_loss']
-  optimizer: SGD       # 优化器    支持['SGD','Adam']
+  optimizer: sgd       # 优化器 
+
 
 # ========================================训练===================================
 Train:

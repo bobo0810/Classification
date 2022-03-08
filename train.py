@@ -77,6 +77,10 @@ if __name__ == "__main__":
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
+
+        if "lookahead" in cfg["Models"]["optimizer"]:
+            optimizer.sync_lookahead()
+
         # 保存
         torch.save(
             model,  # model.state_dict()

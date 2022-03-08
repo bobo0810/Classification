@@ -46,7 +46,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/  --Ratio=[0.8,0.2]  
    Models: 
      backbone: resnet18 # 主干网络  
      loss: cross_entropy # 损失函数  
-     optimizer: SGD # 优化器
+     optimizer: sgd # 优化器
    
    # ========================================训练===================================
    Train:
