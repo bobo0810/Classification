@@ -8,5 +8,5 @@ DataSet:
  
 # ========================================模型===================================
 Models: 
-  checkpoint: None     # 权重路径  /home/xxx/xxx.pth
+  checkpoint: None     # 权重路径 
   
