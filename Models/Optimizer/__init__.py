@@ -8,15 +8,10 @@ import timm.optim
 
 optimizer_list = [
     "sgd",
-    "lookahead_sgd",
     "adam",
-    "lookahead_adam",
     "lamb",
-    "lookahead_lamb",
     "rmsprop",
-    "lookahead_rmsprop",
     "rmsproptf",
-    "lookahead_rmsproptf",
 ]
 
 
