@@ -3,7 +3,6 @@ import timm
 import torch
 from collections import OrderedDict
 from .mynet import mynet  # 触发注册器
-from .myefficient import myefficient
 
 
 class create_backbone(nn.Module):
