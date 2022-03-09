@@ -24,10 +24,10 @@ if __name__ == "__main__":
     cfg["DataSet"]["txt"] = args.txt
     cfg["DataSet"]["labels"] = get_labels(
         path=os.path.dirname(args.txt) + "/labels.txt"
-    )  # 类别信息
+    )
 
     # 初始化环境
-    tb_writer, checkpoint_path, cfg = init_env(cfg)
+    tb_writer, checkpoint_path = init_env(cfg)
 
     # 模型
     model = create_backbone(

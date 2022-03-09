@@ -20,7 +20,7 @@ if __name__ == "__main__":
     cfg["DataSet"]["txt"] = args.txt
     cfg["DataSet"]["labels"] = get_labels(
         path=os.path.dirname(args.txt) + "/labels.txt"
-    )  # 类别信息
+    )
 
     assert (
         cfg["Models"]["checkpoint"] != None
