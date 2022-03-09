@@ -13,19 +13,20 @@ class MyNet(nn.Module):
     def __init__(self, pretrained, num_classes):
         super(MyNet, self).__init__()
 
-        # timm特征提取层
-        self.features = timm.create_model("efficientnet_b0", pretrained=pretrained)
-        self.features.reset_classifier(0)  # 丢弃timm模型的分类层
+        # timm特征提取层,丢弃分类层
+        self.features = timm.create_model(
+            "efficientnet_b0", pretrained=pretrained, num_classes=0
+        )
 
         # 自定义分类层
         self.add_linear = nn.Linear(1280, 512, bias=True)
-        self.act3 = nn.ReLU(inplace=True)
+        self.act = nn.ReLU(inplace=True)
         self.classifier = nn.Linear(512, num_classes, bias=True)
 
     def forward(self, x):
         x = self.features(x)
         x = self.add_linear(x)
-        x = self.act3(x)
+        x = self.act(x)
         x = self.classifier(x)
         return x
 
