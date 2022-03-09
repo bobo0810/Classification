@@ -27,8 +27,8 @@ if __name__ == "__main__":
     ), "Warn: test.yaml checkpoint should not be None"
 
     # 直接加载model,而非model.state_dict
-    model = torch.load(cfg["Models"]["checkpoint"])
-
+    model = torch.load(cfg["Models"]["checkpoint"], map_location="cpu")
+    model = model.module if model.module else model
     model.to(device)
     model.eval()
 
