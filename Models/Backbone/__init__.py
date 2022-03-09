@@ -13,7 +13,7 @@ class create_backbone(nn.Module):
     def __init__(self, model_name, num_classes, checkpoint=None):
         """
         model_name: 模型名称,即yaml文件backbone属性值
-        num_classes: 类别数,即yaml文件category属性值的长度
+        num_classes: 类别数
         """
         super(create_backbone, self).__init__()
         self.model = self.init_model(model_name, num_classes)

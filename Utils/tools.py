@@ -9,6 +9,20 @@ from torch.utils.tensorboard import SummaryWriter
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
+def get_labels(path):
+    """
+    读取label.txt，获取类别字典
+
+    eg: {'dog': 0, 'cat': 1}
+    """
+    assert os.path.exists(path), "Warn: %s does not exist" % path
+    labels = open(path, "r").readlines()
+    labels = [label.strip() for label in labels if label != "\n"]
+    index = list(range(0, len(labels)))
+
+    return dict(zip(labels, index))
+
+
 def init_env(cfg):
     """
     初始化训练环境
@@ -24,7 +38,6 @@ def init_env(cfg):
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
-
     # 创建日志路径
     exp_path = (
         os.path.dirname(cur_path)

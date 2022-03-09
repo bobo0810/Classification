@@ -3,7 +3,7 @@ import os
 import torch
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, eval_confusion_matrix
+from Utils.tools import init_env, eval_confusion_matrix, get_labels
 from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
@@ -22,14 +22,17 @@ if __name__ == "__main__":
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
     cfg["DataSet"]["txt"] = args.txt
+    cfg["DataSet"]["labels"] = get_labels(
+        path=os.path.dirname(args.txt) + "/labels.txt"
+    )  # 类别信息
 
     # 初始化环境
-    tb_writer, checkpoint_path = init_env(cfg)
+    tb_writer, checkpoint_path, cfg = init_env(cfg)
 
     # 模型
     model = create_backbone(
         cfg["Models"]["backbone"],
-        num_classes=len(cfg["DataSet"]["category"]),
+        num_classes=len(cfg["DataSet"]["labels"]),
     )
     model = torch.nn.DataParallel(model).to(device)
     model.train()

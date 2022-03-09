@@ -20,7 +20,7 @@ class create_datasets(data.Dataset):
     def __init__(self, cfg, mode):
         assert mode in ["train", "val", "test"]
         self.prefix = cfg["prefix"]
-        self.category = cfg["category"]
+        self.labels = cfg["labels"]
         self.txt = cfg["txt"]
         self.size = cfg["size"]
         self.mode = mode
@@ -40,7 +40,7 @@ class create_datasets(data.Dataset):
             self.imgs_list = imgs_list
 
         self.labels_list, self.labels_name_list = (
-            [self.category[img_path.split("/")[-2]] for img_path in self.imgs_list],
+            [self.labels[img_path.split("/")[-2]] for img_path in self.imgs_list],
             [img_path.split("/")[-2] for img_path in self.imgs_list],
         )
 

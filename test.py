@@ -4,7 +4,7 @@ import torch
 import time
 import yaml
 from DataSets import create_dataloader
-from Utils.tools import eval_confusion_matrix
+from Utils.tools import eval_confusion_matrix, get_labels
 import argparse
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -18,6 +18,9 @@ if __name__ == "__main__":
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
     cfg["DataSet"]["txt"] = args.txt
+    cfg["DataSet"]["labels"] = get_labels(
+        path=os.path.dirname(args.txt) + "/labels.txt"
+    )  # 类别信息
 
     assert (
         cfg["Models"]["checkpoint"] != None

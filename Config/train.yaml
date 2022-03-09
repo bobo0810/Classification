@@ -2,7 +2,6 @@
 DataSet:
   prefix: ./CatDog/    # 数据集根路径 /home/IMG_PATH/ 
   size: [224,224]     # 训练尺寸
-  category: {"cat":0,"dog":1}  # 类别
   ratio: 0.9  # train:val比例  
   sampler: "balance" # 支持['normal','balance']    balance:类别平衡采样(每轮重采样)
   batch: 8

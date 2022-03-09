@@ -50,6 +50,11 @@ def split(imgs_path, ratio, txt_path, prefix=None):
         train_list.extend(imgs_list[: int(len(imgs_list) * ratio)])
         test_list.extend(imgs_list[int(len(imgs_list) * ratio) :])
 
+    # 生成label.txt
+    TXT_Tools.write_lines(
+        [os.path.basename(line) for line in class_list],
+        os.path.join(txt_path, "labels.txt"),
+    )
     # 保存
     TXT_Tools.write_lines(train_list, os.path.join(txt_path, "train.txt"))
     TXT_Tools.write_lines(test_list, os.path.join(txt_path, "test.txt"))
@@ -66,7 +71,9 @@ if __name__ == "__main__":
     parser.add_argument("--Ratio", type=float, default=0.8, help="train:test=0.8:0.2")
     parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时)")
     parser.add_argument(
-        "--TxtPath", default=cur_path + "/../Config/", help="train/test.txt保存路径"
+        "--TxtPath",
+        default=cur_path + "/../Config/",
+        help="train/test.txt  labels.txt保存路径",
     )
 
     args = parser.parse_args()
