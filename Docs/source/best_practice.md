@@ -2,58 +2,12 @@
 
 ## 一. 准备数据
 
-> 注：项目根目录已包含`CatDog/`数据集并配置参数，可直接开始训练。
-
-1. 假设数据集根路径为`/home/xxx/CatDog/`，格式如下
-
-```bash
-├── cat
-    ├── aaa.jpg
-    ├── bbb.jpg
-    ├── ....
-├── dog
-    ├── ccc.jpg
-    ├── bbb.jpg
-    ├── ....
-```
-
-2. 划分数据集，默认`Config/`下生成train.txt、test.txt、labels.txt。
-
-```bash
-python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/   
-```
-
-- ImgsPath    数据集根路径
-- Ratio       各类别均按指定比例分配train:test，默认0.8
-- Verify      验证图像完整性(耗时，可选)
-- TxtPath     train/test/labels.txt保存路径,默认保存到`Config/`
-
+> 根目录已包含`CatDog/`数据集，且`Config/`已生成`train.txt`、`test.txt`、`labels.txt`。
 
 ## 二. 训练
 
-1. 配置`Config/train.yaml`
-
-   ```yaml
-   # ========================================数据集===================================
-   DataSet:
-     prefix: /home/xxx/CatDog/ # 数据集根路径 
-     size: [224,224]  # 训练尺寸
-     ratio: 0.9 # train:val比例  
-     sampler: "normal" # 采样策略  
-     batch: 8  # batch size
-   # ========================================模型===================================
-   Models: 
-     backbone: resnet18 # 主干网络  
-     loss: cross_entropy # 损失函数  
-     optimizer: sgd # 优化器
-   
-   # ========================================训练===================================
-   Train:
-     lr: 0.001 # 初始学习率
-     epochs: 50 # 总轮次
-     milestones: [35,45]# 学习率衰减
-   ```
-
+1. `Config/train.yaml`参数已配好
+    
 2. 开始训练
 
    ```bash
@@ -83,19 +37,7 @@ python  ./Utils/split_imgs.py  --ImgsPath=/home/xxx/CatDog/
 
 ## 三. 测试
 
-1. 配置`Config/test.yaml`
-
-   ```yaml
-   # ========================================数据集===================================
-   DataSet:
-     prefix: /home/xxx/CatDog/ # 数据集根路径 
-     size: [224,224]  # 训练尺寸
-     batch: 8 # batch size
-    
-   # ========================================模型===================================
-   Models: 
-     checkpoint: /xxx/resnet18.pth # 权重路径  	
-   ```
+1. `Config/test.yaml`需配置模型权重
 
 2. 测试
 

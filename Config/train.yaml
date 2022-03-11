@@ -3,12 +3,12 @@ DataSet:
   prefix: ./CatDog/    # 数据集根路径 /home/IMG_PATH/ 
   size: [224,224]     # 训练尺寸
   ratio: 0.9  # train:val比例  
-  sampler: "balance" # 支持['normal','balance']    balance:类别平衡采样(每轮重采样)
+  sampler: "normal" # 采样策略 
   batch: 8
 # ========================================模型===================================
 Models: 
   backbone: mynet # 主干网络  
-  loss: cross_entropy  # 损失函数  支持['cross_entropy','focal_loss']
+  loss: cross_entropy  # 损失函数
   optimizer: sgd       # 优化器 
 
 
@@ -16,4 +16,4 @@ Models:
 Train:
   lr: 0.001
   epochs: 100 
-  scheduler: multistep  # 支持["multistep", "cosine"]
+  scheduler: multistep  # 学习率调度器

@@ -5,7 +5,7 @@
 | 抽象     | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
 | 模型     | 集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
-| 部署 | 服务器/移动端加速                                                        | 1. TorchScript✅<br/>2. ONNX ✅<br/>3. TensorRT✅<br/>|
+| 部署 | 服务器/移动端加速                                                        | <img src="Docs/source/imgs/deploy.svg" style="zoom:80%;" /> |
 
 <div align=center><img src="./Docs/source/imgs/tsdb.gif" ></div>
 
@@ -18,9 +18,11 @@
     pip install    ./Package/*zip  &&
     pip install -r ./Package/requirements.txt 
     ```
-    注：示例数据集和参数已配好
-
+    
 2. 训练：执行`python train.py`
+
+    > 注：示例数据集和训练参数已配好，可直接训练。
+
 3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
 
 ## API文档
@@ -28,20 +30,17 @@
 https://bclassification.readthedocs.io/   文档内容包含：
 
 - 最佳实践
-
 - 自定义数据集
-
 - 自定义主干网络
   - 方案1：Timm库
   - 方案2：自定义
   - 附：基于Timm库定制
-
-- 自定义 图像增广 | 损失函数 | 优化器| 模型转换
-  - 在各自入口修改即可。
 - 模型部署
   - Torch->TorchScript
   - Torch->ONNX
-  - ONNX ->TensorRT
+  - ONNX->TensorRT
+
+> 注：自定义 图像增广 | 损失函数 | 优化器| 模型部署| 学习率调度器 均在各自模块内修改即可
 
 ## 框架
 
@@ -50,12 +49,13 @@ https://bclassification.readthedocs.io/   文档内容包含：
 │   └── *.yaml 训练参数
 │   └── *.txt  数据集 
 ├── DataSets
-│   └── preprocess.py 图像增广入口
+│   └── preprocess.py 图像增广
 ├── Models
-│   ├── Backbone/__init__.py  主干网络入口
-│   ├── Optimizer/__init__.py 优化器入口
-│   ├── Loss/__init__.py      损失函数入口
-│   ├── Backend               模型部署入口
+│   ├── Backbone    主干网络
+│   ├── Optimizer   优化器
+│   ├── Loss        损失函数
+│   ├── Scheduler   学习率调度器
+│   ├── Backend     模型部署
 ├── export.py
 ├── test.py
 └── train.py
@@ -66,7 +66,6 @@ https://bclassification.readthedocs.io/   文档内容包含：
 ## 参考
 - [Timm: pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
 - [Timm Quick Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
-- [yolov5](https://github.com/ultralytics/yolov5)
+- [Yolov5](https://github.com/ultralytics/yolov5)
 - [TensorRT8安装](https://www.codeleading.com/article/48816068405/)
-
 
