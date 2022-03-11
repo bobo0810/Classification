@@ -65,15 +65,21 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 ## 训练参数
 
-|              | yaml属性名 | 支持                                                         |
-| ------------ | ---------- | ------------------------------------------------------------ |
-| 采样策略     | sampler    | - normal     常规采样<br>- balance    类别平衡采样 ⭐️         |
-| 主干网络     | backbone   | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html) |
-| 损失函数     | loss       | - cross_entropy<br>- focal_loss                              |
-| 优化器       | optimizer  | - sgd<br/>- adam<br/>- lamb<br/>- rmsprop<br/>- rmsproptf    |
-| 学习率调度器 | scheduler  | - multistep<br/>- cosine                                     |
+|              | yaml属性  | 支持                                                         |
+| ------------ | --------- | ------------------------------------------------------------ |
+| 采样策略     | sampler   | - normal     常规采样<br>- balance    类别平衡采样 ⭐️         |
+| 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html) |
+| 损失函数     | loss      | - cross_entropy<br>- focal_loss                              |
+| 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsprop<br/>- rmsproptf    |
+| 学习率调度器 | scheduler | - multistep<br/>- cosine                                     |
 
 
+
+## 支持任务
+
+- 图像分类✅
+- 特征对比✅
+- 度量学习  TODO
 
 ## 参考
 - [Timm: pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
