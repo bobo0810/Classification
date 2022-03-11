@@ -7,6 +7,7 @@ from Utils.tools import init_env, eval_confusion_matrix, get_labels
 from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
+from Models.Scheduler import create_scheduler
 import argparse
 import yaml
 
@@ -46,8 +47,10 @@ if __name__ == "__main__":
     )
 
     # 学习率调度器
-    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
-        optimizer, milestones=cfg["Train"]["milestones"], gamma=0.1
+    lr_scheduler = create_scheduler(
+        sched_name=cfg["Train"]["scheduler"],
+        epochs=cfg["Train"]["epochs"],
+        optimizer=optimizer,
     )
 
     # 数据集
@@ -58,6 +61,7 @@ if __name__ == "__main__":
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
         optimizer.zero_grad()
+        num_updates = epoch * len(train_dataloader)
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
             # 网络结构可视化
@@ -77,6 +81,9 @@ if __name__ == "__main__":
             optimizer.step()
             optimizer.zero_grad()
 
+            num_updates += 1
+            lr_scheduler.step_update(num_updates=num_updates)
+
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
@@ -90,5 +97,5 @@ if __name__ == "__main__":
         acc = eval_confusion_matrix(model, val_dataloader, device).Overall_ACC
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         model.train()
-        lr_scheduler.step()
+        lr_scheduler.step(epoch + 1)
     tb_writer.close()

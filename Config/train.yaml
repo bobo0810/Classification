@@ -16,4 +16,4 @@ Models:
 Train:
   lr: 0.001
   epochs: 100 
-  milestones: [70,90] #学习率衰减
+  scheduler: multistep  # 支持["multistep", "cosine"]
