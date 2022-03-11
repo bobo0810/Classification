@@ -21,7 +21,7 @@ def create_dataloader(cfg, mode):
                 pin_memory=True,
                 drop_last=True,
             )
-        # 类别均衡采样
+        # 类别均衡采样（每轮重新采样）
         elif cfg["sampler"] == "balance":
             dataset = create_datasets(cfg, mode)
             dataloader = DataLoader(

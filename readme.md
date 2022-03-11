@@ -3,7 +3,7 @@
 |          | 功能                                                         | 备注                                                         |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 抽象     | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
-| 模型     | 集成[Timm预训练模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
+| 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
 | 部署 | 服务器/移动端加速                                                        | <img src="Docs/source/imgs/deploy.svg" style="zoom:80%;" /> |
 
@@ -60,6 +60,18 @@ https://bclassification.readthedocs.io/   文档内容包含：
 ├── test.py
 └── train.py
 ```
+
+
+
+## 训练参数
+
+|              | yaml属性名 | 支持                                                         |
+| ------------ | ---------- | ------------------------------------------------------------ |
+| 采样策略     | sampler    | - normal     常规采样<br>- balance    类别平衡采样 ⭐️         |
+| 主干网络     | backbone   | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html) |
+| 损失函数     | loss       | - cross_entropy<br>- focal_loss                              |
+| 优化器       | optimizer  | - sgd<br/>- adam<br/>- lamb<br/>- rmsprop<br/>- rmsproptf    |
+| 学习率调度器 | scheduler  | - multistep<br/>- cosine                                     |
 
 
 

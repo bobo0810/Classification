@@ -3,7 +3,7 @@ DataSet:
   prefix: ./CatDog/    # 数据集根路径 /home/IMG_PATH/ 
   size: [224,224]     # 训练尺寸
   ratio: 0.9  # train:val比例  
-  sampler: "normal" # 采样策略 
+  sampler: normal # 采样策略 
   batch: 8
 # ========================================模型===================================
 Models: 
