@@ -2,9 +2,11 @@ import pycuda.autoinit
 import pycuda.driver as cuda
 import numpy as np
 import tensorrt as trt
+import pkg_resources as pkg
 
-# tensorrt版本最低版本8.0
-assert int((trt.__version__).split(".")[0]) >= 8, "Warn: TensorRT version must >=8.0"
+assert (
+    pkg.parse_version(trt.__version__).major >= 8
+), "Warn: TensorRT version must >=8.0"
 
 
 class TensorrtBackend:
@@ -27,7 +29,7 @@ class TensorrtBackend:
         trt_weights: trt引擎文件的保存路径
         fp16: 是否开启半精度预测
         """
-
+        
         TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
         EXPLICIT_BATCH = 1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
 

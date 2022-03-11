@@ -1,4 +1,5 @@
 .vscode
+.ipynb*
 **/__pycache__
 Docs/build
 ExpLog

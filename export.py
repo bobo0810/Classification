@@ -60,6 +60,7 @@ if __name__ == "__main__":
     # ==========================导出TensorRT===============================
     if cfg.onnx2trt:
         assert cfg.dynamic == False, "Warn: only supported  fixed shapes"
+        assert os.path.exists(onnx_weights), "Warn: %s no exist" % onnx_weights
         from Models.Backend.tensorrt import TensorrtBackend
 
         trt_weights = onnx_weights.split(".")[0] + ".trt"
