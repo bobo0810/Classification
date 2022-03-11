@@ -11,8 +11,14 @@
 
 
 
+## 支持任务
+
+- 图像分类✅
+- 特征对比✅
+- 度量学习  TODO
 
 ## 快速开始
+
 1. 下载源码，安装依赖。
     ```bash
     pip install    ./Package/*zip  &&
@@ -72,14 +78,6 @@ https://bclassification.readthedocs.io/   文档内容包含：
 | 损失函数     | loss      | - cross_entropy<br>- focal_loss                              |
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsprop<br/>- rmsproptf    |
 | 学习率调度器 | scheduler | - multistep<br/>- cosine                                     |
-
-
-
-## 支持任务
-
-- 图像分类✅
-- 特征对比✅
-- 度量学习  TODO
 
 ## 参考
 - [Timm: pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
