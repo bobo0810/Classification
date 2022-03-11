@@ -64,8 +64,8 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 
 ## 参考
-- [pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
-- [Timm: A Practitioner’s Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+- [Timm: pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
+- [Timm Quick Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
 - [yolov5](https://github.com/ultralytics/yolov5)
 - [TensorRT8安装](https://www.codeleading.com/article/48816068405/)
 
