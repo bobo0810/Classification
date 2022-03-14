@@ -10,8 +10,6 @@ optimizer_list = [
     "sgd",
     "adam",
     "lamb",
-    "rmsprop",
-    "rmsproptf",
 ]
 
 
@@ -27,6 +25,6 @@ def create_optimizer(model, name, lr):
 
     # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=0.0005)
     optimizer = timm.optim.create_optimizer_v2(
-        model, opt=name, lr=lr, weight_decay=0.0005
+        model, opt=name, lr=lr, weight_decay=0.0005, momentum=0.9
     )
     return optimizer
