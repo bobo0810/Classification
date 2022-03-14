@@ -61,7 +61,7 @@ if __name__ == "__main__":
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
         optimizer.zero_grad()
-        num_updates = epoch * len(train_dataloader)
+
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
             # 网络结构可视化
@@ -81,8 +81,9 @@ if __name__ == "__main__":
             optimizer.step()
             optimizer.zero_grad()
 
-            num_updates += 1
-            lr_scheduler.step_update(num_updates=num_updates)
+            lr_scheduler.step_update(
+                num_updates=epoch * len(train_dataloader) + batch_idx
+            )
 
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
