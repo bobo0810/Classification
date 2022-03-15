@@ -57,6 +57,7 @@ if __name__ == "__main__":
     train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
     val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
+    best_acc = 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
@@ -88,15 +89,23 @@ if __name__ == "__main__":
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
-        # 保存
-        torch.save(
-            model,  # model.state_dict()
-            checkpoint_path + cfg["Models"]["backbone"] + "_" + "%03d" % epoch + ".pt",
-        )
+
         # 评估
         model.eval()
         acc = eval_confusion_matrix(model, val_dataloader, device).Overall_ACC
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         model.train()
         lr_scheduler.step(epoch + 1)
+
+        if best_acc < acc:
+            best_acc = acc
+            torch.save(
+                model,  # model.state_dict()
+                checkpoint_path + cfg["Models"]["backbone"] + "_best.pt",
+            )
+
+    torch.save(
+        model,
+        checkpoint_path + cfg["Models"]["backbone"] + "_last.pt",
+    )
     tb_writer.close()
