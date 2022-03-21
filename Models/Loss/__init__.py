@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from .focal_loss import FocalLoss
+from timm.loss import LabelSmoothingCrossEntropy
 
 
 class create_loss(nn.Module):
@@ -22,8 +22,8 @@ class create_loss(nn.Module):
         """
         if name == "cross_entropy":
             loss = nn.CrossEntropyLoss()
-        elif name == "focal_loss":
-            loss = FocalLoss()
+        elif name == "label_smooth":
+            loss = LabelSmoothingCrossEntropy()
         else:
             raise NotImplementedError
         return loss

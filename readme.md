@@ -72,8 +72,8 @@ https://bclassification.readthedocs.io/   文档内容包含：
 |              | yaml属性  | 支持                                                         |
 | ------------ | --------- | ------------------------------------------------------------ |
 | 采样策略     | sampler   | - normal     常规采样<br>- balance    类别平衡采样 ⭐️         |
-| 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html) |
-| 损失函数     | loss      | - cross_entropy<br>- focal_loss                              |
+| 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
+| 损失函数     | loss      | - cross_entropy<br>- label_smooth         |
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 | 学习率调度器 | scheduler | - multistep<br/>- cosine                                     |
 
