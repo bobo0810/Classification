@@ -8,6 +8,7 @@ from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
 from Models.Scheduler import create_scheduler
+from timm.utils import ModelEmaV2
 import argparse
 import yaml
 
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     )
     model = torch.nn.DataParallel(model).to(device)
     model.train()
+    ema_model = ModelEmaV2(model, decay=0.9998)
 
     # 损失函数
     criterion = create_loss(cfg["Models"]["loss"])
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
     val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
-    best_acc = 0.0
+    best_acc, best_ema_acc = 0.0, 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
@@ -82,6 +84,8 @@ if __name__ == "__main__":
             optimizer.step()
             optimizer.zero_grad()
 
+            ema_model.update(model)
+
             lr_scheduler.step_update(
                 num_updates=epoch * len(train_dataloader) + batch_idx
             )
@@ -95,6 +99,13 @@ if __name__ == "__main__":
         acc = eval_confusion_matrix(model, val_dataloader, device).Overall_ACC
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         model.train()
+
+        # ema评估
+        ema_acc = eval_confusion_matrix(
+            ema_model.module, val_dataloader, device
+        ).Overall_ACC
+        tb_writer.add_scalar("Eval/ema_acc", ema_acc, epoch)
+
         lr_scheduler.step(epoch + 1)
 
         if best_acc < acc:
@@ -103,9 +114,19 @@ if __name__ == "__main__":
                 model,  # model.state_dict()
                 checkpoint_path + cfg["Models"]["backbone"] + "_best.pt",
             )
+        if best_ema_acc < acc:
+            best_ema_acc = acc
+            torch.save(
+                ema_model,
+                checkpoint_path + cfg["Models"]["backbone"] + "_best_ema.pt",
+            )
 
     torch.save(
         model,
         checkpoint_path + cfg["Models"]["backbone"] + "_last.pt",
+    )
+    torch.save(
+        ema_model,
+        checkpoint_path + cfg["Models"]["backbone"] + "_last_ema.pt",
     )
     tb_writer.close()
