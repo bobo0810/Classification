@@ -4,6 +4,7 @@ import random
 from pycm import ConfusionMatrix  # 统计混淆矩阵
 import time
 import os
+import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -30,6 +31,7 @@ def init_env(cfg):
     # 固定随机种子
     seed = 227
     random.seed(seed)
+    np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
