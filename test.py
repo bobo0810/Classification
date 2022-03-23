@@ -35,5 +35,6 @@ if __name__ == "__main__":
     test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
     # 输出ACC及混淆矩阵
-    acc = eval_metric(model, test_dataloader, device)
+    acc, cm = eval_metric(model, test_dataloader, device)
     print("accuracy is %.3f \n" % acc)
+    print("confusion matrix is  \n", cm)

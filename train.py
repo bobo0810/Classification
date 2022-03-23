@@ -96,12 +96,12 @@ if __name__ == "__main__":
 
         # 评估
         model.eval()
-        acc = eval_metric(model, val_dataloader, device)
+        acc, _ = eval_metric(model, val_dataloader, device)
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         model.train()
 
         # ema评估
-        ema_acc = eval_metric(ema_model.module, val_dataloader, device)
+        ema_acc, _ = eval_metric(ema_model.module, val_dataloader, device)
         tb_writer.add_scalar("Eval/ema_acc", ema_acc, epoch)
 
         lr_scheduler.step(epoch + 1)

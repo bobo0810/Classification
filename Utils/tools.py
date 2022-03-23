@@ -61,16 +61,32 @@ def init_env(cfg):
 
 @torch.no_grad()
 def eval_metric(model, data_loader, device):
-    """评估指标"""
-    metric = torchmetrics.Accuracy()
-    metric.to(device)
+    """
+    评估指标
 
-    pred_list, label_list = [], []
+    acc: 准确率
+    cm:  混淆矩阵
+    """
+    metric_acc = torchmetrics.Accuracy().to(device)
+    metric_cm = torchmetrics.ConfusionMatrix(
+        num_classes=len(data_loader.dataset.labels)
+    ).to(device)
+
+    scores_list, preds_list, labels_list = [], [], []
     for batch_idx, (imgs, labels, _) in enumerate(data_loader):
         imgs, labels = imgs.to(device), labels.to(device)
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
+        preds = torch.argmax(scores, dim=1)
 
-        acc = metric(scores, labels)
-    acc = metric.compute()
-    return acc
+        scores_list.append(scores)
+        preds_list.append(preds)
+        labels_list.append(labels)
+
+    scores_tensor = torch.cat(scores_list, dim=0)  # [imgs_nums,class_nums]
+    preds_tensor = torch.cat(preds_list, dim=0)  # [imgs_nums]
+    labels_tensor = torch.cat(labels_list, dim=0)  # [imgs_nums]
+
+    acc = metric_acc(scores_tensor, labels_tensor)
+    cm = metric_cm(preds_tensor, labels_tensor)
+    return acc, cm
