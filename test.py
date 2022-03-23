@@ -4,7 +4,7 @@ import torch
 import time
 import yaml
 from DataSets import create_dataloader
-from Utils.tools import eval_confusion_matrix, get_labels
+from Utils.tools import eval_metric, get_labels
 import argparse
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -34,8 +34,6 @@ if __name__ == "__main__":
 
     test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
-    # 测试,输出ACC及混淆矩阵
-    acc = eval_confusion_matrix(model, test_dataloader, device)
-    print("accuracy is %.3f \n" % acc.Overall_ACC)
-    acc.print_matrix()
-    acc.print_normalized_matrix()
+    # 输出ACC及混淆矩阵
+    acc = eval_metric(model, test_dataloader, device)
+    print("accuracy is %.3f \n" % acc)

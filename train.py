@@ -3,7 +3,7 @@ import os
 import torch
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, eval_confusion_matrix, get_labels
+from Utils.tools import init_env, eval_metric, get_labels
 from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
@@ -96,14 +96,12 @@ if __name__ == "__main__":
 
         # 评估
         model.eval()
-        acc = eval_confusion_matrix(model, val_dataloader, device).Overall_ACC
+        acc = eval_metric(model, val_dataloader, device)
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         model.train()
 
         # ema评估
-        ema_acc = eval_confusion_matrix(
-            ema_model.module, val_dataloader, device
-        ).Overall_ACC
+        ema_acc = eval_metric(ema_model.module, val_dataloader, device)
         tb_writer.add_scalar("Eval/ema_acc", ema_acc, epoch)
 
         lr_scheduler.step(epoch + 1)
@@ -114,8 +112,8 @@ if __name__ == "__main__":
                 model,  # model.state_dict()
                 checkpoint_path + cfg["Models"]["backbone"] + "_best.pt",
             )
-        if best_ema_acc < acc:
-            best_ema_acc = acc
+        if best_ema_acc < ema_acc:
+            best_ema_acc = ema_acc
             torch.save(
                 ema_model,
                 checkpoint_path + cfg["Models"]["backbone"] + "_best_ema.pt",

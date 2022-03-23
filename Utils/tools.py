@@ -1,7 +1,7 @@
 import torch
 import math
 import random
-from pycm import ConfusionMatrix  # 统计混淆矩阵
+import torchmetrics
 import time
 import os
 import numpy as np
@@ -60,25 +60,17 @@ def init_env(cfg):
 
 
 @torch.no_grad()
-def eval_confusion_matrix(model, data_loader, device):
-    """统计混淆矩阵"""
+def eval_metric(model, data_loader, device):
+    """评估指标"""
+    metric = torchmetrics.Accuracy()
+    metric.to(device)
+
     pred_list, label_list = [], []
     for batch_idx, (imgs, labels, _) in enumerate(data_loader):
-        imgs = imgs.to(device)
+        imgs, labels = imgs.to(device), labels.to(device)
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
 
-        sorted_scores, indices = torch.sort(scores, dim=1, descending=True)
-        pred_label = indices[:, 0]
-        pred_prob = sorted_scores[:, 0]
-        for i in range(len(imgs)):
-            pred = pred_label[i].cpu().item()
-            prob = pred_prob[i].cpu().item()
-
-            # threshold = 0.98
-            # if pred != 0 and prob < threshold:
-            #     pred = 0
-
-            pred_list.append(pred)
-            label_list.append(labels[i].cpu().item())
-    return ConfusionMatrix(actual_vector=label_list, predict_vector=pred_list)
+        acc = metric(scores, labels)
+    acc = metric.compute()
+    return acc

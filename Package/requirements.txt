@@ -3,10 +3,10 @@
 # torchvision >= 0.9.0
 opencv-python >= 4.5.3
 numpy
-timm  # 预训练模型库
-pycm  # 统计指标
+tensorboard
 pyyaml
-tensorboard # 可视化
+timm  # 模型库
+torchmetrics # 指标度量库
 
 # ======模型转换======
 onnx

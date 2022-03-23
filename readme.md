@@ -78,8 +78,9 @@ https://bclassification.readthedocs.io/   文档内容包含：
 | 学习率调度器 | scheduler | - multistep<br/>- cosine                                     |
 
 ## 参考
-- [Timm: pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
-- [Timm Quick Guide](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
 - [Yolov5](https://github.com/ultralytics/yolov5)
-- [TensorRT8安装](https://www.codeleading.com/article/48816068405/)
+- [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
+- [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+- [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
+- [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
 
