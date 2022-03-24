@@ -75,7 +75,7 @@ https://bclassification.readthedocs.io/   文档内容包含：
 | 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
 | 损失函数     | loss      | - cross_entropy<br>- label_smooth         |
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
-| 学习率调度器 | scheduler | - multistep<br/>- cosine                                     |
+| 学习率调度器 | scheduler | - multistep<br/>- cosine ⭐️                                     |
 
 ## 参考
 - [Yolov5](https://github.com/ultralytics/yolov5)
