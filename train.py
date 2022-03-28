@@ -9,6 +9,7 @@ from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
 from Models.Scheduler import create_scheduler
 from timm.utils import ModelEmaV2
+from torchinfo import summary
 import argparse
 import yaml
 
@@ -67,9 +68,9 @@ if __name__ == "__main__":
 
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
-            # 网络结构可视化
             if epoch + batch_idx == 0:
-                tb_writer.add_graph(model, imgs.clone())
+                tb_writer.add_graph(model, imgs.clone())  # 网络结构可视化
+                summary(model, imgs[0].unsqueeze(0).shape)  # 模型统计
             # 图像可视化
             if epoch % 10 + batch_idx == 0:
                 vis_list = PreProcess().convert(imgs, names)
