@@ -67,11 +67,6 @@ def eval_metric(model, data_loader, device):
     acc: 准确率
     cm:  混淆矩阵
     """
-    metric_acc = torchmetrics.Accuracy().to(device)
-    metric_cm = torchmetrics.ConfusionMatrix(
-        num_classes=len(data_loader.dataset.labels)
-    ).to(device)
-
     scores_list, preds_list, labels_list = [], [], []
     for batch_idx, (imgs, labels, _) in enumerate(data_loader):
         imgs, labels = imgs.to(device), labels.to(device)
@@ -87,6 +82,11 @@ def eval_metric(model, data_loader, device):
     preds_tensor = torch.cat(preds_list, dim=0)  # [imgs_nums]
     labels_tensor = torch.cat(labels_list, dim=0)  # [imgs_nums]
 
+    # 统计
+    metric_acc = torchmetrics.Accuracy().to(device)
+    metric_cm = torchmetrics.ConfusionMatrix(
+        num_classes=len(data_loader.dataset.labels)
+    ).to(device)
     acc = metric_acc(scores_tensor, labels_tensor)
     cm = metric_cm(preds_tensor, labels_tensor)
     return acc, cm
