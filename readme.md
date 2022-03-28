@@ -85,9 +85,7 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 - 自动混合精度AMP
 
-- 分布式数据并行DDP
-
-  （1）数据集规模过大（2）GPU>8卡，且互相以高速通道连接（3）多机多卡。此时DDP才有优势。
+- 分布式数据并行DDP : （1）超大数据集规模（2）GPU>8卡（3）多机多卡，DDP才有优势。
 
 > 注：如有需要，可参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
 
