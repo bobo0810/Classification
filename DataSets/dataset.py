@@ -29,7 +29,7 @@ class create_datasets(data.Dataset):
 
         # 读取图像列表
         imgs_list = open(self.txt, "r").readlines()
-        imgs_list = [os.path.join(self.prefix, line.strip()) for line in imgs_list]
+        imgs_list = [line.strip() for line in imgs_list if line.strip() != ""]  # 过滤空格行
         # 划分
         random.shuffle(imgs_list)
         if mode == "train":
@@ -39,18 +39,18 @@ class create_datasets(data.Dataset):
         else:
             self.imgs_list = imgs_list
 
-        self.labels_list, self.labels_name_list = (
-            [self.labels[img_path.split("/")[-2]] for img_path in self.imgs_list],
-            [img_path.split("/")[-2] for img_path in self.imgs_list],
-        )
+        self.labels_list, self.labels_name_list = [], []
+        for img_path in self.imgs_list:
+            label_name = img_path.split("/")[-2]
+            self.labels_name_list.append(label_name)
+            self.labels_list.append(self.labels[label_name])
 
         print("*" * 28)
         print("The nums of %sSet: %d" % (mode, len(self.imgs_list)))
         print("The nums of each class: ", dict(Counter(self.labels_name_list)), "\n")
 
     def __getitem__(self, index):
-
-        img_path = self.imgs_list[index]
+        img_path = os.path.join(self.prefix, self.imgs_list[index])
         label = self.labels_list[index]
         name = self.labels_name_list[index]
 
