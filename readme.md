@@ -2,7 +2,7 @@
 
 |          | 功能                                                         | 备注                                                         |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 抽象     | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
+| 模块化    | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
 | 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
 | 部署 | 服务器/移动端加速                                                        | <img src="Docs/source/imgs/deploy.svg" style="zoom:80%;" /> |
@@ -77,7 +77,22 @@ https://bclassification.readthedocs.io/   文档内容包含：
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 | 学习率调度器 | scheduler | - multistep<br/>- cosine ⭐️                                     |
 
+
+
+## 可以，但没必要
+
+为保持轻量、降低复杂度，暂不考虑如下特性：
+
+- 自动混合精度AMP
+
+- 分布式数据并行DDP
+
+  （1）数据集规模过大（2）GPU>8卡，且互相以高速通道连接（3）多机多卡。此时DDP才有优势。
+
+> 注：如有需要，可参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
+
 ## 参考
+
 - [Yolov5](https://github.com/ultralytics/yolov5)
 - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
 - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
