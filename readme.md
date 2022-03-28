@@ -96,4 +96,5 @@ https://bclassification.readthedocs.io/   文档内容包含：
 - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
 - [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
 - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
+- [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)
 
