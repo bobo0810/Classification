@@ -36,7 +36,7 @@ if __name__ == "__main__":
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["labels"]),
     )
-    model = torch.nn.DataParallel(model).to(device)
+    model = torch.nn.DataParallel(model).to(device) if not device == "cpu" else model
     model.train()
     ema_model = ModelEmaV2(model, decay=0.9998)
 
