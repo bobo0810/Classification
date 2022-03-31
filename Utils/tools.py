@@ -4,6 +4,9 @@ import random
 import torchmetrics
 import time
 import os
+import cv2
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 
@@ -90,3 +93,28 @@ def eval_metric(model, data_loader, device):
     acc = metric_acc(scores_tensor, labels_tensor)
     cm = metric_cm(preds_tensor, labels_tensor)
     return acc, cm
+
+
+def vis_cam(model, img_tensor, img_path, target_layers):
+    """
+    可视化注意力图
+
+    img_tensor: shape[B,C,H,W]
+    """
+    # rgb_img = img_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()  # [1,C,H,W]->[H,W,C]
+    bgr_img = cv2.imread(img_path, 1)
+    bgr_img = cv2.resize(bgr_img, (224, 224), interpolation=cv2.INTER_CUBIC)
+    bgr_img = np.float32(bgr_img) / 255  # 归一化
+
+    with GradCAM(model=model, target_layers=target_layers) as cam:
+        cam.batch_size = 32
+        grayscale_cam = cam(
+            input_tensor=img_tensor,  # 输入tensor
+            targets=None,  # 默认按模型预测最高分值的类别 可视化
+            aug_smooth=True,  # 平滑策略1
+            eigen_smooth=True,  # 平滑策略2
+        )
+        grayscale_cam = grayscale_cam[0, :]
+
+        cam_image = show_cam_on_image(bgr_img, grayscale_cam, use_rgb=False)
+    return cam_image

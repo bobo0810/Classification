@@ -89,12 +89,13 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 > 注：如有需要，可参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
 
-## 参考
-
-- [Yolov5](https://github.com/ultralytics/yolov5)
-- [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
-- [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
-- [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
-- [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
-- [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)
+## 感谢
+- 教程
+  - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
+  - [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
+- 开源库
+  - [Yolov5目标检测库](https://github.com/ultralytics/yolov5)
+  - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
+  - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
+  - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)
 
