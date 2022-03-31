@@ -1,3 +1,7 @@
+# 图像识别框架Classification
+
+收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
+
 ## 亮点
 
 |          | 功能                                                         | 备注                                                         |
