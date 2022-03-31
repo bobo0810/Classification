@@ -5,9 +5,9 @@
 | 模块化    | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
 | 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
-| 部署 | 服务器/移动端加速                                                        | <img src="Docs/source/imgs/deploy.svg" style="zoom:80%;" /> |
+| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:80%;" /> |
 
-<div align=center><img src="./Docs/source/imgs/tsdb.gif" ></div>
+<div align=center><img src="./Docs/imgs/tsdb.gif" ></div>
 
 
 
@@ -19,7 +19,7 @@
 
 ## 快速开始
 
-1. 下载源码，安装依赖。
+1. 安装依赖
     ```bash
     pip install    ./Package/*zip  &&
     pip install -r ./Package/requirements.txt 
@@ -30,6 +30,18 @@
     > 注：示例数据集和训练参数已配好，可直接训练。
 
 3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
+
+4. 推理
+
+    ```bash
+    python predict.py -weights 权重路径  --vis_cam # 可视化注意力图
+    ```
+
+    <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
+
+
+
+​    
 
 ## API文档
 
