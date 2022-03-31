@@ -4,7 +4,8 @@
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 模块化    | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
 | 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
-| 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、训练图像、模型结构等。                     |
+| 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、图像、模型结构等。 |
+| 解释性 | 集成[pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg) | 持续更新SOTA的注意力可视化算法(8+)。 |
 | 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:80%;" /> |
 
 <div align=center><img src="./Docs/imgs/tsdb.gif" ></div>
@@ -73,6 +74,7 @@ https://bclassification.readthedocs.io/   文档内容包含：
 │   ├── Scheduler   学习率调度器
 │   ├── Backend     模型部署
 ├── export.py
+├── predict.py
 ├── test.py
 └── train.py
 ```
@@ -93,15 +95,18 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 ## 可以，但没必要
 
-为保持轻量、降低复杂度，暂不考虑如下特性：
+暂不考虑如下特性：
 
 - 自动混合精度AMP
 
-- 分布式数据并行DDP : （1）超大数据集规模（2）GPU>8卡（3）多机多卡，再考虑。
+- 分布式数据并行DDP
 
 > 注：如有需要，可参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
 
+
+
 ## 感谢
+
 - 教程
   - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
   - [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
