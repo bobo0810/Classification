@@ -98,4 +98,5 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
   - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
   - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)
+  - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)
 

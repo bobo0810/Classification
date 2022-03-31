@@ -5,7 +5,18 @@ import torchmetrics
 import time
 import os
 import cv2
-from pytorch_grad_cam import GradCAM
+import sys
+from pytorch_grad_cam import (
+    GradCAM,
+    ScoreCAM,
+    GradCAMPlusPlus,
+    AblationCAM,
+    XGradCAM,
+    EigenCAM,
+    EigenGradCAM,
+    LayerCAM,
+    FullGrad,
+)
 from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
@@ -95,26 +106,56 @@ def eval_metric(model, data_loader, device):
     return acc, cm
 
 
-def vis_cam(model, img_tensor, img_path, target_layers):
+def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
     """
     可视化注意力图
 
-    img_tensor: shape[B,C,H,W]
+    img_tensor(tensor): shape[B,C,H,W]
+
+    pool_name(str): 可视化特征图的网络位置的名称。
+        通常选取卷积网络最后输出的特征图  (卷积网络->全局池化->分类网络)
+        默认timm库的全局池化名称为"global_pool",自定义模型需自行确定
+
+    cam_algorithm: 可视化算法，包含:
+        GradCAM, 默认
+        ScoreCAM,
+        GradCAMPlusPlus,
+        AblationCAM,
+        XGradCAM,
+        EigenCAM,
+        EigenGradCAM,
+        LayerCAM,
+        FullGrad,
     """
-    # rgb_img = img_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()  # [1,C,H,W]->[H,W,C]
-    bgr_img = cv2.imread(img_path, 1)
-    bgr_img = cv2.resize(bgr_img, (224, 224), interpolation=cv2.INTER_CUBIC)
-    bgr_img = np.float32(bgr_img) / 255  # 归一化
+    modules_list = []
+    for name, module in model.named_modules():
+        if pool_name in name:  # 定位到全局池化层
+            break
+        modules_list.append(module)
+    target_layers = [modules_list[-1]]  # 全局池化层的前一层
 
-    with GradCAM(model=model, target_layers=target_layers) as cam:
-        cam.batch_size = 32
-        grayscale_cam = cam(
-            input_tensor=img_tensor,  # 输入tensor
-            targets=None,  # 默认按模型预测最高分值的类别 可视化
-            aug_smooth=True,  # 平滑策略1
-            eigen_smooth=True,  # 平滑策略2
-        )
-        grayscale_cam = grayscale_cam[0, :]
+    # ImageNet均值、方差
+    t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(3, 1, 1).expand(3, 224, 224)
+    t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(3, 1, 1).expand(3, 224, 224)
 
-        cam_image = show_cam_on_image(bgr_img, grayscale_cam, use_rgb=False)
-    return cam_image
+    # 1. [B,C,H,W]->[C,H,W] 2. 反归一化
+    rgb_img = img_tensor.cpu().squeeze(0) * t_std + t_mean
+    # 1. RGB->BGR 2. [C,H,W] -> [H,W,C]
+    bgr_img = rgb_img[[2, 1, 0], :, :].permute(1, 2, 0).numpy()
+
+    try:
+        with cam_algorithm(model=model, target_layers=target_layers) as cam:
+            cam.batch_size = 32
+            grayscale_cam = cam(
+                input_tensor=img_tensor,
+                targets=None,  # 默认基于模型预测最高分值的类别可视化
+                aug_smooth=True,  # 平滑策略1
+                eigen_smooth=True,  # 平滑策略2
+            )
+            grayscale_cam = grayscale_cam[0, :]
+
+            cam_image = show_cam_on_image(bgr_img, grayscale_cam, use_rgb=False)
+        return cam_image
+    except:
+        print("错误: 请尝试确认 当前模型的全局池化层名称，并赋值pool_name")
+        sys.exit()

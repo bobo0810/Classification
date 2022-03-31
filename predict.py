@@ -4,6 +4,7 @@ import torch
 import cv2
 from PIL import Image
 from timm.data.transforms_factory import create_transform as timm_transform
+from Utils.tools import vis_cam
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,19 +30,21 @@ if __name__ == "__main__":
     parser.add_argument(
         "--img_path",
         type=str,
-        default=cur_path + "CatDog/cat/cat_1.jpg",
+        default=cur_path + "/CatDog/cat/cat_1.jpg",
         help="Input image path",
     )
     parser.add_argument(
         "--labels_path",
         type=str,
-        default=cur_path + "CatDog/Config/labels.txt",
+        default=cur_path + "/Config/labels.txt",
         help="labels.txt path",
     )
 
     # 模型
     parser.add_argument("--img_size", default=[224, 224], help="推理尺寸")
     parser.add_argument("--weights", type=str, help="模型权重", required=True)
+    # 可视化注意力图
+    parser.add_argument("--vis_cam", action="store_true", help="可视化注意力图")
 
     args = parser.parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -70,3 +73,10 @@ if __name__ == "__main__":
     pred_labels = labels[idx_sort[0]]
     pred_probs = score_sort[0]
     print(" %s, %s , %f" % (args.img_path, pred_labels, pred_probs.item()))
+
+    # 可视化注意力图
+    if args.vis_cam:
+        cam_image = vis_cam(model, img_tensor)
+        save_path = cur_path + "/cam_img.jpg"
+        cv2.imwrite(save_path, cam_image)
+        print("cam_image are generated in ", save_path)
