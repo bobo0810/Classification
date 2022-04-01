@@ -8,6 +8,5 @@ jobs:
       uses: actions/checkout@main
     - name: Installation depends # 安装依赖
       run: | 
-        cd Classification
-        pip install -r ./Package/requirements.txt   &&   pip install ./Package/*zip
         echo Hello, Classification!
+        pwd
