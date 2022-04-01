@@ -59,7 +59,10 @@ if __name__ == "__main__":
 
     # 加载模型
     model = torch.load(args.weights, map_location="cpu")
-    model = model.module if model.module else model
+    try:
+        model = model.module if model.module else model
+    except:
+        pass
     model.to(device)
     model.eval()
 
