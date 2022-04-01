@@ -46,7 +46,19 @@
 
 
 
-​    
+## Github Ac­tions训练/推理
+
+ 由GitHub 推出的持续集成服务，提供虚拟环境。 可自动化构建、测试、打包、部署项目。
+
+**动手尝试**
+
+1. fork本仓库。
+
+2. 随意改动，提交到新仓库触发push事件，即自动开启训练、推理。
+
+   <img src="Docs/imgs/github_action.png" style="zoom:68%;" />
+
+
 
 ## API文档
 
