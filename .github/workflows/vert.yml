@@ -13,8 +13,6 @@ jobs:
     - name: Start Train # 训练
       run: | 
         python github_action.py  --mode train
-        echo Train Success!
     - name: Start Predict  # 推理
       run: | 
         python github_action.py  --mode predict
-        echo Predict Success!

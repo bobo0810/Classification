@@ -12,6 +12,7 @@ def train():
     训练
     '''
     os.system('python train.py')
+    print("Train Success!")
 
 def predict():
     '''
@@ -19,7 +20,8 @@ def predict():
     '''
     weights = glob.glob(cur_path+"/ExpLog/*/*/*.pt")[0]
     print("load weights from ",weights)
-    os.system('python predict.py -weights %s  --vis_cam'%(weights))
+    os.system('python predict.py --weights %s  --vis_cam'%(weights))
+    print("Predict Success!")
 
 
 if __name__ == "__main__":
