@@ -28,10 +28,8 @@ if __name__ == "__main__":
 
     # 直接加载model,而非model.state_dict
     model = torch.load(cfg["Models"]["checkpoint"], map_location="cpu")
-    try:
-        model = model.module if model.module else model
-    except:
-        pass
+    if hasattr(model, 'module'):
+        model = model.module
     model.to(device)
     model.eval()
 
