@@ -1,10 +1,10 @@
 # ======训练/测试======
-# torch >= 1.9.0
-# torchvision >= 0.9.0
-opencv-python >= 4.5.3
+opencv-python
 numpy
-tensorboard
 pyyaml
+torch
+torchvision
+tensorboard
 torchinfo #模型统计
 timm      #模型库
 torchmetrics #指标度量库
@@ -14,6 +14,6 @@ grad-cam  #类激活映射库
 onnx
 onnxruntime
 onnx-simplifier
-# pycuda 
+pycuda
 
 

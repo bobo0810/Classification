@@ -10,6 +10,7 @@ jobs:
       run: | 
         pip install -r ./Package/requirements.txt
         pip install ./Package/*zip
-        pip install torch
-        pip install torchvision
-        echo Hello, Classification!
+    - name: Start Train # 开始训练
+      run: | 
+        python train.py
+        echo Complete the training!
