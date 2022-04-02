@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
             if epoch + batch_idx == 0 and task == "class":
                 tb_writer.add_graph(model, imgs.clone())  # 网络结构可视化
-                summary(model, imgs[0].unsqueeze(0).shape)  # 模型统计
+                summary(model, imgs[0].unsqueeze(0).shape, device=device)  # 模型统计
             # 图像可视化
             if epoch % 10 + batch_idx == 0:
                 vis_list = PreProcess().convert(imgs, names)
