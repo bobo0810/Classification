@@ -16,3 +16,6 @@ jobs:
     - name: Start Predict  # 推理
       run: | 
         python github_action.py  --mode predict
+    - name: Start Deploy  # 部署
+      run: | 
+        python github_action.py  --mode deploy
