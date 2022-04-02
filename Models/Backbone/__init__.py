@@ -2,7 +2,8 @@ import torch.nn as nn
 import timm
 import torch
 from collections import OrderedDict
-from .mynet import mynet  # 触发注册器
+from .mynet import mynet  # 注册自定义分类模型
+from .mynet_metric import mynet_metric  # 注册自定义特征提取模型
 
 
 class create_backbone(nn.Module):
@@ -10,7 +11,7 @@ class create_backbone(nn.Module):
     主干网络入口
     """
 
-    def __init__(self, model_name, num_classes, checkpoint=None):
+    def __init__(self, model_name, num_classes):
         """
         model_name: 模型名称,即yaml文件backbone属性值
         num_classes: 类别数
@@ -18,8 +19,18 @@ class create_backbone(nn.Module):
         super(create_backbone, self).__init__()
         self.model = self.init_model(model_name, num_classes)
 
-    def forward(self, imgs):
-        return self.model(imgs)
+        # 任务标识
+        if hasattr(self.model, "task") and self.model.task == "metric":
+            self.task = "metric"  # 常规分类
+        else:
+            self.task = "class"  # 度量学习
+
+    def forward(self, imgs, labels=None):
+
+        if self.task == "class":
+            return self.model(imgs)
+        elif self.task == "metric":
+            return self.model(imgs, labels)
 
     def init_model(self, model_name, num_classes):
         """

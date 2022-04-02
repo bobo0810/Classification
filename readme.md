@@ -129,9 +129,10 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
   - [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
 - 开源库
-  - [Yolov5目标检测库](https://github.com/ultralytics/yolov5)
-  - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)
-  - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)
-  - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)
-  - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)
+  - [Yolov5目标检测库](https://github.com/ultralytics/yolov5)![Github stars](https://img.shields.io/github/stars/ultralytics/yolov5.svg)
+  - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
+  - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)![Github stars](https://img.shields.io/github/stars/PytorchLightning/metrics.svg)
+  - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)![Github stars](https://img.shields.io/github/stars/TylerYep/torchinfo.svg)
+  - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
+  - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
 
