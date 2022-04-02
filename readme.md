@@ -56,7 +56,7 @@
 
 2. 随意修改并提交到新仓库，触发push事件即开启训练、推理、部署。
 
-   <img src="Docs/imgs/github_action.png" style="zoom:68%;" />
+   <img src="Docs/imgs/action.png" style="zoom:68%;" />
 
 
 
