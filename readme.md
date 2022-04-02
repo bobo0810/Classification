@@ -1,5 +1,7 @@
 # 图像识别框架Classification
 
+[![Actions Status](https://github.com/bobo0810/Classification/workflows/build/badge.svg)](https://github.com/bobo0810/Classification/actions)
+
 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
 
 ## 亮点
