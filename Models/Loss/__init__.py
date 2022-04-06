@@ -16,7 +16,7 @@ class create_loss(nn.Module):
         if name in ["cross_entropy", "label_smooth"]:
             self.loss = self.init_class_loss(name)
         # 度量学习
-        elif name in ["arcface"]:
+        elif name in ["cosface", "arcface", "subcenter_arcface", "circleloss"]:
             self.loss = self.init_metric_loss(name)
         else:
             raise NotImplementedError
@@ -34,16 +34,26 @@ class create_loss(nn.Module):
             loss = nn.CrossEntropyLoss()
         elif name == "label_smooth":
             loss = LabelSmoothingCrossEntropy()
-
         return loss
 
     @staticmethod
-    def init_metric_loss(name):
+    def init_metric_loss(name, num_classes=2, embedding_size=128):
         """
         度量学习
-        """
-        if name == "arcface":
-            loss = losses.SubCenterArcFaceLoss(num_classes=2, embedding_size=128)
-            # loss = losses.ArcFaceLoss(num_classes=2, embedding_size=128)
 
+        num_classes: 类别数
+        embedding_size: backbone输出的特征维度
+        """
+        loss_dict = {
+            "cosface": losses.CosFaceLoss,
+            "arcface": losses.ArcFaceLoss,
+            "subcenter_arcface": losses.SubCenterArcFaceLoss,
+        }
+
+        if name in loss_dict.keys():
+            loss = loss_dict[name](
+                num_classes=num_classes, embedding_size=embedding_size
+            )
+        elif name == "circleloss":
+            loss = losses.CircleLoss()
         return loss
