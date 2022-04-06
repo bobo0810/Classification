@@ -106,6 +106,28 @@ def eval_metric(model, data_loader, device):
     return acc, cm
 
 
+def tensor2img(tensor, BCHW2BHWC=False):
+    """
+    Tenso恢复为图像，用于可视化
+    反归一化、RGB->BGR
+
+    tensor: Tensor,形状[B,C,H,W]
+    BCHW2BHWC: 是否交换Tensor维度
+
+    返回值
+    imgs: Tensor,形状[B,C,H,W]
+    """
+    # ImageNet均值方差
+    t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(3, 1, 1).expand(3, 224, 224)
+    t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(3, 1, 1).expand(3, 224, 224)
+
+    tensor = tensor * t_std + t_mean  # 反归一化
+    imgs = tensor[:, [2, 1, 0], :, :]  # RGB->BGR
+    if BCHW2BHWC:
+        imgs = imgs.permute(0, 2, 3, 1)
+    return imgs
+
+
 def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
     """
     可视化注意力图
@@ -134,14 +156,9 @@ def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
         modules_list.append(module)
     target_layers = [modules_list[-1]]  # 全局池化层的前一层
 
-    # ImageNet均值、方差
-    t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(3, 1, 1).expand(3, 224, 224)
-    t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(3, 1, 1).expand(3, 224, 224)
-
-    # 1. [B,C,H,W]->[C,H,W] 2. 反归一化
-    rgb_img = img_tensor.cpu().squeeze(0) * t_std + t_mean
-    # 1. RGB->BGR 2. [C,H,W] -> [H,W,C]
-    bgr_img = rgb_img[[2, 1, 0], :, :].permute(1, 2, 0).numpy()
+    # 反归一化、RGB->BGR、[B,C,H,W] -> [B,H,W,C]
+    bgr_img = tensor2img(img_tensor.cpu(), BCHW2BHWC=True)
+    bgr_img = bgr_img.squeeze(0).numpy()
 
     try:
         with cam_algorithm(model=model, target_layers=target_layers) as cam:
