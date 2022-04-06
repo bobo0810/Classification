@@ -14,23 +14,28 @@ optimizer_list = [
 ]
 
 
-def create_optimizer(model, name, lr):
+def create_optimizer(model_or_params, name, lr):
     """
     优化器入口
 
-    model: 模型
+    model_or_params: 模型或参数
     name: 优化器名称
     lr: 学习率
     """
     assert name in optimizer_list, "NotImplementedError"
 
-    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=0.0005)
+    # optimizer = torch.optim.SGD(model_or_params.parameters(), lr=lr, weight_decay=0.0005)
     if name in ["rmsproptf"]:
         optimizer = timm.optim.create_optimizer_v2(
-            model, opt=name, lr=lr, weight_decay=0.0005, momentum=0.9, eps=0.001
+            model_or_params,
+            opt=name,
+            lr=lr,
+            weight_decay=0.0005,
+            momentum=0.9,
+            eps=0.001,
         )
     else:
         optimizer = timm.optim.create_optimizer_v2(
-            model, opt=name, lr=lr, weight_decay=0.0005, momentum=0.9
+            model_or_params, opt=name, lr=lr, weight_decay=0.0005, momentum=0.9
         )
     return optimizer

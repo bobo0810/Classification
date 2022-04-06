@@ -19,18 +19,8 @@ class create_backbone(nn.Module):
         super(create_backbone, self).__init__()
         self.model = self.init_model(model_name, num_classes)
 
-        # 任务标识
-        if hasattr(self.model, "task") and self.model.task == "metric":
-            self.task = "metric"  # 常规分类
-        else:
-            self.task = "class"  # 度量学习
-
-    def forward(self, imgs, labels=None):
-
-        if self.task == "class":
-            return self.model(imgs)
-        elif self.task == "metric":
-            return self.model(imgs, labels)
+    def forward(self, imgs):
+        return self.model(imgs)
 
     def init_model(self, model_name, num_classes):
         """

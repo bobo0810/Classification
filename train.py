@@ -37,18 +37,19 @@ if __name__ == "__main__":
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["labels"]),
     )
-    task = model.task
+
     if not device == "cpu":
         model = torch.nn.DataParallel(model).to(device)
     model.train()
     ema_model = ModelEmaV2(model, decay=0.9998)
 
     # 损失函数
-    criterion = create_loss(cfg["Models"]["loss"])
+    loss_func = create_loss(cfg["Models"]["loss"]).to(device)
 
     # 优化器
+    params = [{"params": model.parameters()}, {"params": loss_func.parameters()}]
     optimizer = create_optimizer(
-        model, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
+        params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
 
     # 学习率调度器
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
-            if epoch + batch_idx == 0 and task == "class":
+            if epoch + batch_idx == 0:
                 tb_writer.add_graph(model, imgs)  # 网络结构可视化
                 summary(model, imgs[0].unsqueeze(0).shape, device=device)  # 模型统计
             # 图像可视化
@@ -80,13 +81,9 @@ if __name__ == "__main__":
                     tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
 
             imgs, labels = imgs.to(device), labels.to(device)
-            if task == "class":  # 常规分类
-                output = model(imgs)
-                loss = criterion(output, labels)
-            elif task == "metric":  # 度量学习
-                loss = model(imgs, labels)
-            else:
-                raise NotImplementedError
+
+            output = model(imgs)
+            loss = loss_func(output, labels)
 
             loss.backward()
 
@@ -106,7 +103,7 @@ if __name__ == "__main__":
         lr_scheduler.step(epoch + 1)
 
         # 验证集评估
-        if task == "class":
+        if True:
             model.eval()
             acc, _ = eval_metric(model, val_dataloader, device)
             ema_acc, _ = eval_metric(ema_model.module, val_dataloader, device)
