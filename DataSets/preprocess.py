@@ -3,6 +3,7 @@ from torchvision import transforms
 from PIL import Image
 import torch
 import numpy as np
+from Utils.tools import tensor2img
 from timm.data.transforms_factory import create_transform as timm_transform
 
 
@@ -40,15 +41,10 @@ class PreProcess:
         """
         转化格式，方便tensorboard可视化
 
-        imgs(tensor): [B,C,H,W]
-        names(list):[B]
+        imgs(tensor): 形状[B,C,H,W]
+        names(list):形状[B]
         per_nums: batch内每类最多显示的图像数.默认为4
         """
-        mean = (0.485, 0.456, 0.406)
-        std = (0.229, 0.224, 0.225)
-        t_mean = torch.FloatTensor(mean).view(3, 1, 1).expand(3, 224, 224)
-        t_std = torch.FloatTensor(std).view(3, 1, 1).expand(3, 224, 224)
-
         # 按类别划分
         index_list = []
         for name in set(names):
@@ -57,8 +53,8 @@ class PreProcess:
             )
         imgs_list = [imgs[index].clone() for index in index_list]
 
-        # 反归一化 + RGB->BGR
-        imgs_list = [(line * t_std + t_mean)[:, [2, 1, 0], :, :] for line in imgs_list]
+        # 反归一化、RGB->BGR
+        imgs_list = [tensor2img(imgs) for imgs in imgs_list]
         # 拼成网格图CHW
         imgs_list = [torchvision.utils.make_grid(line) for line in imgs_list]
         return imgs_list

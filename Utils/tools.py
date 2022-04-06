@@ -112,7 +112,7 @@ def tensor2img(tensor, BCHW2BHWC=False):
     反归一化、RGB->BGR
 
     tensor: Tensor,形状[B,C,H,W]
-    BCHW2BHWC: 是否交换Tensor维度
+    BCHW2BHWC: (可选)是否交换Tensor维度
 
     返回值
     imgs: Tensor,形状[B,C,H,W]
