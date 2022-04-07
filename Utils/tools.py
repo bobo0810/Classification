@@ -121,11 +121,11 @@ def tensor2img(tensor, BCHW2BHWC=False):
     t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(3, 1, 1).expand(3, 224, 224)
     t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(3, 1, 1).expand(3, 224, 224)
 
-    tensor = tensor * t_std + t_mean  # 反归一化
-    imgs = tensor[:, [2, 1, 0], :, :]  # RGB->BGR
+    tensor = tensor * t_std.to(tensor) + t_mean.to(tensor)  # 反归一化
+    tensor = tensor[:, [2, 1, 0], :, :]  # RGB->BGR
     if BCHW2BHWC:
-        imgs = imgs.permute(0, 2, 3, 1)
-    return imgs
+        tensor = tensor.permute(0, 2, 3, 1)
+    return tensor
 
 
 def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
