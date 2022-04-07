@@ -112,13 +112,11 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 ## 可以，但没必要
 
-暂不考虑如下特性：
-
 - 自动混合精度AMP
 
 - 分布式数据并行DDP
 
-> 注：如有需要，可参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
+> 注：如需要，请参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
 
 
 
