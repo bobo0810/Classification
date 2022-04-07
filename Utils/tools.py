@@ -74,13 +74,15 @@ def init_env(cfg):
 
 
 @torch.no_grad()
-def eval_metric(model, data_loader, device):
+def eval_metric(model, data_loader):
     """
     评估指标
 
     acc: 准确率
     cm:  混淆矩阵
     """
+    device = next(model.parameters()).device
+
     scores_list, preds_list, labels_list = [], [], []
     for batch_idx, (imgs, labels, _) in enumerate(data_loader):
         imgs, labels = imgs.to(device), labels.to(device)

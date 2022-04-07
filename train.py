@@ -112,8 +112,8 @@ if __name__ == "__main__":
         if loss_func.task == "class":
             # 验证集评估
             model.eval()
-            acc, _ = eval_metric(model, val_dataloader, device)
-            ema_acc, _ = eval_metric(ema_model.module, val_dataloader, device)
+            acc, _ = eval_metric(model, val_dataloader)
+            ema_acc, _ = eval_metric(ema_model.module, val_dataloader)
             tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
             model.train()
 
