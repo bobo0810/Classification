@@ -12,12 +12,14 @@ class create_loss(nn.Module):
     def __init__(self, name):
         super(create_loss, self).__init__()
 
-        # 常规分类
+        # 常规分类任务
         if name in ["cross_entropy", "label_smooth"]:
             self.loss = self.init_class_loss(name)
-        # 度量学习
+            self.task = "class"
+        # 度量学习任务
         elif name in ["cosface", "arcface", "subcenter_arcface", "circleloss"]:
             self.loss = self.init_metric_loss(name)
+            self.task = "metric"
         else:
             raise NotImplementedError
 
