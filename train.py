@@ -8,6 +8,7 @@ from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
 from Models.Scheduler import create_scheduler
+from Utils.tools import tensor2img
 from timm.utils import ModelEmaV2
 from torchinfo import summary
 import argparse
@@ -38,7 +39,7 @@ if __name__ == "__main__":
         num_classes=len(cfg["DataSet"]["labels"]),
     )
 
-    if not device == "cpu":
+    if device != "cpu":
         model = torch.nn.DataParallel(model).to(device)
     model.train()
     ema_model = ModelEmaV2(model, decay=0.9998)
@@ -47,7 +48,9 @@ if __name__ == "__main__":
     loss_func = create_loss(cfg["Models"]["loss"]).to(device)
 
     # 优化器
-    params = [{"params": model.parameters()}, {"params": loss_func.parameters()}]
+    params = [{"params": model.parameters()}]
+    if loss_func.task == "metric":
+        params.append({"params": loss_func.parameters()})
     optimizer = create_optimizer(
         params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
@@ -71,10 +74,11 @@ if __name__ == "__main__":
 
         for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
 
+            # 可视化网络、模型统计
             if epoch + batch_idx == 0:
-                tb_writer.add_graph(model, imgs)  # 网络结构可视化
-                summary(model, imgs[0].unsqueeze(0).shape, device=device)  # 模型统计
-            # 图像可视化
+                tb_writer.add_graph(model, imgs)
+                summary(model, imgs[0].unsqueeze(0).shape, device=device)
+            # 可视化增广图像
             if epoch % 10 + batch_idx == 0:
                 vis_list = PreProcess().convert(imgs, names)
                 for vis_name, vis_img in zip(set(names), vis_list):
@@ -102,8 +106,11 @@ if __name__ == "__main__":
 
         lr_scheduler.step(epoch + 1)
 
-        # 验证集评估
-        if True:
+        # ===============================================================
+
+        # 常规分类
+        if loss_func.task == "class":
+            # 验证集评估
             model.eval()
             acc, _ = eval_metric(model, val_dataloader, device)
             ema_acc, _ = eval_metric(ema_model.module, val_dataloader, device)
@@ -122,6 +129,16 @@ if __name__ == "__main__":
                     ema_model,
                     checkpoint_path + cfg["Models"]["backbone"] + "_best_ema.pt",
                 )
+
+        # 度量学习
+        elif loss_func.task == "metric":
+            # 特征可视化
+            tb_writer.add_embedding(
+                output.detach(),
+                metadata=names,
+                label_img=tensor2img(imgs),
+                global_step=epoch,
+            )
 
     torch.save(
         model,
