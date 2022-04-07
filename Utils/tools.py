@@ -70,7 +70,7 @@ def init_env(cfg):
     tb_writer.add_text("Config", str(cfg))
     print("*" * 28)
     print("TensorBoard | Checkpoint save to ", exp_path, "\n")
-    return tb_writer, checkpoint_path
+    return tb_writer, checkpoint_path + cfg["Models"]["backbone"]
 
 
 @torch.no_grad()

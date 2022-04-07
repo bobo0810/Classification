@@ -66,7 +66,7 @@ if __name__ == "__main__":
     train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
     val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
-    best_acc, best_ema_acc = 0.0, 0.0
+    best_acc = 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
@@ -119,16 +119,7 @@ if __name__ == "__main__":
 
             if best_acc < acc:
                 best_acc = acc
-                torch.save(
-                    model,  # model.state_dict()
-                    checkpoint_path + cfg["Models"]["backbone"] + "_best.pt",
-                )
-            if best_ema_acc < ema_acc:
-                best_ema_acc = ema_acc
-                torch.save(
-                    ema_model,
-                    checkpoint_path + cfg["Models"]["backbone"] + "_best_ema.pt",
-                )
+                torch.save(model, checkpoint_path + "_best.pt")
 
         # 度量学习
         elif loss_func.task == "metric":
@@ -140,12 +131,6 @@ if __name__ == "__main__":
                 global_step=epoch,
             )
 
-    torch.save(
-        model,
-        checkpoint_path + cfg["Models"]["backbone"] + "_last.pt",
-    )
-    torch.save(
-        ema_model,
-        checkpoint_path + cfg["Models"]["backbone"] + "_last_ema.pt",
-    )
+    torch.save(model, checkpoint_path + "_last.pt")
+    torch.save(ema_model, checkpoint_path + "_ema_last.pt")
     tb_writer.close()
