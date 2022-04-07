@@ -3,7 +3,7 @@ import os
 import torch
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, eval_metric, get_labels
+from Utils.tools import init_env, eval_model, get_labels
 from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
@@ -112,8 +112,8 @@ if __name__ == "__main__":
         if loss_func.task == "class":
             # 验证集评估
             model.eval()
-            acc, _ = eval_metric(model, val_dataloader)
-            ema_acc, _ = eval_metric(ema_model.module, val_dataloader)
+            acc, _ = eval_model(model, val_dataloader)
+            ema_acc, _ = eval_model(ema_model.module, val_dataloader)
             tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
             model.train()
 

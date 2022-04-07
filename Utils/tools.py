@@ -74,7 +74,7 @@ def init_env(cfg):
 
 
 @torch.no_grad()
-def eval_metric(model, data_loader):
+def eval_model(model, data_loader):
     """
     评估指标
 
