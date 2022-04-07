@@ -9,7 +9,6 @@ torchinfo #模型统计
 timm      #模型库
 torchmetrics #指标度量库
 grad-cam  #类激活映射库
-pytorch_metric_learning # 度量学习库
 
 # ======模型转换======
 onnx

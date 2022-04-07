@@ -3,7 +3,7 @@ import os
 import torch
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, eval_model, get_labels
+from Utils.tools import init_env, get_labels, eval_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_loss
 from Models.Optimizer import create_optimizer
@@ -48,11 +48,8 @@ if __name__ == "__main__":
     loss_func = create_loss(cfg["Models"]["loss"]).to(device)
 
     # 优化器
-    params = [{"params": model.parameters()}]
-    if loss_func.task == "metric":
-        params.append({"params": loss_func.parameters()})
     optimizer = create_optimizer(
-        params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
+        model, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
 
     # 学习率调度器
@@ -106,30 +103,16 @@ if __name__ == "__main__":
 
         lr_scheduler.step(epoch + 1)
 
-        # ===============================================================
+        # 验证集评估
+        model.eval()
+        acc, _ = eval_model(model, val_dataloader)
+        ema_acc, _ = eval_model(ema_model.module, val_dataloader)
+        tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
+        model.train()
 
-        # 常规分类
-        if loss_func.task == "class":
-            # 验证集评估
-            model.eval()
-            acc, _ = eval_model(model, val_dataloader)
-            ema_acc, _ = eval_model(ema_model.module, val_dataloader)
-            tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
-            model.train()
-
-            if best_acc < acc:
-                best_acc = acc
-                torch.save(model, checkpoint_path + "_best.pt")
-
-        # 度量学习
-        elif loss_func.task == "metric":
-            # 特征可视化
-            tb_writer.add_embedding(
-                output.detach(),
-                metadata=names,
-                label_img=tensor2img(imgs),
-                global_step=epoch,
-            )
+        if best_acc < acc:
+            best_acc = acc
+            torch.save(model, checkpoint_path + "_best.pt")
 
     torch.save(model, checkpoint_path + "_last.pt")
     torch.save(ema_model, checkpoint_path + "_ema_last.pt")
