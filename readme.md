@@ -131,4 +131,6 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)![Github stars](https://img.shields.io/github/stars/PytorchLightning/metrics.svg)
   - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)![Github stars](https://img.shields.io/github/stars/TylerYep/torchinfo.svg)
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
+  - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
+  
 
