@@ -5,7 +5,7 @@ from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, get_labels, eval_model
 from Models.Backbone import create_backbone
-from Models.Loss import create_loss
+from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
 from Models.Scheduler import create_scheduler
 from Utils.tools import tensor2img
@@ -39,18 +39,27 @@ if __name__ == "__main__":
         num_classes=len(cfg["DataSet"]["labels"]),
     )
 
+    # 区分任务  度量学习/常规分类
+    if hasattr(model, "embedding_size"):
+        TASK = "metric"
+        loss_func = create_metric_loss(
+            name=cfg["Models"]["loss"],
+            num_classes=len(cfg["DataSet"]["labels"]),
+            embedding_size=model.embedding_size,
+        ).to(device)
+        params = [{"params": loss_func.parameters()}]
+    else:
+        TASK = "class"
+        loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
+        params = []
+
     if device != "cpu":
         model = torch.nn.DataParallel(model).to(device)
     model.train()
     ema_model = ModelEmaV2(model, decay=0.9998)
 
-    # 损失函数
-    loss_func = create_loss(cfg["Models"]["loss"]).to(device)
-
     # 优化器
-    params = [{"params": model.parameters()}]
-    if loss_func.task == "metric":
-        params.append({"params": loss_func.parameters()})
+    params.append({"params": model.parameters()})
     optimizer = create_optimizer(
         params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
@@ -108,7 +117,7 @@ if __name__ == "__main__":
 
         # 验证集评估
         # 常规分类
-        if loss_func.task == "class":
+        if TASK == "class":
             # 验证集评估
             model.eval()
             acc, _ = eval_model(model, val_dataloader)
@@ -121,7 +130,7 @@ if __name__ == "__main__":
                 torch.save(model, checkpoint_path + "_best.pt")
 
         # 度量学习
-        elif loss_func.task == "metric":
+        elif TASK == "metric":
             # 特征可视化
             tb_writer.add_embedding(
                 output.detach(),
