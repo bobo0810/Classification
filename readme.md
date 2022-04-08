@@ -100,13 +100,18 @@ https://bclassification.readthedocs.io/   文档内容包含：
 
 ## 训练参数
 
-|              | yaml属性  | 支持                                                         |
+|   常规分类   | yaml属性  | 支持                                                         |
 | ------------ | --------- | ------------------------------------------------------------ |
 | 采样策略     | sampler   | - normal     常规采样<br>- balance    类别平衡采样 ⭐️         |
 | 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
 | 损失函数     | loss      | - cross_entropy<br>- label_smooth         |
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 | 学习率调度器 | scheduler | - multistep<br/>- cosine ⭐️                                     |
+
+| 度量学习 | yaml属性 | 支持                                                         |
+| -------- | -------- | ------------------------------------------------------------ |
+| 主干网络 | backbone | 支持600+预训练模型，[参考定义](./Models/Backbone/mynet_metric.py) |
+| 损失函数 | loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |
 
 
 
