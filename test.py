@@ -4,7 +4,7 @@ import torch
 import time
 import yaml
 from DataSets import create_dataloader
-from Utils.tools import eval_metric, get_labels
+from Utils.tools import eval_model, get_labels
 import argparse
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # 直接加载model,而非model.state_dict
     model = torch.load(cfg["Models"]["checkpoint"], map_location="cpu")
-    if hasattr(model, 'module'):
+    if hasattr(model, "module"):
         model = model.module
     model.to(device)
     model.eval()
@@ -36,6 +36,6 @@ if __name__ == "__main__":
     test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
     # 输出ACC及混淆矩阵
-    acc, cm = eval_metric(model, test_dataloader, device)
+    acc, cm = eval_model(model, test_dataloader)
     print("accuracy is %.3f \n" % acc)
     print("confusion matrix is  \n", cm)
