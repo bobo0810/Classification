@@ -1,14 +1,9 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from typing import Any
 import timm
 from timm.models import register_model
-
-
-def l2_norm(x, axis=1):
-    norm = torch.norm(x, 2, axis, True)
-    output = x / norm
-    return output
 
 
 class MyNet_Metric(nn.Module):
@@ -29,7 +24,7 @@ class MyNet_Metric(nn.Module):
     def forward(self, imgs):
         features = self.features(imgs)
         features = self.bn(features)  # 规范化，正则化
-        features = l2_norm(features)  # 特征归一化，即模长为1
+        features = F.normalize(features, p=2, dim=1)  # 特征归一化，即模长为1
         return features
 
 
