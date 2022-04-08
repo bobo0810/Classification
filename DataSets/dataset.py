@@ -31,6 +31,7 @@ class create_datasets(data.Dataset):
         imgs_list = open(self.txt, "r").readlines()
         imgs_list = [line.strip() for line in imgs_list if line.strip() != ""]  # 过滤空格行
         # 划分
+        random.seed(227)
         random.shuffle(imgs_list)
         if mode == "train":
             self.imgs_list = imgs_list[: int(self.ratio * len(imgs_list))]

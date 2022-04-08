@@ -11,7 +11,7 @@ from ToolsLib.Img_Tools import Img_Tools
 from ToolsLib.TXT_Tools import TXT_Tools
 
 
-random.seed(224)
+random.seed(227)
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
