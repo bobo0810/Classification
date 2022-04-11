@@ -59,20 +59,18 @@ if __name__ == "__main__":
         ).to(device)
         params.append({"params": loss_func.parameters()})
 
-        # 数据集
-        train_set = create_datasets(cfg["DataSet"], mode="train", disable_name=True)
-        test_set = create_datasets(cfg["DataSet"], mode="val", disable_name=True)
-
         # 度量指标
         accuracy_calculator = AccuracyCalculator(include=("precision_at_1",), k=1)
+        metric_train_set = create_datasets(cfg["DataSet"], mode="train")
+        metric_test_set = create_datasets(cfg["DataSet"], mode="val")
 
     else:
         # 损失函数
         loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
 
-        # 数据集
-        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
-        val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
+    # 数据集
+    train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
+    val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
     # 优化器
     optimizer = create_optimizer(
