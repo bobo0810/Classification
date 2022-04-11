@@ -8,13 +8,15 @@ def create_dataloader(cfg, mode):
     数据集加载器入口
     加载train/val/test
     """
-    assert mode in ["train", "val", "test"]
+    is_training = True if mode == "train" else False
+    dataset = create_datasets(cfg, mode, is_training)
 
+    # 数据集加载器
     if mode == "train":  # 训练集
         # 常规采样
         if cfg["sampler"] == "normal":
             dataloader = DataLoader(
-                dataset=create_datasets(cfg, mode),
+                dataset,
                 batch_size=cfg["batch"],
                 shuffle=True,
                 num_workers=4,
@@ -23,7 +25,6 @@ def create_dataloader(cfg, mode):
             )
         # 类别均衡采样（每轮重新采样）
         elif cfg["sampler"] == "balance":
-            dataset = create_datasets(cfg, mode)
             dataloader = DataLoader(
                 dataset,
                 sampler=ImbalancedDatasetSampler(dataset),
@@ -37,7 +38,7 @@ def create_dataloader(cfg, mode):
             raise NotImplementedError
     else:  # 验证集/测试集
         dataloader = DataLoader(
-            dataset=create_datasets(cfg, mode),
+            dataset,
             batch_size=cfg["batch"],
             shuffle=False,
             num_workers=4,

@@ -61,8 +61,8 @@ if __name__ == "__main__":
 
         # 度量指标
         accuracy_calculator = AccuracyCalculator(include=("precision_at_1",), k=1)
-        metric_train_set = create_datasets(cfg["DataSet"], mode="train")
-        metric_test_set = create_datasets(cfg["DataSet"], mode="val")
+        train_set = create_datasets(cfg["DataSet"], mode="train")
+        val_set = create_datasets(cfg["DataSet"], mode="val")
 
     else:
         # 损失函数
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
             model.eval()
             train_embeddings, train_labels = get_all_embeddings(train_set, model)
-            test_embeddings, test_labels = get_all_embeddings(test_set, model)
+            test_embeddings, test_labels = get_all_embeddings(val_set, model)
             model.train()
             train_labels = train_labels.squeeze(1)
             test_labels = test_labels.squeeze(1)

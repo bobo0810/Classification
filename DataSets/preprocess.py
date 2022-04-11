@@ -2,6 +2,7 @@ import torchvision
 from torchvision import transforms
 from PIL import Image
 import torch
+import cv2
 import numpy as np
 from Utils.tools import tensor2img
 from timm.data.transforms_factory import create_transform as timm_transform
@@ -16,25 +17,19 @@ class PreProcess:
         pass
 
     @staticmethod
-    def transforms(mode, img, img_size=[224, 224]):
+    def transforms(img_path, is_training, img_size=[224, 224]):
         """
         数据增广
-
-        mode: 增广类型
-        img: cv2读取的原图
+        img_path: 图像路径
+        is_training: 是否开启图像增广
+                    True(训练集): random(缩放、裁剪、翻转、色彩) -> ToTensor -> Normalize
+                    False(测试集)：resize256 -> centercrop224 -> ToTensor -> Normalize
         img_size：训练图像尺寸
         """
-        assert mode in ["train", "val", "test"]
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = Image.fromarray(img)
-        # =========================训练集========================================
-        if mode == "train":
-            img_transforms = timm_transform(img_size, is_training=True)
-        # =========================验证集/测试集==================================
-        else:
-            # resize256 -> centercrop224 -> ToTensor -> Normalize
-            img_transforms = timm_transform(img_size)
-        # print(img_transforms)
-        return img_transforms(img)  # 增广
+        img_transforms = timm_transform(img_size, is_training=is_training)
+        return img_transforms(img)
 
     @staticmethod
     def convert(imgs, category, per_nums=4):

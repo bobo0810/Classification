@@ -1,7 +1,6 @@
 import os
 import sys
 import torch.utils.data as data
-import cv2
 import numpy as np
 import random
 import yaml
@@ -17,13 +16,18 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 class create_datasets(data.Dataset):
     """加载数据集"""
 
-    def __init__(self, cfg, mode):
+    def __init__(self, cfg, mode, is_training=False):
+        """
+        mode:划分数据集
+        is_training: 是否开启图像增广,默认不增广
+        """
         assert mode in ["train", "val", "test"]
         self.prefix = cfg["prefix"]
         self.labels = cfg["labels"]
         self.txt = cfg["txt"]
         self.size = cfg["size"]
         self.mode = mode
+        self.is_training = is_training
         if not mode == "test":
             self.ratio = cfg["ratio"]
         # 读取图像列表
@@ -52,9 +56,7 @@ class create_datasets(data.Dataset):
         img_path = os.path.join(self.prefix, self.imgs_list[index])
         category = self.category_list[index]  # 类别名称
         label = int(self.labels.index(category))  # 类别标签
-
-        image = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        image = PreProcess().transforms(self.mode, image, self.size)  # 增广
+        image = PreProcess().transforms(img_path, self.is_training, self.size)  # 增广
         return image, label
 
     def __len__(self):
