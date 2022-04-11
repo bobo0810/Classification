@@ -3,7 +3,7 @@ import os
 import torch
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, get_labels, eval_model
+from Utils.tools import init_env, get_category, eval_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -13,6 +13,9 @@ from timm.utils import ModelEmaV2
 from torchinfo import summary
 import argparse
 import yaml
+from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
+from DataSets.dataset import create_datasets
+from pytorch_metric_learning import losses, testers
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,7 +29,7 @@ if __name__ == "__main__":
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
     cfg["DataSet"]["txt"] = args.txt
-    cfg["DataSet"]["labels"] = get_labels(
+    cfg["DataSet"]["labels"] = get_category(
         path=os.path.dirname(args.txt) + "/labels.txt"
     )
 
@@ -38,25 +41,37 @@ if __name__ == "__main__":
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["labels"]),
     )
+    TASK = "metric" if hasattr(model, "embedding_size") else "class"
+    if device != "cpu":
+        model = torch.nn.DataParallel(model).to(device)
+    model.train()
+    ema_model = ModelEmaV2(model, decay=0.9998)
 
-    # 区分任务  度量学习/常规分类
-    if hasattr(model, "embedding_size"):
-        TASK = "metric"
+    # 区分任务
+    if TASK == "metric":
+        # 损失函数（分类器）
         loss_func = create_metric_loss(
             name=cfg["Models"]["loss"],
             num_classes=len(cfg["DataSet"]["labels"]),
             embedding_size=model.embedding_size,
         ).to(device)
         params = [{"params": loss_func.parameters()}]
+
+        # 数据集
+        train_set = create_datasets(cfg["DataSet"], mode="train", disable_name=True)
+        test_set = create_datasets(cfg["DataSet"], mode="val", disable_name=True)
+
+        # 度量指标
+        accuracy_calculator = AccuracyCalculator(include=("precision_at_1",), k=1)
+
     else:
-        TASK = "class"
+        # 损失函数
         loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
         params = []
 
-    if device != "cpu":
-        model = torch.nn.DataParallel(model).to(device)
-    model.train()
-    ema_model = ModelEmaV2(model, decay=0.9998)
+        # 数据集
+        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
+        val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
     # 优化器
     params.append({"params": model.parameters()})
@@ -70,18 +85,13 @@ if __name__ == "__main__":
         epochs=cfg["Train"]["epochs"],
         optimizer=optimizer,
     )
-
-    # 数据集
-    train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
-    val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
-
     best_acc = 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
         optimizer.zero_grad()
 
-        for batch_idx, (imgs, labels, names) in enumerate(train_dataloader):
+        for batch_idx, (imgs, labels) in enumerate(train_dataloader):
 
             # 可视化网络、模型统计
             if epoch + batch_idx == 0:
@@ -89,8 +99,9 @@ if __name__ == "__main__":
                 summary(model, imgs[0].unsqueeze(0).shape, device=device)
             # 可视化增广图像
             if epoch % 10 + batch_idx == 0:
-                vis_list = PreProcess().convert(imgs, names)
-                for vis_name, vis_img in zip(set(names), vis_list):
+                category = [cfg["DataSet"]["labels"][label] for label in labels]
+                vis_list = PreProcess().convert(imgs, category)
+                for vis_name, vis_img in zip(set(category), vis_list):
                     tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
 
             imgs, labels = imgs.to(device), labels.to(device)
@@ -132,11 +143,31 @@ if __name__ == "__main__":
         # 度量学习
         elif TASK == "metric":
             # 特征可视化
-            tb_writer.add_embedding(
-                output.detach(),
-                metadata=names,
-                label_img=tensor2img(imgs),
-                global_step=epoch,
+            # tb_writer.add_embedding(
+            #     output.detach(),
+            #     metadata=names,
+            #     label_img=tensor2img(imgs),
+            #     global_step=epoch,
+            # )
+
+            def get_all_embeddings(dataset, model):
+                tester = testers.BaseTester()
+                return tester.get_all_embeddings(dataset, model)
+
+            model.eval()
+            train_embeddings, train_labels = get_all_embeddings(train_set, model)
+            test_embeddings, test_labels = get_all_embeddings(test_set, model)
+            model.train()
+            train_labels = train_labels.squeeze(1)
+            test_labels = test_labels.squeeze(1)
+            print("Computing accuracy")
+            accuracies = accuracy_calculator.get_accuracy(
+                test_embeddings, train_embeddings, test_labels, train_labels, False
+            )
+            print(
+                "Test set accuracy (Precision@1) = {}".format(
+                    accuracies["precision_at_1"]
+                )
             )
 
     torch.save(model, checkpoint_path + "_last.pt")

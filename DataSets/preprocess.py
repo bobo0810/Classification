@@ -37,19 +37,19 @@ class PreProcess:
         return img_transforms(img)  # 增广
 
     @staticmethod
-    def convert(imgs, names, per_nums=4):
+    def convert(imgs, category, per_nums=4):
         """
         转化格式，方便tensorboard可视化
 
         imgs(tensor): 形状[B,C,H,W]
-        names(list):形状[B]
+        category(list):形状[B]
         per_nums: batch内每类最多显示的图像数.默认为4
         """
         # 按类别划分
         index_list = []
-        for name in set(names):
+        for name in set(category):
             index_list.append(
-                [i for i, name_i in enumerate(names) if name_i == name][:per_nums]
+                [i for i, name_i in enumerate(category) if name_i == name][:per_nums]
             )
         imgs_list = [imgs[index].clone() for index in index_list]
 

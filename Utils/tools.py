@@ -24,18 +24,16 @@ from torch.utils.tensorboard import SummaryWriter
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
-def get_labels(path):
+def get_category(path):
     """
-    读取label.txt，获取类别字典
+    读取label.txt，获取类别
 
-    eg: {'dog': 0, 'cat': 1}
+    eg: ['dog','cat']
     """
     assert os.path.exists(path), "Warn: %s does not exist" % path
     labels = open(path, "r").readlines()
     labels = [label.strip() for label in labels if label != "\n"]
-    index = list(range(0, len(labels)))
-
-    return dict(zip(labels, index))
+    return labels
 
 
 def init_env(cfg):
@@ -84,7 +82,7 @@ def eval_model(model, data_loader):
     device = next(model.parameters()).device
 
     scores_list, preds_list, labels_list = [], [], []
-    for batch_idx, (imgs, labels, _) in enumerate(data_loader):
+    for batch_idx, (imgs, labels) in enumerate(data_loader):
         imgs, labels = imgs.to(device), labels.to(device)
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
