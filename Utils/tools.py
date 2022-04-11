@@ -6,6 +6,8 @@ import time
 import os
 import cv2
 import sys
+from pytorch_metric_learning import losses, testers
+from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 from pytorch_grad_cam import (
     GradCAM,
     ScoreCAM,
@@ -74,7 +76,7 @@ def init_env(cfg):
 @torch.no_grad()
 def eval_model(model, data_loader):
     """
-    评估指标
+    常规分类：评估指标
 
     acc: 准确率
     cm:  混淆矩阵
@@ -104,6 +106,23 @@ def eval_model(model, data_loader):
     acc = metric_acc(scores_tensor, labels_tensor)
     cm = metric_cm(preds_tensor, labels_tensor)
     return acc, cm
+
+
+@torch.no_grad()
+def eval_metric_model(model, train_set, val_set):
+    """
+    度量学习：评估指标
+    """
+    tester = testers.BaseTester()
+    train_embeddings, train_labels = tester.get_all_embeddings(train_set, model)
+    test_embeddings, test_labels = tester.get_all_embeddings(val_set, model)
+    train_labels, test_labels = train_labels.squeeze(1), test_labels.squeeze(1)
+
+    accuracy_calculator = AccuracyCalculator(include=("precision_at_1",), k=1)
+    accuracies = accuracy_calculator.get_accuracy(
+        test_embeddings, train_embeddings, test_labels, train_labels, False
+    )
+    return accuracies["precision_at_1"]
 
 
 def tensor2img(tensor, BCHW2BHWC=False):
