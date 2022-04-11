@@ -61,6 +61,7 @@ if __name__ == "__main__":
 
         # 度量指标
         accuracy_calculator = AccuracyCalculator(include=("precision_at_1",), k=1)
+        tester = testers.BaseTester()
         train_set = create_datasets(cfg["DataSet"], mode="train")
         val_set = create_datasets(cfg["DataSet"], mode="val")
 
@@ -142,33 +143,16 @@ if __name__ == "__main__":
 
         # 度量学习
         elif TASK == "metric":
-            # 特征可视化
-            # tb_writer.add_embedding(
-            #     output.detach(),
-            #     metadata=names,
-            #     label_img=tensor2img(imgs),
-            #     global_step=epoch,
-            # )
-
-            def get_all_embeddings(dataset, model):
-                tester = testers.BaseTester()
-                return tester.get_all_embeddings(dataset, model)
-
             model.eval()
-            train_embeddings, train_labels = get_all_embeddings(train_set, model)
-            test_embeddings, test_labels = get_all_embeddings(val_set, model)
+            train_embeddings, train_labels = tester.get_all_embeddings(train_set, model)
+            test_embeddings, test_labels = tester.get_all_embeddings(val_set, model)
             model.train()
-            train_labels = train_labels.squeeze(1)
-            test_labels = test_labels.squeeze(1)
-            print("Computing accuracy")
+            train_labels, test_labels = train_labels.squeeze(1), test_labels.squeeze(1)
+
             accuracies = accuracy_calculator.get_accuracy(
                 test_embeddings, train_embeddings, test_labels, train_labels, False
             )
-            print(
-                "Test set accuracy (Precision@1) = {}".format(
-                    accuracies["precision_at_1"]
-                )
-            )
+            # "Test set accuracy (Precision@1) = {}"---> accuracies["precision_at_1"]
 
     torch.save(model, checkpoint_path + "_last.pt")
     torch.save(ema_model, checkpoint_path + "_ema_last.pt")
