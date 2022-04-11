@@ -1,6 +1,8 @@
 import sys
 import os
 import torch
+import argparse
+import yaml
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, get_category, eval_model
@@ -11,8 +13,6 @@ from Models.Scheduler import create_scheduler
 from Utils.tools import tensor2img
 from timm.utils import ModelEmaV2
 from torchinfo import summary
-import argparse
-import yaml
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 from DataSets.dataset import create_datasets
 from pytorch_metric_learning import losses, testers
@@ -46,16 +46,18 @@ if __name__ == "__main__":
         model = torch.nn.DataParallel(model).to(device)
     model.train()
     ema_model = ModelEmaV2(model, decay=0.9998)
+    params = [{"params": model.parameters()}]
 
     # 区分任务
     if TASK == "metric":
-        # 损失函数（分类器）
+
+        # 损失函数(分类器)
         loss_func = create_metric_loss(
             name=cfg["Models"]["loss"],
             num_classes=len(cfg["DataSet"]["labels"]),
             embedding_size=model.embedding_size,
         ).to(device)
-        params = [{"params": loss_func.parameters()}]
+        params.append({"params": loss_func.parameters()})
 
         # 数据集
         train_set = create_datasets(cfg["DataSet"], mode="train", disable_name=True)
@@ -67,14 +69,12 @@ if __name__ == "__main__":
     else:
         # 损失函数
         loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
-        params = []
 
         # 数据集
         train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
         val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
     # 优化器
-    params.append({"params": model.parameters()})
     optimizer = create_optimizer(
         params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
@@ -136,9 +136,11 @@ if __name__ == "__main__":
             tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
             model.train()
 
-            if best_acc < acc:
-                best_acc = acc
-                torch.save(model, checkpoint_path + "_best.pt")
+            acc_dict = {acc: model, ema_acc: ema_model}
+            max_acc = max(acc_dict)
+            if best_acc < max_acc:
+                best_acc = max_acc
+                torch.save(acc_dict[max_acc], checkpoint_path + "_best.pt")
 
         # 度量学习
         elif TASK == "metric":
