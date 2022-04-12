@@ -10,12 +10,12 @@ Models:
   optimizer: sgd       # 优化器 
   
   # 常规分类
-  # backbone: mynet # 主干网络 
-  # loss: cross_entropy  # 损失函数
+  backbone: mynet # 主干网络 
+  loss: cross_entropy  # 损失函数
   
-  # 度量学习
-  backbone: mynet_metric # 主干网络  
-  loss: arcface  # 损失函数 
+  # # 度量学习
+  # backbone: mynet_metric # 主干网络  
+  # loss: arcface  # 损失函数 
 
 # ========================================训练===================================
 Train:
