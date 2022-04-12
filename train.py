@@ -86,7 +86,7 @@ if __name__ == "__main__":
     best_acc = 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
-        tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]["lr"], epoch)
+        tb_writer.add_scalar("Train/lr", optimizer.param_groups[-1]["lr"], epoch)
         optimizer.zero_grad()
 
         for batch_idx, (imgs, labels) in enumerate(train_dataloader):
