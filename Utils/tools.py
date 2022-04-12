@@ -113,7 +113,7 @@ def eval_metric_model(model, train_set, val_set):
     """
     度量学习：评估指标
     """
-    tester = testers.BaseTester(batch_size=128, dataloader_num_workers=4)
+    tester = testers.BaseTester(batch_size=64, dataloader_num_workers=4)
     train_embeddings, train_labels = tester.get_all_embeddings(train_set, model)
     test_embeddings, test_labels = tester.get_all_embeddings(val_set, model)
     train_labels, test_labels = train_labels.squeeze(1), test_labels.squeeze(1)
