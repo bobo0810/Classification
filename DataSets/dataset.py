@@ -64,7 +64,6 @@ class create_datasets(data.Dataset):
 
     def get_labels(self):
         """
-        训练集：用于构造类别均衡的数据加载器
-        https://github.com/ufoym/imbalanced-dataset-sampler
+        构造 类别均衡的数据加载器，用于训练
         """
         return self.category_list
