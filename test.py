@@ -4,7 +4,8 @@ import torch
 import time
 import yaml
 from DataSets import create_dataloader
-from Utils.tools import eval_model, get_labels
+from DataSets.dataset import create_datasets
+from Utils.tools import get_category, eval_model, eval_metric_model
 import argparse
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -17,8 +18,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
-    cfg["DataSet"]["txt"] = args.txt
-    cfg["DataSet"]["labels"] = get_labels(
+    cfg["DataSet"]["labels"] = get_category(
         path=os.path.dirname(args.txt) + "/labels.txt"
     )
 
@@ -32,10 +32,26 @@ if __name__ == "__main__":
         model = model.module
     model.to(device)
     model.eval()
+    TASK = "metric" if hasattr(model, "embedding_size") else "class"
 
-    test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
+    if TASK == "class":  # 常规分类
+        # 数据集加载器
+        cfg["DataSet"]["txt"] = args.txt
+        test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
-    # 输出ACC及混淆矩阵
-    acc, cm = eval_model(model, test_dataloader)
-    print("accuracy is %.3f \n" % acc)
-    print("confusion matrix is  \n", cm)
+        # 统计准确率、混淆矩阵
+        acc, cm = eval_model(model, test_dataloader)
+        print("accuracy is %.3f \n" % acc)
+        print("confusion matrix is  \n", cm)
+    elif TASK == "metric":  # 度量学习
+        # 数据集
+        cfg["DataSet"]["txt"] = args.txt
+        test_set = create_datasets(cfg["DataSet"], mode="test")
+
+        cfg["DataSet"]["txt"] = args.txt.replace("test.txt", "train.txt")
+        cfg["DataSet"]["ratio"] = 0.8
+        train_set = create_datasets(cfg["DataSet"], mode="train")
+
+        # 统计精确率
+        precision = eval_metric_model(model, train_set, test_set)
+        print("precision is %.3f \n" % precision)
