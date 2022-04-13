@@ -43,6 +43,11 @@ if __name__ == "__main__":
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
     # 区分任务
     if TASK == "metric":
+        # 数据集
+        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
+        train_set = create_datasets(cfg["DataSet"], mode="train")
+        val_set = create_datasets(cfg["DataSet"], mode="val")
+
         # 难样例挖掘
         mining_func = miners.MultiSimilarityMiner()
 
@@ -52,13 +57,13 @@ if __name__ == "__main__":
             num_classes=len(cfg["DataSet"]["labels"]),
             embedding_size=model.embedding_size,
         ).to(device)
-        params = [{"params": loss_func.parameters()}]
-
-        # 用于验证度量指标
-        train_set = create_datasets(cfg["DataSet"], mode="train")
-        val_set = create_datasets(cfg["DataSet"], mode="val")
+        params = [{"params": loss_func.parameters(), "lr": cfg["Train"]["lr"]}]
 
     else:
+        # 数据集
+        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
+        val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
+
         # 损失函数
         loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
         params = []
@@ -74,10 +79,6 @@ if __name__ == "__main__":
     optimizer = create_optimizer(
         params, cfg["Models"]["optimizer"], lr=cfg["Train"]["lr"]
     )
-
-    # 数据集
-    train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
-    val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
 
     # 学习率调度器
     lr_scheduler = create_scheduler(
