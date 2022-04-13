@@ -14,7 +14,7 @@ from Utils.tools import tensor2img
 from timm.utils import ModelEmaV2
 from torchinfo import summary
 from DataSets.dataset import create_datasets
-from pytorch_metric_learning import losses
+from pytorch_metric_learning import miners
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -43,6 +43,8 @@ if __name__ == "__main__":
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
     # 区分任务
     if TASK == "metric":
+        # 难样例挖掘
+        mining_func = miners.MultiSimilarityMiner()
 
         # 损失函数(分类器)
         loss_func = create_metric_loss(
@@ -105,7 +107,11 @@ if __name__ == "__main__":
             imgs, labels = imgs.to(device), labels.to(device)
 
             output = model(imgs)
-            loss = loss_func(output, labels)
+            if TASK == "metric":
+                hard_tuples = mining_func(output, labels)
+                loss = loss_func(output, labels, hard_tuples)
+            else:
+                loss = loss_func(output, labels)
 
             loss.backward()
 

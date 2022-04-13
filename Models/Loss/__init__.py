@@ -44,8 +44,8 @@ class create_metric_loss(nn.Module):
         assert name in ["cosface", "arcface", "subcenter_arcface", "circleloss"]
         self.loss = self.init_loss(name, num_classes, embedding_size)
 
-    def forward(self, predict, target):
-        return self.loss(predict, target)
+    def forward(self, predict, target, hard_tuples):
+        return self.loss(predict, target, hard_tuples)
 
     def init_loss(self, name, num_classes, embedding_size):
         loss_dict = {
