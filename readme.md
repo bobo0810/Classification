@@ -2,7 +2,9 @@
 
 [![Actions Status](https://github.com/bobo0810/Classification/workflows/build/badge.svg)](https://github.com/bobo0810/Classification/actions)
 
-收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
+- 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
+- [更新日志](https://github.com/bobo0810/Classification/releases)
+
 
 ## 亮点
 

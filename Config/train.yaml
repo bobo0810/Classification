@@ -3,8 +3,8 @@ DataSet:
   prefix: ./CatDog/    # 数据集根路径 /home/IMG_PATH/ 
   size: [224,224]     # 训练尺寸
   ratio: 0.9  # train:val比例  
-  sampler: normal # 采样策略 
-  batch: 8
+  sampler: batch_balance # 采样策略 
+  batch: 64
 # ========================================模型===================================
 Models: 
   optimizer: sgd       # 优化器 
@@ -13,7 +13,7 @@ Models:
   backbone: mynet # 主干网络 
   loss: cross_entropy  # 损失函数
   
-  # # 度量学习
+  # 度量学习
   # backbone: mynet_metric # 主干网络  
   # loss: arcface  # 损失函数 
 
