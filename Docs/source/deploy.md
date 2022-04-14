@@ -7,6 +7,7 @@
 python export.py  --weights="xxx.pt"  --torch2script
 ```
 - torch2script       (可选)转为torchscript
+- script_gpu         (可选)导出GPU模型，默认CPU模型
 ```bash
 ****************************
 TorchScript export success, saved as /xxx/mynet.torchscript

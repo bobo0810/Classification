@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     # torchscript
     parser.add_argument("--torch2script", action="store_true", help="(可选)转为torchscript")
-    parser.add_argument("--script_gpu", action="store_true", help="(可选)保存为GPU模型，默认为CPU")
+    parser.add_argument("--script_gpu", action="store_true", help="(可选)导出GPU模型，默认CPU模型")
 
     # onnx
     parser.add_argument("--torch2onnx", action="store_true", help="(可选)转为onnx")
