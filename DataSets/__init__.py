@@ -14,7 +14,7 @@ def create_dataloader(cfg, mode):
     # 数据集加载器
     if mode == "train":
         # 训练集
-        assert cfg["sampler"] in ["normal", "balance", "batch_balance"]
+        assert cfg["sampler"] in ["normal", "dataset_balance", "batch_balance"]
         if cfg["sampler"] == "normal":  # 常规采样
             sampler = None
         elif cfg["sampler"] == "dataset_balance":  # 数据集均衡采样
