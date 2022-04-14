@@ -86,7 +86,7 @@ if __name__ == "__main__":
         epochs=cfg["Train"]["epochs"],
         optimizer=optimizer,
     )
-    best_acc = 0.0
+    best_score = 0.0
     for epoch in range(cfg["Train"]["epochs"]):
         print("start epoch {}/{}...".format(epoch, cfg["Train"]["epochs"]))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[-1]["lr"], epoch)
@@ -133,24 +133,24 @@ if __name__ == "__main__":
         # 验证集评估
         model.eval()
         if TASK == "class":  # 常规分类
-            acc, _ = eval_model(model, val_dataloader)
-            ema_acc, _ = eval_model(ema_model.module, val_dataloader)
-            tb_writer.add_scalars("Eval", {"acc": acc, "ema_acc": ema_acc}, epoch)
+            score, _ = eval_model(model, val_dataloader)
+            ema_score, _ = eval_model(ema_model.module, val_dataloader)
+            tb_writer.add_scalars("Eval", {"acc": score, "ema_acc": ema_score}, epoch)
 
         elif TASK == "metric":  # 度量学习
-            acc = eval_metric_model(model, train_set, val_set)
-            ema_acc = eval_metric_model(ema_model.module, train_set, val_set)
+            score = eval_metric_model(model, train_set, val_set)
+            ema_score = eval_metric_model(ema_model.module, train_set, val_set)
             tb_writer.add_scalars(
-                "Eval", {"precision": acc, "ema_precision": ema_acc}, epoch
+                "Eval", {"precision": score, "ema_precision": ema_score}, epoch
             )
         model.train()
 
         # 保存最优模型
-        acc_dict = {acc: model, ema_acc: ema_model}
-        max_acc = max(acc_dict)
-        if best_acc < max_acc:
-            best_acc = max_acc
-            torch.save(acc_dict[max_acc], checkpoint_path + "_best.pt")
+        score_dict = {score: model, ema_score: ema_model}
+        max_score = max(score_dict)
+        if best_score < max_score:
+            best_score = max_score
+            torch.save(score_dict[max_score], checkpoint_path + "_best.pt")
     torch.save(model, checkpoint_path + "_last.pt")
     torch.save(ema_model, checkpoint_path + "_ema_last.pt")
     tb_writer.close()
