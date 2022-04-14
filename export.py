@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     # torchscript
     parser.add_argument("--torch2script", action="store_true", help="(可选)转为torchscript")
+    parser.add_argument("--script_gpu", action="store_true", help="(可选)保存为GPU模型，默认为CPU")
 
     # onnx
     parser.add_argument("--torch2onnx", action="store_true", help="(可选)转为onnx")
@@ -34,14 +35,20 @@ if __name__ == "__main__":
     if cfg.torch2script:
         from Models.Backend.torchscript import ScriptBackend
 
+        if cfg.script_gpu and torch.cuda.is_available():
+            device = torch.device("cuda")
+        else:
+            device = torch.device("cpu")
         script_weights = cfg.weights.split(".")[0] + ".torchscript"
         ScriptBackend.convert(
-            model=model,
-            imgs=imgs,
+            model=model.to(device),
+            imgs=imgs.to(device),
             weights=script_weights,
         )
-        output_script = ScriptBackend.infer(weights=script_weights, imgs=imgs)
-        output_script = output_script.detach().numpy()
+        output_script = ScriptBackend.infer(
+            weights=script_weights, imgs=imgs.to(device)
+        )
+        output_script = output_script.detach().cpu().numpy()
 
     # ==========================导出ONNX===============================
     if cfg.torch2onnx:
