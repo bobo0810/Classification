@@ -22,13 +22,21 @@ class PreProcess:
         数据增广
         img_path: 图像路径
         is_training: 是否开启图像增广
-                    True(训练集): random(缩放、裁剪、翻转、色彩) -> ToTensor -> Normalize
-                    False(测试集)：resize256 -> centercrop224 -> ToTensor -> Normalize
+                True: random(缩放、裁剪、翻转、色彩...) -> ToTensor -> Normalize
+                False：resize256 -> centercrop224 -> ToTensor -> Normalize
         img_size：训练图像尺寸
         """
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = Image.fromarray(img)
-        img_transforms = timm_transform(img_size, is_training=is_training)
+        if is_training:  # 训练集
+            img_transforms = timm_transform(
+                img_size,
+                is_training=True,
+                re_prob=0.5,
+                re_mode="pixel",
+            )
+        else:  #  验证集/测试集
+            img_transforms = timm_transform(img_size)
         return img_transforms(img)
 
     @staticmethod
