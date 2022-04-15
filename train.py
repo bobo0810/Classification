@@ -3,6 +3,7 @@ import os
 import torch
 import argparse
 import yaml
+import copy
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
 from Utils.tools import init_env, get_category, eval_model, eval_metric_model
@@ -96,8 +97,10 @@ if __name__ == "__main__":
 
             # 可视化网络、模型统计
             if epoch + batch_idx == 0:
-                tb_writer.add_graph(model, imgs)
-                summary(model, imgs[0].unsqueeze(0).shape, device=device)
+                vis_model = copy.deepcopy(model)
+                vis_model = vis_model if device == "cpu" else vis_model.module.to("cpu")
+                tb_writer.add_graph(vis_model, imgs.detach())
+                summary(vis_model, imgs[0].unsqueeze(0).shape, device="cpu")
             # 可视化增广图像
             if epoch % 10 + batch_idx == 0:
                 category = [cfg["DataSet"]["labels"][label] for label in labels]
