@@ -136,9 +136,10 @@ def tensor2img(tensor, BCHW2BHWC=False):
     返回值
     imgs: Tensor,形状[B,C,H,W]
     """
+    B, C, H, W = tensor.shape
     # ImageNet均值方差
-    t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(3, 1, 1).expand(3, 224, 224)
-    t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(3, 1, 1).expand(3, 224, 224)
+    t_mean = torch.FloatTensor((0.485, 0.456, 0.406)).view(C, 1, 1).expand(3, H, W)
+    t_std = torch.FloatTensor((0.229, 0.224, 0.225)).view(C, 1, 1).expand(3, H, W)
 
     tensor = tensor * t_std.to(tensor) + t_mean.to(tensor)  # 反归一化
     tensor = tensor[:, [2, 1, 0], :, :]  # RGB->BGR
