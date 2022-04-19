@@ -41,6 +41,7 @@ if __name__ == "__main__":
         cfg["Models"]["backbone"],
         num_classes=len(cfg["DataSet"]["labels"]),
     )
+    vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
     # 区分任务
     if TASK == "metric":
@@ -97,10 +98,9 @@ if __name__ == "__main__":
 
             # 可视化网络、模型统计
             if epoch + batch_idx == 0:
-                vis_model = copy.deepcopy(model)
-                vis_model = vis_model if device == "cpu" else vis_model.module.to("cpu")
                 tb_writer.add_graph(vis_model, imgs.detach())
                 summary(vis_model, imgs[0].unsqueeze(0).shape, device="cpu")
+                del vis_model
             # 可视化增广图像
             if epoch % 10 + batch_idx == 0:
                 category = [cfg["DataSet"]["labels"][label] for label in labels]
