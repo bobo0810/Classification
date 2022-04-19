@@ -22,6 +22,10 @@ if __name__ == "__main__":
     # tensorrt
     parser.add_argument("--onnx2trt", action="store_true", help="(可选)转为tensorrt")
     parser.add_argument("--fp16", action="store_true", help="(可选)开启fp16预测")
+
+    # openvino
+    parser.add_argument("--onnx2openvino", action="store_true", help="(可选)转为openvino")
+
     cfg = parser.parse_args()
 
     # ==========================torch===============================
@@ -82,6 +86,18 @@ if __name__ == "__main__":
             weights=trt_weights, imgs=imgs.numpy(), output_shape=output_onnx.shape
         )
 
+    # ==========================导出OpenVINO===============================
+    if cfg.onnx2openvino:
+        assert cfg.dynamic == False, "Warn: only supported  fixed shapes"
+        assert os.path.exists(onnx_weights), "Warn: %s no exist" % onnx_weights
+        openvino_weights = onnx_weights.split(".")[0] + "_openvino"
+        from Models.Backend.openvino import OpennVINOBackend
+
+        # onnx转openvino
+        OpennVINOBackend.convert(onnx_weights, openvino_weights)
+        output_openvino = OpennVINOBackend.infer(
+            weights=openvino_weights, imgs=imgs.numpy()
+        )
     # ==========================验证结果===============================
     print("\n", "*" * 28)
     if cfg.torch2script:
@@ -90,3 +106,7 @@ if __name__ == "__main__":
         print("output_torch - output_onnx = ", (output_torch - output_onnx).max())
     if cfg.onnx2trt:
         print("output_torch - output_trt = ", (output_torch - output_trt).max())
+    if cfg.onnx2openvino:
+        print(
+            "output_torch - output_openvino = ", (output_torch - output_openvino).max()
+        )

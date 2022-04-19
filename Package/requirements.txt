@@ -12,11 +12,15 @@ grad-cam  #类激活映射库
 pytorch_metric_learning # 度量学习库
 faiss-gpu  # 度量学习:加速相似度计算  若为CPU环境,则安装faiss-cpu
 
-# ======模型转换======
+# ======部署======
+# onnx环境
 onnx
 onnxruntime
 onnx-simplifier
 protobuf>=3.20.0
-# pycuda 
+# openvino环境
+openvino-dev
+# TensorRT环境
+# pycuda
 
 

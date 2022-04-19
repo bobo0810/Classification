@@ -67,3 +67,23 @@ output_torch - output_onnx =  5.379319e-06
 output_torch - output_trt =  8.6221844e-05
 ```
 
+## 4. OpenVINO
+注意：传入的onnx模型必须固定尺度
+```bash
+python export.py --weights="xxx.pt" --torch2onnx --onnx2openvino 
+```
+- onnx2openvino  (可选)onnx是否转为openvino
+控制台输出
+
+```bash
+****************************
+ONNX export success, saved as /xxx/mynet.onnx
+Visualize onnx with https://github.com/lutzroeder/netron.
+
+****************************
+OpennVINO export success, saved as /xxx//mynet_openvino
+
+****************************
+output_torch - output_onnx =  4.3958426e-07
+output_torch - output_openvino =  1.0170043e-06
+```
