@@ -19,7 +19,7 @@ onnxruntime
 onnx-simplifier
 protobuf>=3.20.0
 # openvino环境
-openvino-dev
+openvino-dev[pytorch]
 # TensorRT环境
 # pycuda
 
