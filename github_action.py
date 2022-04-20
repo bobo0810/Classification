@@ -28,13 +28,12 @@ def predict():
 
 def deploy():
     """
-    部署 torch->torchscript/onnx/openvino
+    部署 torch->torchscript/onnx
     """
     weights = glob.glob(cur_path + "/ExpLog/*/*/*.pt")[0]
     print("load weights from ", weights)
     os.system(
-        "python export.py --weights %s  --torch2script  --torch2onnx  --onnx2openvino "
-        % (weights)
+        "python export.py --weights %s  --torch2script  --torch2onnx " % (weights)
     )
     print("Deploy Success!")
 

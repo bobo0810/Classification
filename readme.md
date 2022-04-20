@@ -74,7 +74,7 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - 方案2：自定义
   - 附：基于Timm库定制
 - 模型部署
-  - TorchScript、ONNX、TensorRT的转换、推理、验证。
+  - TorchScript\ONNX\TensorRT\OpenVINO的转换、推理、验证。
 
 > 注：自定义 图像增广 | 损失函数 | 优化器| 模型部署| 学习率调度器 均在各自模块内修改即可
 

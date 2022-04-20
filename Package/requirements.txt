@@ -13,14 +13,14 @@ pytorch_metric_learning # 度量学习库
 faiss-gpu  # 度量学习:加速相似度计算  若为CPU环境,则安装faiss-cpu
 
 # ======部署======
-# onnx环境
+# 1.onnx环境
 onnx
 onnxruntime
 onnx-simplifier
 protobuf>=3.20.0
-# openvino环境
-openvino-dev[pytorch]
-# TensorRT环境
+# 2.openvino环境
+# openvino-dev
+# 3.TensorRT环境
 # pycuda
 
 
