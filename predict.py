@@ -1,28 +1,20 @@
+"""
+Author: your name
+Date: 2022-04-25 17:28:20
+LastEditTime: 2022-04-25 17:28:21
+LastEditors: your name
+Description: In User Settings Edit
+FilePath: /Classification/predict.py
+"""
 import argparse
 import os
 import torch
 import cv2
 from PIL import Image
-from timm.data.transforms_factory import create_transform as timm_transform
 from Utils.tools import vis_cam
+from DataSets.preprocess import PreProcess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
-
-
-def img_preprocess(img_path, img_size):
-    """
-    图像预处理
-
-    img_path(str): 图像路径。eg:/home/aaa.jpg
-    img_size(list): 图像尺寸。eg:[224, 224]
-
-    """
-    assert os.path.exists(img_path), "图像文件不存在"
-    bgr_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-    img = Image.fromarray(bgr_img)
-    img_tensor = timm_transform(img_size)(img)
-    return img_tensor
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict image")
@@ -54,12 +46,14 @@ if __name__ == "__main__":
     labels = [line.strip() for line in labels if not line.strip() == ""]
 
     # 图像预处理
-    img_tensor = img_preprocess(img_path=args.img_path, img_size=args.img_size)
+    img_tensor = PreProcess.transforms(
+        img_path=args.img_path, is_training=False, img_size=args.img_size
+    )
     img_tensor = img_tensor.unsqueeze(0).to(device)
 
     # 加载模型
     model = torch.load(args.weights, map_location="cpu")
-    if hasattr(model, 'module'):
+    if hasattr(model, "module"):
         model = model.module
     model.to(device)
     model.eval()
