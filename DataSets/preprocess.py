@@ -1,3 +1,11 @@
+"""
+Author: your name
+Date: 2022-04-25 17:36:28
+LastEditTime: 2022-04-25 17:36:29
+LastEditors: your name
+Description: In User Settings Edit
+FilePath: /Classification/DataSets/preprocess.py
+"""
 import torchvision
 from torchvision import transforms
 from PIL import Image
@@ -26,6 +34,7 @@ class PreProcess:
                 False：resize256 -> centercrop224 -> ToTensor -> Normalize
         img_size：训练图像尺寸
         """
+        assert os.path.exists(img_path), "图像文件不存在"
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = Image.fromarray(img)
         if is_training:  # 训练集
@@ -33,7 +42,8 @@ class PreProcess:
                 img_size,
                 is_training=True,
                 re_prob=0.5,
-                re_mode="pixel",
+                re_mode="pixel",  # 随机擦除
+                auto_augment=None,  # 自动增广  eg：rand-m9-mstd0.5    rand-m7-mstd0.5-inc1
             )
         else:  #  验证集/测试集
             img_transforms = timm_transform(img_size)
