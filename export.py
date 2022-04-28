@@ -35,6 +35,7 @@ if __name__ == "__main__":
         model = model.module
     model.eval()
     output_torch = model(imgs).detach().numpy()
+    print("output shape is ", output_torch.shape)
     # ==========================导出TorchScript===============================
     if cfg.torch2script:
         from Models.Backend.torchscript import ScriptBackend
