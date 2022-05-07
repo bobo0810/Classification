@@ -18,9 +18,8 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
-    cfg["DataSet"]["labels"] = get_category(
-        path=os.path.dirname(args.txt) + "/labels.txt"
-    )
+    labels_path=os.path.dirname(args.txt) + "/labels.txt"
+    cfg["DataSet"]["labels"] = get_category(labels_path)
 
     assert (
         cfg["Models"]["checkpoint"] != None
@@ -41,6 +40,7 @@ if __name__ == "__main__":
 
         # 统计准确率、混淆矩阵
         cm = eval_model(model, test_dataloader)
+        cm.relabel(mapping=get_category(labels_path,mode="dict"))
         print("accuracy is %.3f \n" % cm.Overall_ACC)
         print("confusion matrix is  \n")
         cm.print_matrix()

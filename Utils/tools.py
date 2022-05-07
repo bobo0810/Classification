@@ -26,16 +26,20 @@ from torch.utils.tensorboard import SummaryWriter
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
-def get_category(path):
+def get_category(path, mode="list"):
     """
     读取label.txt，获取类别
-
-    eg: ['dog','cat']
+    mode: 指定返回格式 list:['dog','cat']   dict:{0:'dog',1:'cat'}
     """
+    assert mode in ["list", "dict"]
     assert os.path.exists(path), "Warn: %s does not exist" % path
     labels = open(path, "r").readlines()
     labels = [label.strip() for label in labels if label != "\n"]
-    return labels
+    if mode == "dict":
+        index = list(range(0, len(labels)))
+        return dict(zip(index,labels))
+    else:
+        return labels
 
 
 def init_env(cfg):
@@ -90,7 +94,7 @@ def eval_model(model, data_loader):
         preds_list.append(preds)
         labels_list.append(labels)
 
-    preds_list = torch.cat(preds_list, dim=0).cpu().numpy() 
+    preds_list = torch.cat(preds_list, dim=0).cpu().numpy()
     labels_list = torch.cat(labels_list, dim=0).cpu().numpy()
 
     # 统计
