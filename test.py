@@ -40,9 +40,11 @@ if __name__ == "__main__":
         test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
         # 统计准确率、混淆矩阵
-        acc, cm = eval_model(model, test_dataloader)
-        print("accuracy is %.3f \n" % acc)
-        print("confusion matrix is  \n", cm)
+        cm = eval_model(model, test_dataloader)
+        print("accuracy is %.3f \n" % cm.Overall_ACC)
+        print("confusion matrix is  \n")
+        cm.print_matrix()
+        cm.print_normalized_matrix()
     elif TASK == "metric":  # 度量学习
         # 数据集
         cfg["DataSet"]["txt"] = args.txt

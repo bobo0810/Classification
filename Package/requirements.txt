@@ -1,4 +1,4 @@
-# ======训练/测试======
+# ======训练|测试======
 opencv-python
 numpy
 pyyaml
@@ -7,7 +7,7 @@ torchvision
 tensorboard>1.15.0
 torchinfo #模型统计
 timm      #模型库
-torchmetrics #指标度量库
+pycm      #指标度量库
 grad-cam  #类激活映射库
 pytorch_metric_learning # 度量学习库
 faiss-gpu  # 度量学习:加速相似度计算  若为CPU环境,则安装faiss-cpu

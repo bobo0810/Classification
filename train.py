@@ -38,8 +38,7 @@ if __name__ == "__main__":
 
     # 模型
     model = create_backbone(
-        cfg["Models"]["backbone"],
-        num_classes=len(cfg["DataSet"]["labels"]),
+        cfg["Models"]["backbone"], num_classes=len(cfg["DataSet"]["labels"]),
     )
     vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
@@ -112,7 +111,7 @@ if __name__ == "__main__":
 
             output = model(imgs)
             if TASK == "metric":
-                hard_tuples = mining_func(output, labels)
+                hard_tuples = mining_func(output, labels) 
                 loss = loss_func(output, labels, hard_tuples)
             else:
                 loss = loss_func(output, labels)
@@ -136,8 +135,8 @@ if __name__ == "__main__":
         # 验证集评估
         model.eval()
         if TASK == "class":  # 常规分类
-            score, _ = eval_model(model, val_dataloader)
-            ema_score, _ = eval_model(ema_model.module, val_dataloader)
+            score= eval_model(model, val_dataloader).Overall_ACC
+            ema_score = eval_model(ema_model.module, val_dataloader).Overall_ACC
             tb_writer.add_scalars("Eval", {"acc": score, "ema_acc": ema_score}, epoch)
 
         elif TASK == "metric":  # 度量学习

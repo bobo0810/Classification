@@ -1,7 +1,7 @@
 import torch
 import math
 import random
-import torchmetrics
+from pycm import ConfusionMatrix
 import time
 import os
 import cv2
@@ -77,9 +77,6 @@ def init_env(cfg):
 def eval_model(model, data_loader):
     """
     常规分类：评估指标
-
-    acc: 准确率
-    cm:  混淆矩阵
     """
     device = next(model.parameters()).device
 
@@ -90,22 +87,14 @@ def eval_model(model, data_loader):
         scores = torch.nn.functional.softmax(scores, dim=1)
         preds = torch.argmax(scores, dim=1)
 
-        scores_list.append(scores)
         preds_list.append(preds)
         labels_list.append(labels)
 
-    scores_tensor = torch.cat(scores_list, dim=0)  # [imgs_nums,class_nums]
-    preds_tensor = torch.cat(preds_list, dim=0)  # [imgs_nums]
-    labels_tensor = torch.cat(labels_list, dim=0)  # [imgs_nums]
+    preds_list = torch.cat(preds_list, dim=0).cpu().numpy() 
+    labels_list = torch.cat(labels_list, dim=0).cpu().numpy()
 
     # 统计
-    metric_acc = torchmetrics.Accuracy().to(device)
-    metric_cm = torchmetrics.ConfusionMatrix(
-        num_classes=len(data_loader.dataset.labels)
-    ).to(device)
-    acc = metric_acc(scores_tensor, labels_tensor)
-    cm = metric_cm(preds_tensor, labels_tensor)
-    return acc, cm
+    return ConfusionMatrix(labels_list, preds_list)
 
 
 @torch.no_grad()

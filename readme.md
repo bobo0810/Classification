@@ -135,7 +135,7 @@ https://bclassification.readthedocs.io/   文档内容包含：
 - 开源库
   - [Yolov5目标检测库](https://github.com/ultralytics/yolov5)![Github stars](https://img.shields.io/github/stars/ultralytics/yolov5.svg)
   - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
-  - [TorchMetrics指标度量库](https://github.com/PytorchLightning/metrics)![Github stars](https://img.shields.io/github/stars/PytorchLightning/metrics.svg)
+  - [PyCM多类指标统计库](https://github.com/sepandhaghighi/pycm)![Github stars](https://img.shields.io/github/stars/sepandhaghighi/pycm.svg)
   - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)![Github stars](https://img.shields.io/github/stars/TylerYep/torchinfo.svg)
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
   - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
