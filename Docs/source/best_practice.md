@@ -55,17 +55,17 @@
    
    accuracy is 0.975
    
-   Predict  0        1        
+   Predict  cat        dog        
    Actual
-   0        20       0        
+   cat        20       0        
    
-   1        1        19       
+   dog        1        19       
    
    
-   Predict    0          1          
+   Predict    cat          dog          
    Actual
-   0          1.0        0.0        
+   cat          1.0        0.0        
    
-   1          0.05       0.95 
+   dog          0.05       0.95 
    ```
 
