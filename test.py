@@ -7,6 +7,8 @@ from DataSets import create_dataloader
 from DataSets.dataset import create_datasets
 from Utils.tools import get_category, eval_model, eval_metric_model
 import argparse
+import matplotlib
+import matplotlib.pyplot as plt
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     file = open(args.yaml, "r")
     cfg = yaml.load(file, Loader=yaml.FullLoader)
-    labels_path=os.path.dirname(args.txt) + "/labels.txt"
+    labels_path = os.path.dirname(args.txt) + "/labels.txt"
     cfg["DataSet"]["labels"] = get_category(labels_path)
 
     assert (
@@ -40,11 +42,25 @@ if __name__ == "__main__":
 
         # 统计准确率、混淆矩阵
         cm = eval_model(model, test_dataloader)
-        cm.relabel(mapping=get_category(labels_path,mode="dict"))
+        cm.relabel(mapping=get_category(labels_path, mode="dict"))
         print("accuracy is %.3f \n" % cm.Overall_ACC)
         print("confusion matrix is  \n")
+        # 打印混淆矩阵
         cm.print_matrix()
         cm.print_normalized_matrix()
+
+        # 可视化混淆矩阵
+        cm.plot(cmap=plt.cm.Greens, number_label=True, plot_lib="matplotlib")
+        matrix_path = cur_path + "/matrix.jpg"
+        plt.savefig(matrix_path)
+        print("matrix save in ", matrix_path)
+
+        cm.plot(
+            cmap=plt.cm.Reds, normalized=True, number_label=True, plot_lib="seaborn"
+        )
+        n_matrix_path = cur_path + "/normalized_matrix.jpg"
+        plt.savefig(n_matrix_path)
+        print("normalized_matrix save in ", n_matrix_path)
     elif TASK == "metric":  # 度量学习
         # 数据集
         cfg["DataSet"]["txt"] = args.txt
