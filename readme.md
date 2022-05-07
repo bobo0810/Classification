@@ -16,9 +16,6 @@
 | 解释性 | 集成[pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg) | 持续更新SOTA的注意力可视化算法(8+)。 |
 | 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:80%;" /> |
 
-<div align=center><img src="./Docs/imgs/tsdb.gif" ></div>
-
-
 
 ## 支持任务
 
@@ -33,34 +30,30 @@
     pip install -r ./Package/requirements.txt 
     ```
     
-2. 训练：执行`python train.py`
-
-    > 注：示例数据集和训练参数已配好，可直接训练。
+2. 训练：已配好示例数据集和参数，执行`python train.py`
+  <div align=center><img src="./Docs/imgs/tsdb.gif" width="600px"  height="600px"></div>
+  
 
 3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
-
+  <div align=center><img src="./Docs/imgs/matrix.jpg" ></div>
 4. 推理
 
-    ```bash
+  ```bash
     python predict.py -weights 权重路径  --vis_cam # 可视化注意力图
-    ```
-
-    <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
+  ```
+  <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
 
 
 
 ## 白嫖 训练/推理/部署
 
- Github Ac­tions由GitHub 推出的持续集成服务，提供虚拟环境，用于自动化构建、测试、打包、部署项目。
+ Github Ac­tions由GitHub 推出的持续集成服务，用于自动化构建、测试、部署项目。
 
 **动手尝试**
 
 1. fork本仓库。
 
 2. 随意修改并提交到新仓库，触发push事件即开启训练、推理、部署。
-
-   <img src="Docs/imgs/action.png" style="zoom:68%;" />
-
 
 
 ## API文档
@@ -74,24 +67,24 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - 方案2：自定义
   - 附：基于Timm库定制
 - 模型部署
-  - TorchScript\ONNX\TensorRT\OpenVINO的转换、推理、验证。
+  - 全流程支持 转换->加载->推理->验证误差。
 
 > 注：自定义 图像增广 | 损失函数 | 优化器| 模型部署| 学习率调度器 均在各自模块内修改即可
 
-## 框架
+## 扩展框架
 
 ```bash
 ├── Config
 │   └── *.yaml 训练参数
 │   └── *.txt  数据集 
 ├── DataSets
-│   └── preprocess.py 图像增广
+│   └── preprocess.py 图像增广入口
 ├── Models
-│   ├── Backbone    主干网络
-│   ├── Optimizer   优化器
-│   ├── Loss        损失函数
-│   ├── Scheduler   学习率调度器
-│   ├── Backend     模型部署
+│   ├── Backbone    主干网络入口
+│   ├── Optimizer   优化器入口
+│   ├── Loss        损失函数入口
+│   ├── Scheduler   学习率调度器入口
+│   ├── Backend     模型部署入口
 ├── export.py
 ├── predict.py
 ├── test.py
