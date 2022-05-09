@@ -1,6 +1,5 @@
 # ========================================数据集===================================
 DataSet:
-  prefix: ./CatDog/    # 数据集根路径 /home/IMG_PATH/ 
   size: [224,224]     # 训练尺寸
   ratio: 0.9  # train:val比例  
   sampler: batch_balance # 采样策略 
@@ -10,7 +9,7 @@ Models:
   optimizer: sgd       # 优化器 
   
   # 常规分类
-  backbone: mynet # 主干网络 
+  backbone: resnet18 # 主干网络 
   loss: cross_entropy  # 损失函数
   
   # 度量学习
@@ -21,4 +20,4 @@ Models:
 Train:
   lr: 0.01
   epochs: 80 
-  scheduler: multistep  # 学习率调度器
+  scheduler: cosine  # 学习率调度器

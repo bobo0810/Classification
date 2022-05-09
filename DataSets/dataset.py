@@ -22,7 +22,6 @@ class create_datasets(data.Dataset):
         is_training: 是否开启图像增广,默认不增广
         """
         assert mode in ["train", "val", "test"]
-        self.prefix = cfg["prefix"]
         self.labels = cfg["labels"]
         self.txt = cfg["txt"]
         self.size = cfg["size"]
@@ -53,7 +52,7 @@ class create_datasets(data.Dataset):
         print("The nums of each class: ", dict(Counter(self.category_list)), "\n")
 
     def __getitem__(self, index):
-        img_path = os.path.join(self.prefix, self.imgs_list[index])
+        img_path = self.imgs_list[index]  # 图片路径
         category = self.category_list[index]  # 类别名称
         label = int(self.labels.index(category))  # 类别标签
         image = PreProcess().transforms(img_path, self.is_training, self.size)  # 增广
