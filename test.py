@@ -40,27 +40,21 @@ if __name__ == "__main__":
         cfg["DataSet"]["txt"] = args.txt
         test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
 
-        # 统计准确率、混淆矩阵
+        # 统计指标
         cm = eval_model(model, test_dataloader)
         cm.relabel(mapping=get_category(labels_path, mode="dict"))
-        print("accuracy is %.3f \n" % cm.Overall_ACC)
-        print("confusion matrix is  \n")
-        # 打印混淆矩阵
-        cm.print_matrix()
-        cm.print_normalized_matrix()
+        print("Overall ACC is %.3f \n" % cm.Overall_ACC)
 
         # 可视化混淆矩阵
-        cm.plot(cmap=plt.cm.Greens, number_label=True, plot_lib="matplotlib")
-        matrix_path = cur_path + "/matrix.jpg"
-        plt.savefig(matrix_path)
-        print("matrix save in ", matrix_path)
-
         cm.plot(
             cmap=plt.cm.Reds, normalized=True, number_label=True, plot_lib="seaborn"
         )
-        n_matrix_path = cur_path + "/normalized_matrix.jpg"
-        plt.savefig(n_matrix_path)
-        print("normalized_matrix save in ", n_matrix_path)
+        plt.savefig(cur_path + "/matrix.jpg")
+        print("matrix save in ", cur_path + "/matrix.jpg \n")
+        
+        # 输出全部指标
+        cm.print_normalized_matrix()
+        print(cm)
     elif TASK == "metric":  # 度量学习
         # 数据集
         cfg["DataSet"]["txt"] = args.txt
