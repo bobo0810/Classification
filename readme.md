@@ -14,7 +14,7 @@
 | 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、图像、模型结构等。 |
 | 解释性 | 集成[pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg) | 持续更新SOTA的注意力可视化算法(8+)。 |
-| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:68%;" /> |
+| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:50%;" /> |
 
 
 ## 支持任务
@@ -35,6 +35,8 @@
 
 
 3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
+
+   > 支持126个评价指标（总体65+各类别61）
   <div align=center><img src="./Docs/imgs/matrix.jpg" ></div>
 4. 推理
 
@@ -52,7 +54,7 @@
 
 
 
-## [WIKI文档](https://github.com/bobo0810/Classification/wiki)
+## [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 
 - 最佳实践
 - 自定义数据集
@@ -99,18 +101,6 @@
 | -------- | -------- | ------------------------------------------------------------ |
 | 主干网络 | backbone | 支持600+预训练模型，[参考定义](./Models/Backbone/mynet_metric.py) |
 | 损失函数 | loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |
-
-
-
-## 可以，但没必要
-
-- 自动混合精度AMP
-
-- 分布式数据并行DDP
-
-> 注：如需要，请参考[最佳实践](https://github.com/bobo0810/PytorchGuide)
-
-
 
 ## 感谢
 
