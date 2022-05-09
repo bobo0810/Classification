@@ -14,7 +14,7 @@
 | 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、图像、模型结构等。 |
 | 解释性 | 集成[pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg) | 持续更新SOTA的注意力可视化算法(8+)。 |
-| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:80%;" /> |
+| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:68%;" /> |
 
 
 ## 支持任务
@@ -31,8 +31,8 @@
     ```
     
 2. 训练：已配好示例数据集和参数，执行`python train.py`
-  <div align=center><img src="./Docs/imgs/tsdb.gif" width="600px"  height="600px"></div>
-  
+  <div align=center><img src="./Docs/imgs/tsdb.gif" width="500px"  height="500px"></div>
+
 
 3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
   <div align=center><img src="./Docs/imgs/matrix.jpg" ></div>
@@ -45,20 +45,14 @@
 
 
 
-## 白嫖 训练/推理/部署
+## 小白上手
 
- Github Ac­tions由GitHub 推出的持续集成服务，用于自动化构建、测试、部署项目。
-
-**动手尝试**
-
-1. fork本仓库。
-
-2. 随意修改并提交到新仓库，触发push事件即开启训练、推理、部署。
+**Google Colab notebooks** :  免费GPU资源，运行。即将支持
 
 
-## API文档
 
-https://bclassification.readthedocs.io/   文档内容包含：
+
+## [WIKI文档](https://github.com/bobo0810/Classification/wiki)
 
 - 最佳实践
 - 自定义数据集
@@ -68,8 +62,6 @@ https://bclassification.readthedocs.io/   文档内容包含：
   - 附：基于Timm库定制
 - 模型部署
   - 全流程支持 转换->加载->推理->验证误差。
-
-> 注：自定义 图像增广 | 损失函数 | 优化器| 模型部署| 学习率调度器 均在各自模块内修改即可
 
 ## 扩展框架
 
