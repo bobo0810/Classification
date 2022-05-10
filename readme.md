@@ -22,41 +22,9 @@
 - 图像分类✅
 - 度量学习/特征对比✅
 
-## 快速开始
-
-1. 安装依赖
-    ```bash
-    pip install    ./Package/*zip  &&
-    pip install -r ./Package/requirements.txt 
-    ```
-    
-2. 训练：已配好示例数据集和参数，执行`python train.py`
-  <div align=center><img src="./Docs/imgs/tsdb.gif" width="500px"  height="500px"></div>
-
-
-3. 测试：`Config/test.yaml`配置权重，执行`python test.py`
-
-   > 支持126个评价指标（总体65+各类别61）
-  <div align=center><img src="./Docs/imgs/matrix.jpg" ></div>
-4. 推理
-
-  ```bash
-    python predict.py -weights 权重路径  --vis_cam # 可视化注意力图
-  ```
-  <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
-
-
-
-## 小白上手
-
-**Google Colab notebooks** :  免费GPU资源，运行。即将支持
-
-
-
-
 ## [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 
-- 最佳实践
+- 最佳实践 ⭐️ ⭐️ ⭐️
 - 自定义数据集
 - 自定义主干网络
   - 方案1：Timm库
@@ -64,6 +32,26 @@
   - 附：基于Timm库定制
 - 模型部署
   - 全流程支持 转换->加载->推理->验证误差。
+
+## 可视化
+
+<center>训练</center>
+
+  <div align=center><img src="./Docs/imgs/tsdb.gif" width="500px"  height="500px"></div>
+
+<center>测试:支持120+评价指标</center>
+
+  <div align=center><img src="./Docs/imgs/matrix.jpg" width="1000px"  height="400px" ></div>
+
+<center>预测:类激活图</center>
+
+  <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
+
+
+
+## 小白上手
+
+**Google Colab notebooks** :  免费GPU资源，运行。即将支持
 
 ## 扩展框架
 
