@@ -16,14 +16,14 @@ if __name__ == "__main__":
     parser.add_argument("--batch", type=int,help="推理batch", default=8)
     # 参数
     parser.add_argument("--txt", help="测试集路径", default=cur_path + "/Config/dataset.txt")
-    parser.add_argument("--checkpoint",help="测试集路径", required=True)
+    parser.add_argument("--weights",help="模型权重", required=True)
     args = parser.parse_args()
     dataset_params={'size':args.size,'batch':args.batch,'txt':args.txt}
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # 直接加载model,而非model.state_dict
-    model = torch.load(args.checkpoint, map_location="cpu")
+    model = torch.load(args.weights, map_location="cpu")
     while hasattr(model, "module"):
         model = model.module
     model.to(device)
