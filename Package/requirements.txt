@@ -2,6 +2,7 @@
 opencv-python
 numpy
 pyyaml
+matplotlib
 torch
 torchvision
 tensorboard>1.15.0
