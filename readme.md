@@ -24,14 +24,17 @@
 
 ## [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 
-- 最佳实践 ⭐️ ⭐️ ⭐️
+- [最佳实践](https://github.com/bobo0810/Classification/wiki/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5) ⭐️ ⭐️ ⭐️
+
 - 自定义数据集
+
 - 自定义主干网络
-  - 方案1：Timm库
-  - 方案2：自定义
-  - 附：基于Timm库定制
+
+  (1)Timm库   (2)自定义   (3)基于Timm库定制
+
 - 模型部署
-  - 全流程支持 转换->加载->推理->验证误差。
+
+  全流程支持 转换->加载->推理->验证误差。
 
 ## 可视化
 
