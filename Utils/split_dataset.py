@@ -63,7 +63,6 @@ def split(imgs_path, ratio, dataset_txt):
     combin_dataset(val_list, "val")
     combin_dataset(test_list, "test")
 
-    # 保存
     TXT_Tools.write_lines(dataset_list, os.path.join(dataset_txt, "dataset.txt"))
 
 

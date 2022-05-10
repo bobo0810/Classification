@@ -8,8 +8,8 @@ def create_dataloader(cfg, mode):
     """
     数据集加载器入口
     """
-    is_training = True if mode == "train" else False
-    dataset = create_datasets(cfg, mode, is_training)
+    use_augment = True if mode == "train" else False
+    dataset = create_datasets(cfg, mode, use_augment)
 
     # 数据集加载器
     if mode == "train":

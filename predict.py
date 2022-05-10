@@ -11,7 +11,7 @@ import os
 import torch
 import cv2
 from PIL import Image
-from Utils.tools import vis_cam
+from Utils.tools import vis_cam,analysis_dataset
 from DataSets.preprocess import PreProcess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -23,31 +23,30 @@ if __name__ == "__main__":
         "--img_path",
         type=str,
         default=cur_path + "/CatDog/cat/cat_1.jpg",
-        help="Input image path",
+        help="测试图片路径",
     )
     parser.add_argument(
-        "--labels_path",
+        "--txt",
         type=str,
-        default=cur_path + "/Config/labels.txt",
-        help="labels.txt path",
+        default=cur_path + "/Config/dataset.txt",
+        help="数据集文件路径，以获取类别名",
     )
 
     # 模型
     parser.add_argument("--img_size", default=[224, 224], help="推理尺寸")
     parser.add_argument("--weights", type=str, help="模型权重", required=True)
     # 可视化注意力图
-    parser.add_argument("--vis_cam", action="store_true", help="可视化注意力图")
+    parser.add_argument("--vis_cam", action="store_true", help="可视化注意力图,默认关闭")
 
     args = parser.parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # 类别
-    labels = open(args.labels_path, "r").readlines()
-    labels = [line.strip() for line in labels if not line.strip() == ""]
+    labels= analysis_dataset(args.txt)["labels"]
 
     # 图像预处理
     img_tensor = PreProcess.transforms(
-        img_path=args.img_path, is_training=False, img_size=args.img_size
+        img_path=args.img_path, use_augment=False, img_size=args.img_size
     )
     img_tensor = img_tensor.unsqueeze(0).to(device)
 

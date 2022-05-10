@@ -1,13 +1,17 @@
 import torch
 import math
 import random
-from pycm import ConfusionMatrix
 import time
 import os
 import cv2
 import sys
+from pycm import ConfusionMatrix
+from ToolsLib.TXT_Tools import TXT_Tools
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
+from pytorch_grad_cam.utils.image import show_cam_on_image
+import numpy as np
+from torch.utils.tensorboard import SummaryWriter
 from pytorch_grad_cam import (
     GradCAM,
     ScoreCAM,
@@ -19,28 +23,36 @@ from pytorch_grad_cam import (
     LayerCAM,
     FullGrad,
 )
-from pytorch_grad_cam.utils.image import show_cam_on_image
-import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
-
-def get_category(path, mode="list"):
+def analysis_dataset(txt):
     """
-    读取label.txt，获取类别
-    mode: 指定返回格式 list:['dog','cat']   dict:{0:'dog',1:'cat'}
+    解析dataset.txt 
     """
-    assert mode in ["list", "dict"]
-    assert os.path.exists(path), "Warn: %s does not exist" % path
-    labels = open(path, "r").readlines()
-    labels = [label.strip() for label in labels if label != "\n"]
-    if mode == "dict":
-        index = list(range(0, len(labels)))
-        return dict(zip(index,labels))
-    else:
-        return labels
+    assert os.path.exists(txt), "错误: 文件不存在"
+    imgs_list = TXT_Tools.read_lines(txt, split_flag=",")
+    dataset = {
+        "train": {"imgs": [], "labels": []},
+        "val": {"imgs": [], "labels": []},
+        "test": {"imgs": [], "labels": []},
+    }
+    labels=set()
+    for path, label, mode in imgs_list:
+        assert mode in ["train", "val", "test"]
+        labels.add(label)
+        dataset[mode]["imgs"].append(path)
+        dataset[mode]["labels"].append(label)
+    labels=list(labels)
+    labels.sort()
 
+    index = list(range(0, len(labels)))
+    labels_dict= dict(zip(index,labels))
+    
+    dataset["labels"]=labels
+    dataset["labels_dict"]=labels_dict
+
+    return dataset
 
 def init_env(cfg):
     """

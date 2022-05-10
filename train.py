@@ -6,7 +6,8 @@ import yaml
 import copy
 from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from Utils.tools import init_env, get_category, eval_model, eval_metric_model
+from DataSets.dataset import create_datasets
+from Utils.tools import analysis_dataset,init_env, eval_model, eval_metric_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -22,23 +23,22 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train")
     parser.add_argument("--yaml", help="训练配置", default=cur_path + "/Config/train.yaml")
-    parser.add_argument("--txt", help="训练集路径", default=cur_path + "/Config/train.txt")
-    args = parser.parse_args()
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    file = open(args.yaml, "r")
-    cfg = yaml.load(file, Loader=yaml.FullLoader)
-    cfg["DataSet"]["txt"] = args.txt
-    cfg["DataSet"]["labels"] = get_category(
-        path=os.path.dirname(args.txt) + "/labels.txt"
+    parser.add_argument(
+        "--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt"
     )
-
+    args = parser.parse_args()
+    
     # 初始化环境
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    cfg = yaml.load(open(args.yaml, "r"), Loader=yaml.FullLoader)
+    cfg["DataSet"]['txt']=args.txt
+    labels_list=analysis_dataset(args.txt)["labels"]
+
     tb_writer, checkpoint_path = init_env(cfg)
 
     # 模型
     model = create_backbone(
-        cfg["Models"]["backbone"], num_classes=len(cfg["DataSet"]["labels"]),
+        cfg["Models"]["backbone"], num_classes=len(labels_list),
     )
     vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         # 损失函数(分类器)
         loss_func = create_metric_loss(
             name=cfg["Models"]["loss"],
-            num_classes=len(cfg["DataSet"]["labels"]),
+            num_classes=len(labels_list),
             embedding_size=model.embedding_size,
         ).to(device)
         params = [{"params": loss_func.parameters(), "lr": cfg["Train"]["lr"]}]
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 del vis_model
             # 可视化增广图像
             if epoch % 10 + batch_idx == 0:
-                category = [cfg["DataSet"]["labels"][label] for label in labels]
+                category = [labels_list[label] for label in labels]
                 vis_list = PreProcess().convert(imgs, category)
                 for vis_name, vis_img in zip(set(category), vis_list):
                     tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
             output = model(imgs)
             if TASK == "metric":
-                hard_tuples = mining_func(output, labels) 
+                hard_tuples = mining_func(output, labels)
                 loss = loss_func(output, labels, hard_tuples)
             else:
                 loss = loss_func(output, labels)
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         # 验证集评估
         model.eval()
         if TASK == "class":  # 常规分类
-            score= eval_model(model, val_dataloader).Overall_ACC
+            score = eval_model(model, val_dataloader).Overall_ACC
             ema_score = eval_model(ema_model.module, val_dataloader).Overall_ACC
             tb_writer.add_scalars("Eval", {"acc": score, "ema_acc": ema_score}, epoch)
 

@@ -1,11 +1,3 @@
-"""
-Author: your name
-Date: 2022-04-25 17:36:28
-LastEditTime: 2022-04-25 17:36:29
-LastEditors: your name
-Description: In User Settings Edit
-FilePath: /Classification/DataSets/preprocess.py
-"""
 import torchvision
 from torchvision import transforms
 from PIL import Image
@@ -26,11 +18,11 @@ class PreProcess:
         pass
 
     @staticmethod
-    def transforms(img_path, is_training, img_size=[224, 224]):
+    def transforms(img_path, use_augment, img_size=[224, 224]):
         """
         数据增广
         img_path: 图像路径
-        is_training: 是否开启图像增广
+        use_augment: 是否开启图像增广
                 True: random(缩放、裁剪、翻转、色彩...) -> ToTensor -> Normalize
                 False：resize256 -> centercrop224 -> ToTensor -> Normalize
         img_size：训练图像尺寸
@@ -38,7 +30,7 @@ class PreProcess:
         assert os.path.exists(img_path), "图像文件不存在"
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = Image.fromarray(img)
-        if is_training:  # 训练集
+        if use_augment:  # 训练集
             img_transforms = timm_transform(
                 img_size,
                 is_training=True,
