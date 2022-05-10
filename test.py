@@ -2,27 +2,28 @@ import sys
 import os
 import torch
 import time
-import yaml
 from DataSets import create_dataloader
 from DataSets.dataset import create_datasets
 from Utils.tools import analysis_dataset, eval_model, eval_metric_model
 import argparse
-import matplotlib
 import matplotlib.pyplot as plt
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Test")
-    parser.add_argument("--yaml", help="测试配置", default=cur_path + "/Config/test.yaml")
+    parser = argparse.ArgumentParser(description="测试")
+    # 默认参数
+    parser.add_argument("--size", type=list,help="图像尺寸", default=[224,224])
+    parser.add_argument("--batch", type=int,help="推理batch", default=8)
+    # 参数
     parser.add_argument("--txt", help="测试集路径", default=cur_path + "/Config/dataset.txt")
+    parser.add_argument("--checkpoint",help="测试集路径", required=True)
     args = parser.parse_args()
+    dataset_params={'size':args.size,'batch':args.batch,'txt':args.txt}
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    cfg = yaml.load(open(args.yaml, "r"), Loader=yaml.FullLoader)
-    cfg["DataSet"]["txt"] = args.txt
 
     # 直接加载model,而非model.state_dict
-    model = torch.load(cfg["Models"]["checkpoint"], map_location="cpu")
+    model = torch.load(args.checkpoint, map_location="cpu")
     while hasattr(model, "module"):
         model = model.module
     model.to(device)
@@ -31,7 +32,7 @@ if __name__ == "__main__":
 
     if TASK == "class":  # 常规分类
         # 数据集
-        test_dataloader = create_dataloader(cfg["DataSet"], mode="test")
+        test_dataloader = create_dataloader(dataset_params, mode="test")
         labels_list = analysis_dataset(args.txt)["labels_dict"]
 
         # 统计指标
@@ -51,8 +52,8 @@ if __name__ == "__main__":
         print(cm)
     elif TASK == "metric":  # 度量学习
         # 数据集
-        train_set = create_datasets(cfg["DataSet"], mode="train")
-        test_set = create_datasets(cfg["DataSet"], mode="test")
+        train_set = create_datasets(dataset_params, mode="train")
+        test_set = create_datasets(dataset_params, mode="test")
 
         # 统计精确率
         precision = eval_metric_model(model, train_set, test_set)
