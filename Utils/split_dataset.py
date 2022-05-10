@@ -63,7 +63,7 @@ def split(imgs_path, ratio, dataset_txt):
     combin_dataset(val_list, "val")
     combin_dataset(test_list, "test")
 
-    TXT_Tools.write_lines(dataset_list, os.path.join(dataset_txt, "dataset.txt"))
+    TXT_Tools.write_lines(dataset_list, dataset_txt)
 
 
 if __name__ == "__main__":
@@ -80,14 +80,14 @@ if __name__ == "__main__":
         "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog/"
     )
     parser.add_argument(
-        "--Ratio", type=list, default=[0.7, 0.1, 0.2], help="默认train:val:test=7:1:2"
+        "--Ratio", type=list, default=[0.7, 0.1, 0.2], help="训练集:验证集:测试集的各类别划分比例"
     )
-    parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时)")
+    parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时,可选)")
     parser.add_argument(
-        "--DatasetTxt", default=cur_path + "/../Config/", help="dataset.txt保存路径",
+        "--TxtPath", default=cur_path + "/../Config/dataset.txt", help="dataset.txt保存路径",
     )
     args = parser.parse_args()
 
     if args.Verify:
         verifyImgs(args.ImgsPath)
-    split(args.ImgsPath, args.Ratio, args.DatasetTxt)
+    split(args.ImgsPath, args.Ratio, args.TxtPath)
