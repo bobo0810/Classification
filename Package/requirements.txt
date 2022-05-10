@@ -2,6 +2,7 @@
 opencv-python
 numpy
 pyyaml
+seaborn
 matplotlib
 torch
 torchvision
