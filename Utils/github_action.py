@@ -5,7 +5,7 @@ import os
 import argparse
 import glob
 
-cur_path = os.path.abspath(os.path.dirname(__file__))
+root_path = os.path.abspath(os.path.dirname(__file__))+"/.."
 
 
 def train():
