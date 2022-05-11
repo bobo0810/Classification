@@ -12,13 +12,13 @@ jobs:
         pip install ./Package/*zip
     - name: Start Train # 训练
       run: | 
-        python github_action.py  --mode train
+        python Utils/github_action.py  --mode train
     - name: Start Test  # 测试
       run: | 
-        python github_action.py  --mode test
+        python Utils/github_action.py  --mode test
     - name: Start Predict  # 推理
       run: | 
-        python github_action.py  --mode predict
+        python Utils/github_action.py  --mode predict
     - name: Start Deploy  # 部署
       run: | 
-        python github_action.py  --mode deploy
+        python Utils/github_action.py  --mode deploy
