@@ -20,7 +20,7 @@ def test():
     """
     测试
     """
-    weights = glob.glob(cur_path + "/ExpLog/*/*/*.pt")[0]
+    weights = glob.glob(root_path + "/ExpLog/*/*/*.pt")[0]
     print("load weights from ", weights)
 
     os.system("python test.py --weights %s " % (weights))
@@ -31,7 +31,7 @@ def predict():
     """
     推理
     """
-    weights = glob.glob(cur_path + "/ExpLog/*/*/*.pt")[0]
+    weights = glob.glob(root_path + "/ExpLog/*/*/*.pt")[0]
     print("load weights from ", weights)
 
     os.system("python predict.py --weights %s  --vis_cam" % (weights))
@@ -42,7 +42,7 @@ def deploy():
     """
     部署 torch->torchscript/onnx
     """
-    weights = glob.glob(cur_path + "/ExpLog/*/*/*.pt")[0]
+    weights = glob.glob(root_path + "/ExpLog/*/*/*.pt")[0]
     print("load weights from ", weights)
 
     os.system(
