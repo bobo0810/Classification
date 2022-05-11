@@ -1,11 +1,3 @@
-"""
-Author: your name
-Date: 2022-04-25 17:28:20
-LastEditTime: 2022-04-25 17:28:21
-LastEditors: your name
-Description: In User Settings Edit
-FilePath: /Classification/predict.py
-"""
 import argparse
 import os
 import torch
