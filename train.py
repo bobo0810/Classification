@@ -4,10 +4,9 @@ import torch
 import argparse
 import yaml
 import copy
-from DataSets import create_dataloader
 from DataSets.preprocess import PreProcess
-from DataSets.dataset import create_datasets
-from Utils.tools import analysis_dataset,init_env, eval_model, eval_metric_model
+from DataSets import create_datasets, create_dataloader
+from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -15,7 +14,6 @@ from Models.Scheduler import create_scheduler
 from Utils.tools import tensor2img
 from timm.utils import ModelEmaV2
 from torchinfo import summary
-from DataSets.dataset import create_datasets
 from pytorch_metric_learning import miners
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -23,31 +21,36 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train")
     parser.add_argument("--yaml", help="训练配置", default=cur_path + "/Config/train.yaml")
-    parser.add_argument(
-        "--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt"
-    )
     args = parser.parse_args()
-    
+
     # 初始化环境
     device = "cuda" if torch.cuda.is_available() else "cpu"
     cfg = yaml.load(open(args.yaml, "r"), Loader=yaml.FullLoader)
-    cfg["DataSet"]['txt']=args.txt
-    labels_list=analysis_dataset(args.txt)["labels"]
+    labels_list = analysis_dataset(cfg["DataSet"]["txt"])["labels"]
 
     tb_writer, checkpoint_path = init_env(cfg)
 
     # 模型
-    model = create_backbone(
-        cfg["Models"]["backbone"], num_classes=len(labels_list),
-    )
+    model = create_backbone(cfg["Models"]["backbone"], num_classes=len(labels_list))
     vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
     # 区分任务
     if TASK == "metric":
         # 数据集
-        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
-        train_set = create_datasets(cfg["DataSet"], mode="train")
-        val_set = create_datasets(cfg["DataSet"], mode="val")
+        train_set = create_datasets(
+            txt=cfg["DataSet"]["txt"],
+            mode="train",
+            size=cfg["DataSet"]["size"],
+            use_augment=True,
+        )
+        train_dataloader = create_dataloader(
+            batch_size=cfg["DataSet"]["batch"],
+            dataset=train_set,
+            sampler_name=cfg["DataSet"]["sampler"],
+        )
+        val_set = create_datasets(
+            txt=cfg["DataSet"]["txt"], mode="val", size=cfg["DataSet"]["size"]
+        )
 
         # 难样例挖掘
         mining_func = miners.MultiSimilarityMiner()
@@ -62,8 +65,22 @@ if __name__ == "__main__":
 
     else:
         # 数据集
-        train_dataloader = create_dataloader(cfg["DataSet"], mode="train")
-        val_dataloader = create_dataloader(cfg["DataSet"], mode="val")
+        train_set = create_datasets(
+            txt=cfg["DataSet"]["txt"],
+            mode="train",
+            size=cfg["DataSet"]["size"],
+            use_augment=True,
+        )
+        val_set = create_datasets(txt=cfg["DataSet"]["txt"], mode="val", size=cfg["DataSet"]["size"])
+
+        # 数据集加载器
+        train_dataloader = create_dataloader(
+            batch_size=cfg["DataSet"]["batch"],
+            dataset=train_set,
+            sampler_name=cfg["DataSet"]["sampler"],
+        )
+
+        val_dataloader = create_dataloader(batch_size=cfg["DataSet"]["batch"], dataset=val_set)
 
         # 损失函数
         loss_func = create_class_loss(cfg["Models"]["loss"]).to(device)
