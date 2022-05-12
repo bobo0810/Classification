@@ -32,7 +32,7 @@ if __name__ == "__main__":
     model = create_backbone(cfg.backbone, num_classes=len(labels_list))
     vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
-    # 区分任务
+    # 度量学习
     if TASK == "metric":
         # 数据集
         train_set = create_datasets(txt=cfg.txt, mode="train", size=cfg.size, use_augment=True)
@@ -49,7 +49,7 @@ if __name__ == "__main__":
             embedding_size=model.embedding_size,
         ).to(device)
         params = [{"params": loss_func.parameters(), "lr": cfg.lr}]
-
+    # 常规分类
     else:
         # 数据集
         train_set = create_datasets(txt=cfg.txt, mode="train", size=cfg.size, use_augment=True,)
@@ -76,9 +76,7 @@ if __name__ == "__main__":
 
     # 优化器
     params.append({"params": model.parameters()})
-    optimizer = create_optimizer(
-        params, cfg.optimizer, lr=cfg.lr
-    )
+    optimizer = create_optimizer(params, cfg.optimizer, lr=cfg.lr)
 
     # 学习率调度器
     lr_scheduler = create_scheduler(
