@@ -60,8 +60,8 @@
 
 ```bash
 ├── Config
-│   └── *.yaml 训练参数
-│   └── *.txt  数据集 
+│   └── config.py     训练参数
+│   └── dataset.txt  数据集 
 ├── DataSets
 │   └── preprocess.py 图像增广入口
 ├── Models
@@ -80,7 +80,7 @@
 
 ## 训练参数
 
-|   常规分类   | yaml属性  | 支持                                                         |
+|   常规分类   | 属性  | 支持                                                         |
 | ------------ | --------- | ------------------------------------------------------------ |
 | 采样策略     | sampler   | - normal     常规采样<br>- dataset_balance    类别平衡采样(数据集维度)  <br>- batch_balance    类别平衡采样(batch维度)⭐️        |
 | 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
@@ -88,7 +88,7 @@
 | 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 | 学习率调度器 | scheduler | - multistep<br/>- cosine ⭐️                                     |
 
-| 度量学习 | yaml属性 | 支持                                                         |
+| 度量学习 | 属性 | 支持                                                         |
 | -------- | -------- | ------------------------------------------------------------ |
 | 主干网络 | backbone | 支持600+预训练模型，[参考定义](./Models/Backbone/mynet_metric.py) |
 | 损失函数 | loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |

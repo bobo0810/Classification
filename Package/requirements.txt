@@ -1,7 +1,6 @@
 # ======训练|测试======
 opencv-python
 numpy
-pyyaml
 seaborn
 matplotlib
 torch>=1.11.0

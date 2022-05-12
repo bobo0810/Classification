@@ -10,7 +10,7 @@ def create_backbone(model_name, num_classes):
     """
     主干网络入口
 
-    model_name: 模型名称,即yaml文件backbone属性值
+    model_name: 模型名称,即backbone属性值
     num_classes: 类别数
     """
     return timm.create_model(
