@@ -24,50 +24,50 @@ if __name__ == "__main__":
 
     # 初始化环境
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    labels_list = analysis_dataset(cfg.txt)["labels"]
+    labels_list = analysis_dataset(cfg.Txt)["labels"]
 
     tb_writer, ckpt_path = init_env()
     tb_writer.add_text("Config", str(object2dict(cfg)))
-    ckpt_path+= cfg.backbone
+    ckpt_path+= cfg.Backbone
 
     # 模型
-    model = create_backbone(cfg.backbone, num_classes=len(labels_list))
+    model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
     vis_model = copy.deepcopy(model)
     TASK = "metric" if hasattr(model, "embedding_size") else "class"
     # 度量学习
     if TASK == "metric":
         # 数据集
-        train_set = create_datasets(txt=cfg.txt, mode="train", size=cfg.size, use_augment=True)
-        train_dataloader = create_dataloader(batch_size=cfg.batch, dataset=train_set, sampler_name=cfg.sampler)
-        val_set = create_datasets(txt=cfg.txt, mode="val", size=cfg.size)
+        train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True)
+        train_dataloader = create_dataloader(batch_size=cfg.Batch, dataset=train_set, sampler_name=cfg.Sampler)
+        val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
 
         # 难样例挖掘
         mining_func = miners.MultiSimilarityMiner()
 
         # 损失函数(分类器)
         loss_func = create_metric_loss(
-            name=cfg.loss,
+            name=cfg.Loss,
             num_classes=len(labels_list),
             embedding_size=model.embedding_size,
         ).to(device)
-        params = [{"params": loss_func.parameters(), "lr": cfg.lr}]
+        params = [{"params": loss_func.parameters(), "lr": cfg.LR}]
     # 常规分类
     else:
         # 数据集
-        train_set = create_datasets(txt=cfg.txt, mode="train", size=cfg.size, use_augment=True,)
-        val_set = create_datasets(txt=cfg.txt, mode="val", size=cfg.size)
+        train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True,)
+        val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
 
         # 数据集加载器
         train_dataloader = create_dataloader(
-            batch_size=cfg.batch,
+            batch_size=cfg.Batch,
             dataset=train_set,
-            sampler_name=cfg.sampler,
+            sampler_name=cfg.Sampler,
         )
 
-        val_dataloader = create_dataloader(batch_size=cfg.batch, dataset=val_set)
+        val_dataloader = create_dataloader(batch_size=cfg.Batch, dataset=val_set)
 
         # 损失函数
-        loss_func = create_class_loss(cfg.loss).to(device)
+        loss_func = create_class_loss(cfg.Loss).to(device)
         params = []
 
     # 模型转为GPU
@@ -78,17 +78,17 @@ if __name__ == "__main__":
 
     # 优化器
     params.append({"params": model.parameters()})
-    optimizer = create_optimizer(params, cfg.optimizer, lr=cfg.lr)
+    optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
     lr_scheduler = create_scheduler(
-        sched_name=cfg.scheduler,
-        epochs=cfg.epochs,
+        sched_name=cfg.Scheduler,
+        epochs=cfg.Epochs,
         optimizer=optimizer,
     )
     best_score = 0.0
-    for epoch in range(cfg.epochs):
-        print("start epoch {}/{}...".format(epoch, cfg.epochs))
+    for epoch in range(cfg.Epochs):
+        print("start epoch {}/{}...".format(epoch, cfg.Epochs))
         tb_writer.add_scalar("Train/lr", optimizer.param_groups[-1]["lr"], epoch)
         optimizer.zero_grad()
 
