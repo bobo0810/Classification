@@ -66,7 +66,7 @@ def object2dict(object):
             dict[key]=getattr(object, key)
     return dict
 
-def init_env(cfg):
+def init_env():
     """
     初始化训练环境
     """
@@ -89,16 +89,15 @@ def init_env(cfg):
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    tb_path, checkpoint_path = [exp_path + "tb_log/", exp_path + "checkpoint/"]
+    tb_path, ckpt_path = [exp_path + "tb_log/", exp_path + "checkpoint/"]
     os.makedirs(tb_path)
-    os.makedirs(checkpoint_path)
+    os.makedirs(ckpt_path)
 
     # 初始化TensorBoard
     tb_writer = SummaryWriter(tb_path)
-    tb_writer.add_text("Config", str(object2dict(cfg)))
     print("*" * 28)
     print("TensorBoard | Checkpoint save to ", exp_path, "\n")
-    return tb_writer, checkpoint_path + cfg.backbone
+    return tb_writer, ckpt_path
 
 
 @torch.no_grad()

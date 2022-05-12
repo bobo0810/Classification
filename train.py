@@ -5,7 +5,7 @@ import argparse
 import copy
 from DataSets.preprocess import PreProcess
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
+from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model,object2dict
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -26,7 +26,9 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     labels_list = analysis_dataset(cfg.txt)["labels"]
 
-    tb_writer, checkpoint_path = init_env(cfg)
+    tb_writer, ckpt_path = init_env()
+    tb_writer.add_text("Config", str(object2dict(cfg)))
+    ckpt_path+= cfg.backbone
 
     # 模型
     model = create_backbone(cfg.backbone, num_classes=len(labels_list))
@@ -145,7 +147,7 @@ if __name__ == "__main__":
         max_score = max(score_dict)
         if best_score < max_score:
             best_score = max_score
-            torch.save(score_dict[max_score], checkpoint_path + "_best.pt")
-    torch.save(model, checkpoint_path + "_last.pt")
-    torch.save(ema_model, checkpoint_path + "_ema_last.pt")
+            torch.save(score_dict[max_score], ckpt_path + "_best.pt")
+    torch.save(model, ckpt_path + "_last.pt")
+    torch.save(ema_model, ckpt_path + "_ema_last.pt")
     tb_writer.close()
