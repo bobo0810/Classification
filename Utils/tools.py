@@ -26,6 +26,7 @@ from pytorch_grad_cam import (
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
+
 def analysis_dataset(txt):
     """
     解析dataset.txt 
@@ -37,22 +38,33 @@ def analysis_dataset(txt):
         "val": {"imgs": [], "labels": []},
         "test": {"imgs": [], "labels": []},
     }
-    labels=set()
+    labels = set()
     for path, label, mode in imgs_list:
         assert mode in ["train", "val", "test"]
         labels.add(label)
         dataset[mode]["imgs"].append(path)
         dataset[mode]["labels"].append(label)
-    labels=list(labels)
+    labels = list(labels)
     labels.sort()
 
     index = list(range(0, len(labels)))
-    labels_dict= dict(zip(index,labels))
-    
-    dataset["labels"]=labels
-    dataset["labels_dict"]=labels_dict
+    labels_dict = dict(zip(index, labels))
+
+    dataset["labels"] = labels
+    dataset["labels_dict"] = labels_dict
 
     return dataset
+
+def object2dict(object):
+    '''
+    类对象->字典
+    '''
+    dict={}
+    
+    for key in dir(object):
+        if not key.startswith('__'):
+            dict[key]=getattr(object, key)
+    return dict
 
 def init_env(cfg):
     """
@@ -83,10 +95,10 @@ def init_env(cfg):
 
     # 初始化TensorBoard
     tb_writer = SummaryWriter(tb_path)
-    tb_writer.add_text("Config", str(cfg))
+    tb_writer.add_text("Config", str(object2dict(cfg)))
     print("*" * 28)
     print("TensorBoard | Checkpoint save to ", exp_path, "\n")
-    return tb_writer, checkpoint_path + cfg["Models"]["backbone"]
+    return tb_writer, checkpoint_path + cfg.backbone
 
 
 @torch.no_grad()

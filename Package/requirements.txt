@@ -4,8 +4,8 @@ numpy
 pyyaml
 seaborn
 matplotlib
-torch
-torchvision
+torch>=1.11.0
+torchvision>=0.12.0
 tensorboard>1.15.0
 torchinfo #模型统计
 timm      #模型库
