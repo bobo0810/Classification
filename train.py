@@ -19,8 +19,8 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="训练")
-    parser.add_argument("--config",help="训练配置", default="./Config/config.py")
-    cfg=imp.load_source('cfg', parser.parse_args().config)
+    parser.add_argument("--config_file",help="训练配置", default="./Config/config.py")
+    cfg=imp.load_source('cfg', parser.parse_args().config_file)
 
     # 初始化环境
     device = "cuda" if torch.cuda.is_available() else "cpu"
