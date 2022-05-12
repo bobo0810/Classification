@@ -14,13 +14,13 @@ from Utils.tools import tensor2img
 from timm.utils import ModelEmaV2
 from torchinfo import summary
 from pytorch_metric_learning import miners
-
+import imp
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-
-    # !导入训练配置!
-    from Config.config import cfg
+    parser = argparse.ArgumentParser(description="训练")
+    parser.add_argument("--config",help="训练配置", default="./Config/config.py")
+    cfg=imp.load_source('cfg', parser.parse_args().config)
 
     # 初始化环境
     device = "cuda" if torch.cuda.is_available() else "cpu"
