@@ -101,7 +101,7 @@ if __name__ == "__main__":
         ##############
         engine.eval()
         acc = eval_model(engine, val_dataloader).Overall_ACC
-        if best_acc < acc:
+        if best_acc <= acc:
             best_acc = acc
             save_model(model, cp_model, ckpt_path + cfg.Backbone + "_best.pt", cur_rank)
 
