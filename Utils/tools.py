@@ -56,9 +56,11 @@ def analysis_dataset(txt):
     return dataset
 
 
-def init_env(rank):
+def init_env(rank=0):
     """
     初始化训练环境
+
+    rank: 多进程时仅rank=0的进程写文件
     """
     # 固定随机种子
     seed = 227
@@ -79,7 +81,6 @@ def init_env(rank):
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    # 仅rank=0的进程创建文件夹
     if rank == 0:
         os.makedirs(os.path.join(exp_path, "checkpoint/"))
 
@@ -92,11 +93,9 @@ def eval_model(model, data_loader):
     """
     常规分类：评估指标
     """
-    device = next(model.parameters()).device
-
-    scores_list, preds_list, labels_list = [], [], []
+    preds_list, labels_list = [], []
     for batch_idx, (imgs, labels) in enumerate(data_loader):
-        imgs, labels = imgs.to(device), labels.to(device)
+        imgs, labels = imgs.cuda(), labels.cuda()
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
         preds = torch.argmax(scores, dim=1)

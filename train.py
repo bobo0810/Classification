@@ -4,10 +4,10 @@ import torch
 import argparse
 import copy
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
+from Utils.tools import analysis_dataset, init_env, eval_model
 from Utils.tsdb import SummaryWriter_DDP
 from Models.Backbone import create_backbone
-from Models.Loss import create_class_loss, create_metric_loss
+from Models.Loss import create_class_loss
 from Models.Optimizer import create_optimizer
 from torchinfo import summary
 from colossalai.core import global_context as gpc
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     # 学习率调度器
     lr_scheduler = CosineAnnealingWarmupLR(
-        optimizer, total_steps=cfg.Epochs, warmup_steps=int(cfg.Epochs * 0.1)
+        optimizer, cfg.Epochs, warmup_steps=int(cfg.Epochs * 0.1)
     )
 
     # 日志
@@ -65,7 +65,6 @@ if __name__ == "__main__":
     # 数据集可视化
     tb_writer.add_text("TrainSet", train_set.get_info())
     tb_writer.add_text("ValSet", val_set.get_info())
-    tb_writer.close()
 
     # 模型结构可视化
     tb_writer.add_graph(model, cfg.Size)
@@ -94,18 +93,18 @@ if __name__ == "__main__":
             if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
-        lr_scheduler.step()
+
+        ##############
+        # 验证集评估  #
+        ##############
+        engine.eval()
+        acc = eval_model(engine, val_dataloader).Overall_ACC
 
         # 可视化
-        tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)
-
-        # 验证集评估
-        engine.eval()
-        ##############
-        # pass
-        ##############
-
+        tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
+        tb_writer.add_scalar("Eval/acc", acc, epoch)
+        lr_scheduler.step()
     tb_writer.close()
 
 
