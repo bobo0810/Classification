@@ -6,6 +6,7 @@ import copy
 from DataSets.preprocess import PreProcess
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
+from Utils.tsdb import SummaryWriter_DDP
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -14,7 +15,6 @@ from torchinfo import summary
 from colossalai.core import global_context as gpc 
 from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR
 from colossalai.logging import get_dist_logger
-from torch.utils.tensorboard import SummaryWriter
 import colossalai
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -53,20 +53,21 @@ if __name__ == "__main__":
     # 学习率调度器
     lr_scheduler = CosineAnnealingWarmupLR(optimizer, total_steps=cfg.Epochs,warmup_steps=int(cfg.Epochs*0.1))
     
-    # 日志
+   
     if cur_rank==0:
-        # 初始化
         os.makedirs(os.path.join(exp_path,"checkpoint/"))
-        tb_writer = SummaryWriter(os.path.join(exp_path,"tb_log/"))
-        logger.info(f"Log in {exp_path}")
+    
+    # 日志
+    logger.info(f"Log in {exp_path}",ranks=[0])
+    tb_writer=SummaryWriter_DDP(os.path.join(exp_path,"tb_log/"),rank=cur_rank)   
 
-        # 参数
-        tb_writer.add_text("Config", str(cfg))
+    # 参数
+    tb_writer.add_text("Config", str(cfg))
 
-        # 数据集
-        tb_writer.add_text("TrainSet", train_set.get_info())
-        tb_writer.add_text("ValSet", val_set.get_info())
-        tb_writer.close()
+    # 数据集
+    tb_writer.add_text("TrainSet", train_set.get_info())
+    tb_writer.add_text("ValSet", val_set.get_info())
+    tb_writer.close()
     
     # colossalai封装
     engine, train_dataloader, val_dataloader, _ = colossalai.initialize(
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             engine.backward(loss)
             engine.step()
 
-            if batch_idx % 100 == 0 and cur_rank == 0:
+            if batch_idx % 100 == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
         lr_scheduler.step()
@@ -99,11 +100,10 @@ if __name__ == "__main__":
         ##############
         #pass
         ##############
-        if cur_rank == 0:
-            tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
+        
+        tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
 
-    if cur_rank == 0:
-        tb_writer.close()
+    tb_writer.close()
 
 # 运行
 # colossalai run --nproc_per_node 2 train.py
