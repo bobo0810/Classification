@@ -57,13 +57,16 @@ if __name__ == "__main__":
     logger.info(f"Log in {exp_path}",ranks=[0])
     tb_writer=SummaryWriter_DDP(os.path.join(exp_path,"tb_log/"),rank=cur_rank)   
 
-    # 参数
+    # 参数可视化
     tb_writer.add_text("Config", str(cfg))
 
-    # 数据集
+    # 数据集可视化
     tb_writer.add_text("TrainSet", train_set.get_info())
     tb_writer.add_text("ValSet", val_set.get_info())
     tb_writer.close()
+
+    # 模型结构可视化
+    tb_writer.add_graph(model,cfg.Size)
     
     # colossalai封装
     engine, train_dataloader, val_dataloader, _ = colossalai.initialize(
