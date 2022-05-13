@@ -5,6 +5,7 @@ import time
 import os
 import cv2
 import sys
+import torchvision
 from pycm import ConfusionMatrix
 from ToolsLib.TXT_Tools import TXT_Tools
 from pytorch_metric_learning import losses, testers
@@ -28,7 +29,7 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 
 def analysis_dataset(txt):
     """
-    解析dataset.txt 
+    解析dataset.txt
     """
     assert os.path.exists(txt), "错误: 文件不存在"
     imgs_list = TXT_Tools.read_lines(txt, split_flag=",")
@@ -53,8 +54,9 @@ def analysis_dataset(txt):
     dataset["labels_dict"] = labels_dict
 
     return dataset
-    
-def init_env():
+
+
+def init_env(rank):
     """
     初始化训练环境
     """
@@ -77,11 +79,12 @@ def init_env():
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    
-    ckpt_path=os.path.join(exp_path,"checkpoint/")
-    if not os.path.exists(ckpt_path):
-        os.makedirs(ckpt_path)
-    return exp_path
+    # 仅rank=0的进程创建文件夹
+    if rank == 0:
+        os.makedirs(os.path.join(exp_path, "checkpoint/"))
+
+    tb_path = os.path.join(exp_path, "tb_log/")
+    return tb_path
 
 
 @torch.no_grad()
@@ -196,3 +199,26 @@ def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
     except:
         print("错误: 请尝试确认 当前模型的全局池化层名称，并赋值pool_name")
         sys.exit()
+
+
+def convert_vis(imgs, category, per_nums=4):
+    """
+    转化格式，方便tensorboard可视化
+
+    imgs(tensor): 形状[B,C,H,W]
+    category(list):形状[B]
+    per_nums: batch内每类最多显示的图像数.默认为4
+    """
+    # 按类别划分
+    index_list = []
+    for name in set(category):
+        index_list.append(
+            [i for i, name_i in enumerate(category) if name_i == name][:per_nums]
+        )
+    imgs_list = [imgs[index].clone() for index in index_list]
+
+    # 反归一化、RGB->BGR
+    imgs_list = [tensor2img(imgs) for imgs in imgs_list]
+    # 拼成网格图CHW
+    imgs_list = [torchvision.utils.make_grid(line) for line in imgs_list]
+    return imgs_list

@@ -3,59 +3,61 @@ import os
 import torch
 import argparse
 import copy
-from DataSets.preprocess import PreProcess
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
 from Utils.tsdb import SummaryWriter_DDP
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
-from Utils.tools import tensor2img
 from torchinfo import summary
-from colossalai.core import global_context as gpc 
+from colossalai.core import global_context as gpc
 from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR
 from colossalai.logging import get_dist_logger
 import colossalai
+
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
     parser = colossalai.get_default_parser()
-    parser.add_argument("--config_file",help="训练配置", default="./Config/config.py")
+    parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    colossalai.launch_from_torch(config=parser.parse_args().config_file) 
-    cfg=gpc.config
-    cur_rank=gpc.get_global_rank()
+    colossalai.launch_from_torch(config=parser.parse_args().config_file)
+    cfg = gpc.config
+    cur_rank = gpc.get_global_rank()
     logger = get_dist_logger()
-    exp_path = init_env()
- 
+    tb_path = init_env(cur_rank)
+
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
-    
+
     # 数据集
-    train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True)
+    train_set = create_datasets(
+        txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True
+    )
     val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
-    
+
     # 数据集加载器
-    train_dataloader = create_dataloader(cfg.Batch,train_set,cfg.Sampler)
+    train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
     val_dataloader = create_dataloader(cfg.Batch, val_set)
 
     # 损失函数
     criterion = create_class_loss(cfg.Loss)
     params = []
 
-
     # 优化器
     params.append({"params": model.parameters()})
     optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
-    lr_scheduler = CosineAnnealingWarmupLR(optimizer, total_steps=cfg.Epochs,warmup_steps=int(cfg.Epochs*0.1))
-    
+    lr_scheduler = CosineAnnealingWarmupLR(
+        optimizer, total_steps=cfg.Epochs, warmup_steps=int(cfg.Epochs * 0.1)
+    )
+
     # 日志
-    logger.info(f"Log in {exp_path}",ranks=[0])
-    tb_writer=SummaryWriter_DDP(os.path.join(exp_path,"tb_log/"),rank=cur_rank)   
+    logger.info(f"tensorboard save in {tb_path}", ranks=[0])
+    tb_writer = SummaryWriter_DDP(tb_path, rank=cur_rank)
 
     # 参数可视化
     tb_writer.add_text("Config", str(cfg))
@@ -66,8 +68,8 @@ if __name__ == "__main__":
     tb_writer.close()
 
     # 模型结构可视化
-    tb_writer.add_graph(model,cfg.Size)
-    
+    tb_writer.add_graph(model, cfg.Size)
+
     # colossalai封装
     engine, train_dataloader, val_dataloader, _ = colossalai.initialize(
         model,
@@ -80,7 +82,7 @@ if __name__ == "__main__":
     best_score = 0.0
     for epoch in range(cfg.Epochs):
         engine.train()
-        logger.info(f"Starting {epoch} / {cfg.Epochs}",ranks=[0])
+        logger.info(f"Starting {epoch} / {cfg.Epochs}", ranks=[0])
         for batch_idx, (imgs, labels) in enumerate(train_dataloader):
             imgs, labels = imgs.cuda(), labels.cuda()
             engine.zero_grad()
@@ -94,16 +96,18 @@ if __name__ == "__main__":
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
         lr_scheduler.step()
 
+        # 可视化
+        tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
+        tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)
+
         # 验证集评估
         engine.eval()
         ##############
-        #pass
+        # pass
         ##############
-        
-        tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
 
     tb_writer.close()
-    
+
 
 # 运行
 # colossalai run --nproc_per_node 2 train.py
