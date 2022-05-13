@@ -33,7 +33,7 @@ class SummaryWriter_DDP:
             input_shape=[batch,channel,size[0],size[1]]
             self.tb_writer.add_graph(model, torch.ones(size=input_shape))
             
-            # 打印
+            # 模型统计
             summary(model, input_shape, device="cpu")
 
     def close(self):
