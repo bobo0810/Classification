@@ -56,11 +56,9 @@ def analysis_dataset(txt):
     return dataset
 
 
-def init_env(rank=0):
+def init_env():
     """
     初始化训练环境
-
-    rank: 多进程时仅rank=0的进程写文件
     """
     # 固定随机种子
     seed = 227
@@ -81,11 +79,9 @@ def init_env(rank=0):
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    if rank == 0:
-        os.makedirs(os.path.join(exp_path, "checkpoint/"))
-
+    ckpt_path = os.path.join(exp_path, "checkpoint/")
     tb_path = os.path.join(exp_path, "tb_log/")
-    return tb_path
+    return ckpt_path,tb_path
 
 
 @torch.no_grad()

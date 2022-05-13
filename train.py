@@ -2,10 +2,10 @@ import sys
 import os
 import torch
 import argparse
-import copy
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_model
-from Utils.tsdb import SummaryWriter_DDP
+from Utils.ddp_tsdb import DDP_SummaryWriter
+from Utils.ddp_tools import create_folder, save_model, copy_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss
 from Models.Optimizer import create_optimizer
@@ -26,11 +26,13 @@ if __name__ == "__main__":
     cfg = gpc.config
     cur_rank = gpc.get_global_rank()
     logger = get_dist_logger()
-    tb_path = init_env(cur_rank)
+    ckpt_path, tb_path = init_env()
+    create_folder(ckpt_path, cur_rank)
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
+    cp_model = copy_model(model, cur_rank)
 
     # 数据集
     train_set = create_datasets(
@@ -57,7 +59,7 @@ if __name__ == "__main__":
 
     # 日志
     logger.info(f"tensorboard save in {tb_path}", ranks=[0])
-    tb_writer = SummaryWriter_DDP(tb_path, rank=cur_rank)
+    tb_writer = DDP_SummaryWriter(tb_path, rank=cur_rank)
 
     # 参数可视化
     tb_writer.add_text("Config", str(cfg))
@@ -78,7 +80,7 @@ if __name__ == "__main__":
         val_dataloader,
     )
 
-    best_score = 0.0
+    best_acc = 0.0
     for epoch in range(cfg.Epochs):
         engine.train()
         logger.info(f"Starting {epoch} / {cfg.Epochs}", ranks=[0])
@@ -99,6 +101,9 @@ if __name__ == "__main__":
         ##############
         engine.eval()
         acc = eval_model(engine, val_dataloader).Overall_ACC
+        if best_acc < acc:
+            best_acc = acc
+            save_model(model, cp_model, ckpt_path + cfg.Backbone + "_best.pt", cur_rank)
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)
@@ -106,7 +111,7 @@ if __name__ == "__main__":
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         lr_scheduler.step()
     tb_writer.close()
-
+    save_model(model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
 
 # 运行
 # colossalai run --nproc_per_node 2 train.py

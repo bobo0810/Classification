@@ -22,8 +22,6 @@ if __name__ == "__main__":
 
     # 直接加载model,而非model.state_dict
     model = torch.load(args.weights, map_location="cpu")
-    while hasattr(model, "module"):
-        model = model.module
     model.to(device)
     model.eval()
     TASK = "metric" if hasattr(model, "embedding_size") else "class"

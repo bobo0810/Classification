@@ -4,7 +4,7 @@ import torch
 from torchinfo import summary
 from Utils.tools import convert_vis
 
-class SummaryWriter_DDP:
+class DDP_SummaryWriter:
     """
     分布式并行训练时，仅当rank=0的进程写入日志
     """
