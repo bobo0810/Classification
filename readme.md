@@ -82,16 +82,15 @@
 
 |   常规分类   | 属性  | 支持                                                         |
 | ------------ | --------- | ------------------------------------------------------------ |
-| 采样策略     | sampler   | - normal     常规采样<br>- dataset_balance    类别平衡采样(数据集维度)  <br>- batch_balance    类别平衡采样(batch维度)⭐️        |
-| 主干网络     | backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
-| 损失函数     | loss      | - cross_entropy<br>- label_smooth         |
-| 优化器       | optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
-| 学习率调度器 | scheduler | - multistep<br/>- cosine ⭐️                                     |
+| 采样策略     | Sampler   | - normal     常规采样<br>- dataset_balance    类别平衡采样(数据集维度)  <br>- batch_balance    类别平衡采样(batch维度)⭐️        |
+| 主干网络     | Backbone  | - [600+ SOTA预训练模型](https://bclassification.readthedocs.io/en/latest/backbone.html)  |
+| 损失函数     | Loss      | - cross_entropy<br>- label_smooth         |
+| 优化器       | Optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 
 | 度量学习 | 属性 | 支持                                                         |
 | -------- | -------- | ------------------------------------------------------------ |
-| 主干网络 | backbone | 支持600+预训练模型，[参考定义](./Models/Backbone/mynet_metric.py) |
-| 损失函数 | loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |
+| 主干网络 | Backbone | 支持600+预训练模型，[参考定义](./Models/Backbone/mynet_metric.py) |
+| 损失函数 | Loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |
 
 ## 感谢
 
@@ -105,5 +104,6 @@
   - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)![Github stars](https://img.shields.io/github/stars/TylerYep/torchinfo.svg)
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
   - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
+  - [ColossalAI大规模分布式训练库](https://github.com/hpcaitech/ColossalAI)
   
 
