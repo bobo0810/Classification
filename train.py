@@ -5,149 +5,105 @@ import argparse
 import copy
 from DataSets.preprocess import PreProcess
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model,object2dict
+from Utils.tools import analysis_dataset, init_env, eval_model, eval_metric_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss, create_metric_loss
 from Models.Optimizer import create_optimizer
-from Models.Scheduler import create_scheduler
 from Utils.tools import tensor2img
-from timm.utils import ModelEmaV2
 from torchinfo import summary
-from pytorch_metric_learning import miners
-import imp
+from colossalai.core import global_context as gpc 
+from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR
+from colossalai.logging import get_dist_logger
+from torch.utils.tensorboard import SummaryWriter
+import colossalai
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="训练")
+    parser = colossalai.get_default_parser()
     parser.add_argument("--config_file",help="训练配置", default="./Config/config.py")
-    cfg=imp.load_source('cfg', parser.parse_args().config_file)
 
     # 初始化环境
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    labels_list = analysis_dataset(cfg.Txt)["labels"]
-
-    tb_writer, ckpt_path = init_env()
-    tb_writer.add_text("Config", str(object2dict(cfg)))
-    ckpt_path+= cfg.Backbone
-
+    colossalai.launch_from_torch(config=parser.parse_args().config_file) 
+    cfg=gpc.config
+    cur_rank=gpc.get_global_rank()
+    logger = get_dist_logger()
+    exp_path = init_env()
+ 
     # 模型
+    labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
-    vis_model = copy.deepcopy(model)
-    TASK = "metric" if hasattr(model, "embedding_size") else "class"
-    # 度量学习
-    if TASK == "metric":
-        # 数据集
-        train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True)
-        train_dataloader = create_dataloader(batch_size=cfg.Batch, dataset=train_set, sampler_name=cfg.Sampler)
-        val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
+    
+    # 数据集
+    train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True,)
+    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
+    
+    # 数据集加载器
+    train_dataloader = create_dataloader(cfg.Batch,train_set,cfg.Sampler)
+    val_dataloader = create_dataloader(cfg.Batch, val_set)
 
-        # 难样例挖掘
-        mining_func = miners.MultiSimilarityMiner()
+    # 损失函数
+    criterion = create_class_loss(cfg.Loss)
+    params = []
 
-        # 损失函数(分类器)
-        loss_func = create_metric_loss(
-            name=cfg.Loss,
-            num_classes=len(labels_list),
-            embedding_size=model.embedding_size,
-        ).to(device)
-        params = [{"params": loss_func.parameters(), "lr": cfg.LR}]
-    # 常规分类
-    else:
-        # 数据集
-        train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True,)
-        val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
-
-        # 数据集加载器
-        train_dataloader = create_dataloader(
-            batch_size=cfg.Batch,
-            dataset=train_set,
-            sampler_name=cfg.Sampler,
-        )
-
-        val_dataloader = create_dataloader(batch_size=cfg.Batch, dataset=val_set)
-
-        # 损失函数
-        loss_func = create_class_loss(cfg.Loss).to(device)
-        params = []
-
-    # 模型转为GPU
-    if device != "cpu":
-        model = torch.nn.DataParallel(model).to(device)
-    model.train()
-    ema_model = ModelEmaV2(model, decay=0.9998)
 
     # 优化器
     params.append({"params": model.parameters()})
     optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
-    lr_scheduler = create_scheduler(
-        sched_name=cfg.Scheduler,
-        epochs=cfg.Epochs,
-        optimizer=optimizer,
+    lr_scheduler = CosineAnnealingWarmupLR(optimizer, total_steps=cfg.Epochs,warmup_steps=int(cfg.Epochs*0.1))
+    
+    # 日志
+    if cur_rank==0:
+        # 初始化
+        os.makedirs(os.path.join(exp_path,"checkpoint/"))
+        tb_writer = SummaryWriter(os.path.join(exp_path,"tb_log/"))
+        logger.info(f"Log in {exp_path}")
+
+        # 参数
+        tb_writer.add_text("Config", str(cfg))
+
+        # 数据集
+        tb_writer.add_text("TrainSet", train_set.get_info())
+        tb_writer.add_text("ValSet", val_set.get_info())
+        tb_writer.close()
+    
+    # colossalai封装
+    engine, train_dataloader, val_dataloader, _ = colossalai.initialize(
+        model,
+        optimizer,
+        criterion,
+        train_dataloader,
+        val_dataloader,
     )
+
     best_score = 0.0
     for epoch in range(cfg.Epochs):
-        print("start epoch {}/{}...".format(epoch, cfg.Epochs))
-        tb_writer.add_scalar("Train/lr", optimizer.param_groups[-1]["lr"], epoch)
-        optimizer.zero_grad()
-
+        engine.train()
+        logger.info(f"Starting {epoch} / {cfg.Epochs}",ranks=[0])
         for batch_idx, (imgs, labels) in enumerate(train_dataloader):
+            imgs, labels = imgs.cuda(), labels.cuda()
+            engine.zero_grad()
+            output = engine(imgs)
+            loss = engine.criterion(output, labels)
+            engine.backward(loss)
+            engine.step()
 
-            # 可视化网络、模型统计
-            if epoch + batch_idx == 0:
-                tb_writer.add_graph(vis_model, imgs.detach())
-                summary(vis_model, imgs[0].unsqueeze(0).shape, device="cpu")
-                del vis_model
-            # 可视化增广图像
-            if epoch % 10 + batch_idx == 0:
-                category = [labels_list[label] for label in labels]
-                vis_list = PreProcess().convert(imgs, category)
-                for vis_name, vis_img in zip(set(category), vis_list):
-                    tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
-
-            imgs, labels = imgs.to(device), labels.to(device)
-
-            output = model(imgs)
-            if TASK == "metric":
-                hard_tuples = mining_func(output, labels)
-                loss = loss_func(output, labels, hard_tuples)
-            else:
-                loss = loss_func(output, labels)
-
-            loss.backward()
-
-            optimizer.step()
-            optimizer.zero_grad()
-
-            ema_model.update(model)
-
-            lr_scheduler.step_update(num_updates=epoch * len(train_dataloader) + batch_idx)
-
-            if batch_idx % 100 == 0:
+            if batch_idx % 100 == 0 and cur_rank == 0:
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
-        lr_scheduler.step(epoch + 1)
+        lr_scheduler.step()
 
         # 验证集评估
-        model.eval()
-        if TASK == "class":  # 常规分类
-            score = eval_model(model, val_dataloader).Overall_ACC
-            ema_score = eval_model(ema_model.module, val_dataloader).Overall_ACC
-            tb_writer.add_scalars("Eval", {"acc": score, "ema_acc": ema_score}, epoch)
+        engine.eval()
+        ##############
+        #pass
+        ##############
+        if cur_rank == 0:
+            tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
 
-        elif TASK == "metric":  # 度量学习
-            score = eval_metric_model(model, train_set, val_set)
-            ema_score = eval_metric_model(ema_model.module, train_set, val_set)
-            tb_writer.add_scalars("Eval", {"precision": score, "ema_precision": ema_score}, epoch)
-        model.train()
+    if cur_rank == 0:
+        tb_writer.close()
 
-        # 保存最优模型
-        score_dict = {score: model, ema_score: ema_model}
-        max_score = max(score_dict)
-        if best_score < max_score:
-            best_score = max_score
-            torch.save(score_dict[max_score], ckpt_path + "_best.pt")
-    torch.save(model, ckpt_path + "_last.pt")
-    torch.save(ema_model, ckpt_path + "_ema_last.pt")
-    tb_writer.close()
+# 运行
+# colossalai run --nproc_per_node 2 train.py

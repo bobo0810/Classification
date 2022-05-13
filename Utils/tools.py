@@ -11,7 +11,6 @@ from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 from pytorch_grad_cam import (
     GradCAM,
     ScoreCAM,
@@ -54,18 +53,7 @@ def analysis_dataset(txt):
     dataset["labels_dict"] = labels_dict
 
     return dataset
-
-def object2dict(object):
-    '''
-    类对象->字典
-    '''
-    dict={}
     
-    for key in dir(object):
-        if not key.startswith('__'):
-            dict[key]=getattr(object, key)
-    return dict
-
 def init_env():
     """
     初始化训练环境
@@ -82,22 +70,14 @@ def init_env():
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
-    # 创建日志路径
+    # 日志路径
     exp_path = (
         os.path.dirname(cur_path)
         + "/ExpLog/"
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    tb_path, ckpt_path = [exp_path + "tb_log/", exp_path + "checkpoint/"]
-    os.makedirs(tb_path)
-    os.makedirs(ckpt_path)
-
-    # 初始化TensorBoard
-    tb_writer = SummaryWriter(tb_path)
-    print("*" * 28)
-    print("TensorBoard | Checkpoint save to ", exp_path, "\n")
-    return tb_writer, ckpt_path
+    return exp_path
 
 
 @torch.no_grad()

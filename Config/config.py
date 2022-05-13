@@ -14,4 +14,8 @@ Loss="cross_entropy"       # Loss="arcface"             # 损失函数
 LR=0.01     # 学习率
 Batch=64    # 批次
 Epochs=80   # 总轮数
-Scheduler="cosine"  # 学习率调度器
+
+
+# ======分布式============
+from colossalai.amp import AMP_TYPE
+fp16 = dict(mode=AMP_TYPE.TORCH) # 开启混合精度
