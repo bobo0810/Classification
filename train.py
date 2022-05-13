@@ -34,7 +34,7 @@ if __name__ == "__main__":
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
     
     # 数据集
-    train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True,)
+    train_set = create_datasets(txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True)
     val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
     
     # 数据集加载器
@@ -52,10 +52,6 @@ if __name__ == "__main__":
 
     # 学习率调度器
     lr_scheduler = CosineAnnealingWarmupLR(optimizer, total_steps=cfg.Epochs,warmup_steps=int(cfg.Epochs*0.1))
-    
-   
-    if cur_rank==0:
-        os.makedirs(os.path.join(exp_path,"checkpoint/"))
     
     # 日志
     logger.info(f"Log in {exp_path}",ranks=[0])
@@ -104,6 +100,7 @@ if __name__ == "__main__":
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
 
     tb_writer.close()
+    
 
 # 运行
 # colossalai run --nproc_per_node 2 train.py

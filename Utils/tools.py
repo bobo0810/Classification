@@ -77,6 +77,10 @@ def init_env():
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
+    
+    ckpt_path=os.path.join(exp_path,"checkpoint/")
+    if not os.path.exists(ckpt_path):
+        os.makedirs(ckpt_path)
     return exp_path
 
 
