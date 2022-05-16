@@ -34,16 +34,6 @@ if __name__ == "__main__":
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
     cp_model = copy_model(model, cur_rank)
 
-    # 数据集
-    train_set = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True
-    )
-    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
-
-    # 数据集加载器
-    train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
-    val_dataloader = create_dataloader(cfg.Batch, val_set)
-
     # 损失函数
     criterion = create_class_loss(cfg.Loss)
     params = []
@@ -56,6 +46,16 @@ if __name__ == "__main__":
     lr_scheduler = CosineAnnealingWarmupLR(
         optimizer, cfg.Epochs, warmup_steps=int(cfg.Epochs * 0.1)
     )
+
+    # 数据集
+    train_set = create_datasets(
+        txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True
+    )
+    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
+
+    # 数据集加载器
+    train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
+    val_dataloader = create_dataloader(cfg.Batch, val_set)
 
     # 日志
     logger.info(f"tensorboard save in {tb_path}", ranks=[0])
@@ -103,15 +103,17 @@ if __name__ == "__main__":
         acc = eval_model(engine, val_dataloader).Overall_ACC
         if best_acc <= acc:
             best_acc = acc
-            save_model(model, cp_model, ckpt_path + cfg.Backbone + "_best.pt", cur_rank)
+            save_model(
+                engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt", cur_rank
+            )
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         lr_scheduler.step()
+    save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
     tb_writer.close()
-    save_model(model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
 
 # 运行
 # colossalai run --nproc_per_node 2 train.py
