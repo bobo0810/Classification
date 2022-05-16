@@ -24,12 +24,10 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
-    TASK = "metric" if hasattr(model, "embedding_size") else "class"
-
-    if TASK == "class":  # 常规分类
+    if not hasattr(model, "metric"):  # 常规分类
         # 数据集
         test_set = create_datasets(txt=args.txt, mode="test", size=args.size)
-        test_dataloader =  create_dataloader(batch_size=args.batch, dataset=test_set)
+        test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)
         labels_list = analysis_dataset(args.txt)["labels_dict"]
 
         # 统计指标
@@ -47,7 +45,7 @@ if __name__ == "__main__":
         # 输出全部指标
         cm.print_normalized_matrix()
         print(cm)
-    elif TASK == "metric":  # 度量学习
+    else:  # 度量学习
         # 数据集
         train_set = create_datasets(txt=args.txt, size=args.size, mode="train")
         test_set = create_datasets(txt=args.txt, size=args.size, mode="test")

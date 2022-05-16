@@ -13,8 +13,6 @@ class MyNet_Metric(nn.Module):
 
     def __init__(self, pretrained, model_name, feature_dim):
         super(MyNet_Metric, self).__init__()
-        self.feature_dim = feature_dim
-
         # 特征提取器
         self.features = timm.create_model(
             model_name,
