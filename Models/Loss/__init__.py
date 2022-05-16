@@ -34,11 +34,11 @@ class create_metric_loss(nn.Module):
     度量学习 - 损失函数入口
     """
 
-    def __init__(self, name, num_classes, feature_dim):
+    def __init__(self, name,feature_dim, num_classes):
         """
         name: 损失函数名称
-        num_classes: 类别数
         feature_dim: 特征维度
+        num_classes: 类别数
         """
         super(create_metric_loss, self).__init__()
         assert name in ["cosface", "arcface", "subcenter_arcface", "circleloss"]

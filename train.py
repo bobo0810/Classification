@@ -36,11 +36,9 @@ if __name__ == "__main__":
 
     # 损失函数
     criterion = create_class_loss(cfg.Loss)
-    params = []
 
     # 优化器
-    params.append({"params": model.parameters()})
-    optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
+    optimizer = create_optimizer(model.parameters(), cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
     lr_scheduler = CosineAnnealingWarmupLR(
