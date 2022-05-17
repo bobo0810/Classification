@@ -4,6 +4,7 @@
 
 - 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
 - [更新日志](https://github.com/bobo0810/Classification/releases)
+- 0.5.0版本开始，仅支持分布式并行训练。
 
 
 ## 亮点
@@ -11,9 +12,9 @@
 |          | 功能                                                         | 备注                                                         |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 模块化    | 解耦业务与框架                                               | 1. 易用：新任务仅修改`Config/`即可。 <br/>2. 扩展性强：各模块均设统一入口。 |
-| 模型     | 集成[Timm模型库](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
+| 模型     | 集成[Timm](https://github.com/rwightman/pytorch-image-models) ![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
+| 训练 | 集成[ColossalAI](https://github.com/hpcaitech/ColossalAI)![Github stars](https://img.shields.io/github/stars/hpcaitech/ColossalAI.svg) | 1. 大规模分布式并行、自动混合精度。<br/>2. 梯度积累、梯度裁剪等。 |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard)![Github stars](https://img.shields.io/github/stars/tensorflow/tensorboard.svg) | 可视化参数、损失、图像、模型结构等。 |
-| 解释性 | 集成[pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg) | 持续更新SOTA的注意力可视化算法(8+)。 |
 | 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:50%;" /> |
 
 
@@ -56,29 +57,26 @@
 
 **Google Colab notebooks** :  免费GPU资源，运行。即将支持
 
+
+
 ## 扩展框架
 
 ```bash
 ├── Config
-│   └── config.py     训练参数
+│   └── config.py    训练配置
 │   └── dataset.txt  数据集 
 ├── DataSets
-│   └── preprocess.py 图像增广入口
+│   └── preprocess.py 预处理入口
 ├── Models
 │   ├── Backbone    主干网络入口
 │   ├── Optimizer   优化器入口
 │   ├── Loss        损失函数入口
-│   ├── Scheduler   学习率调度器入口
 │   ├── Backend     模型部署入口
-├── export.py
-├── predict.py
-├── test.py
-└── train.py
 ```
 
 
 
-## 训练参数
+## 训练配置
 
 |   常规分类   | 属性  | 支持                                                         |
 | ------------ | --------- | ------------------------------------------------------------ |
