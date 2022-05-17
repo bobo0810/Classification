@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=cfg.Feature_dim)
-    model.metric=True # 区分任务的标志位
+    model.metric = True  # 区分任务的标志位
     cp_model = copy_model(model, cur_rank)
 
     # 分类器
@@ -121,6 +121,3 @@ if __name__ == "__main__":
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
     tb_writer.close()
-
-# 运行
-# colossalai run --nproc_per_node 2 train_metric.py

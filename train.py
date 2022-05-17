@@ -112,6 +112,3 @@ if __name__ == "__main__":
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
     tb_writer.close()
-
-# 运行
-# colossalai run --nproc_per_node 2 train.py
