@@ -30,7 +30,7 @@ def verifyImgs(imgs_path):
 def split(imgs_path, ratio, dataset_txt):
     """
     每类按比例,划分数据集
-    
+
     imgs_path: 数据集根路径  eg: /home/xxx/CatDog/
     ratio: 训练集、验证集、测试集的比例  eg:[0.7,0.1,0.2]
     dataset_txt: dataset.txt保存路径
@@ -69,7 +69,7 @@ def split(imgs_path, ratio, dataset_txt):
 if __name__ == "__main__":
     """
     读取数据集,划分训练集、验证集、测试集。
-    
+
     txt格式为[路径,类别,类型]
     - 路径: 绝对路径or相对路径。 eg: /home/xx/a.jpg  or  ./xxx/a.jpg
     - 类别: 类别名称。 eg: cat
@@ -79,12 +79,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog/"
     )
-    parser.add_argument(
-        "--Ratio", type=list, default=[0.7, 0.1, 0.2], help="训练集:验证集:测试集的各类别划分比例"
-    )
+    parser.add_argument("--Ratio", default=[0.7, 0.1, 0.2], help="训练集:验证集:测试集的各类别划分比例")
     parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时,可选)")
     parser.add_argument(
-        "--TxtPath", default=cur_path + "/../Config/dataset.txt", help="dataset.txt保存路径",
+        "--TxtPath",
+        default=cur_path + "/../Config/dataset.txt",
+        help="dataset.txt保存路径",
     )
     args = parser.parse_args()
 
