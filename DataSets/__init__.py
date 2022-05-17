@@ -7,7 +7,6 @@ from Utils.tools import analysis_dataset
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
-
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -71,10 +70,6 @@ class create_datasets(data.Dataset):
         self.label_list = dataset[mode]["labels"]
         self.labels = dataset["labels"]
 
-        print("*" * 28)
-        print("The nums of %sSet: %d" % (mode, len(self.imgs_list)))
-        print("The nums of each class: ", dict(Counter(self.label_list)), "\n")
-
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
         category = self.label_list[index]  # 类别名称
@@ -90,3 +85,12 @@ class create_datasets(data.Dataset):
         构造 类别均衡的数据加载器，用于训练
         """
         return self.label_list
+    def get_info(self):
+        '''
+        获取类别信息
+        '''
+        info="The nums of %s: %d ." % (self.mode, len(self.imgs_list))
+        info+="The nums of each class: %s."%dict(Counter(self.label_list))
+        return info
+        
+

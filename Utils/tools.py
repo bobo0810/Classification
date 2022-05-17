@@ -5,13 +5,13 @@ import time
 import os
 import cv2
 import sys
+import torchvision
 from pycm import ConfusionMatrix
 from ToolsLib.TXT_Tools import TXT_Tools
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 from pytorch_grad_cam import (
     GradCAM,
     ScoreCAM,
@@ -29,7 +29,7 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 
 def analysis_dataset(txt):
     """
-    解析dataset.txt 
+    解析dataset.txt
     """
     assert os.path.exists(txt), "错误: 文件不存在"
     imgs_list = TXT_Tools.read_lines(txt, split_flag=",")
@@ -55,16 +55,6 @@ def analysis_dataset(txt):
 
     return dataset
 
-def object2dict(object):
-    '''
-    类对象->字典
-    '''
-    dict={}
-    
-    for key in dir(object):
-        if not key.startswith('__'):
-            dict[key]=getattr(object, key)
-    return dict
 
 def init_env():
     """
@@ -82,22 +72,16 @@ def init_env():
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
-    # 创建日志路径
+    # 日志路径
     exp_path = (
         os.path.dirname(cur_path)
         + "/ExpLog/"
         + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         + "/"
     )
-    tb_path, ckpt_path = [exp_path + "tb_log/", exp_path + "checkpoint/"]
-    os.makedirs(tb_path)
-    os.makedirs(ckpt_path)
-
-    # 初始化TensorBoard
-    tb_writer = SummaryWriter(tb_path)
-    print("*" * 28)
-    print("TensorBoard | Checkpoint save to ", exp_path, "\n")
-    return tb_writer, ckpt_path
+    ckpt_path = os.path.join(exp_path, "checkpoint/")
+    tb_path = os.path.join(exp_path, "tb_log/")
+    return ckpt_path,tb_path
 
 
 @torch.no_grad()
@@ -105,11 +89,9 @@ def eval_model(model, data_loader):
     """
     常规分类：评估指标
     """
-    device = next(model.parameters()).device
-
-    scores_list, preds_list, labels_list = [], [], []
+    preds_list, labels_list = [], []
     for batch_idx, (imgs, labels) in enumerate(data_loader):
-        imgs, labels = imgs.to(device), labels.to(device)
+        imgs, labels = imgs.cuda(), labels.cuda()
         scores = model(imgs)
         scores = torch.nn.functional.softmax(scores, dim=1)
         preds = torch.argmax(scores, dim=1)
@@ -212,3 +194,26 @@ def vis_cam(model, img_tensor, pool_name="global_pool", cam_algorithm=GradCAM):
     except:
         print("错误: 请尝试确认 当前模型的全局池化层名称，并赋值pool_name")
         sys.exit()
+
+
+def convert_vis(imgs, category, per_nums=4):
+    """
+    转化格式，方便tensorboard可视化
+
+    imgs(tensor): 形状[B,C,H,W]
+    category(list):形状[B]
+    per_nums: batch内每类最多显示的图像数.默认为4
+    """
+    # 按类别划分
+    index_list = []
+    for name in set(category):
+        index_list.append(
+            [i for i, name_i in enumerate(category) if name_i == name][:per_nums]
+        )
+    imgs_list = [imgs[index].clone() for index in index_list]
+
+    # 反归一化、RGB->BGR
+    imgs_list = [tensor2img(imgs) for imgs in imgs_list]
+    # 拼成网格图CHW
+    imgs_list = [torchvision.utils.make_grid(line) for line in imgs_list]
+    return imgs_list

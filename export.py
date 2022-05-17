@@ -31,8 +31,6 @@ if __name__ == "__main__":
     # ==========================torch===============================
     imgs = torch.ones(tuple(cfg.img_size))
     model = torch.load(cfg.weights, map_location="cpu")  # 直接加载model，而非model.state_dict
-    while hasattr(model, "module"):
-        model = model.module
     model.eval()
     output_torch = model(imgs).detach().numpy()
     print("output shape is ", output_torch.shape)

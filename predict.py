@@ -44,8 +44,6 @@ if __name__ == "__main__":
 
     # 加载模型
     model = torch.load(args.weights, map_location="cpu")
-    if hasattr(model, "module"):
-        model = model.module
     model.to(device)
     model.eval()
 

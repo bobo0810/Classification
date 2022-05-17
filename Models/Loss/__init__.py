@@ -34,20 +34,20 @@ class create_metric_loss(nn.Module):
     度量学习 - 损失函数入口
     """
 
-    def __init__(self, name, num_classes, embedding_size):
+    def __init__(self, name,feature_dim, num_classes):
         """
         name: 损失函数名称
+        feature_dim: 特征维度
         num_classes: 类别数
-        embedding_size: 特征维度
         """
         super(create_metric_loss, self).__init__()
         assert name in ["cosface", "arcface", "subcenter_arcface", "circleloss"]
-        self.loss = self.init_loss(name, num_classes, embedding_size)
+        self.loss = self.init_loss(name, num_classes, feature_dim)
 
     def forward(self, predict, target, hard_tuples):
         return self.loss(predict, target, hard_tuples)
 
-    def init_loss(self, name, num_classes, embedding_size):
+    def init_loss(self, name, num_classes, feature_dim):
         loss_dict = {
             "cosface": losses.CosFaceLoss,
             "arcface": losses.ArcFaceLoss,
@@ -56,7 +56,7 @@ class create_metric_loss(nn.Module):
 
         if name in loss_dict.keys():
             loss = loss_dict[name](
-                num_classes=num_classes, embedding_size=embedding_size
+                num_classes=num_classes, embedding_size=feature_dim
             )
         elif name == "circleloss":
             loss = losses.CircleLoss()

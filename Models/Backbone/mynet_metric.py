@@ -11,18 +11,15 @@ class MyNet_Metric(nn.Module):
     特征提取网络 输出feature
     """
 
-    def __init__(self, pretrained, model_name, embedding_size):
+    def __init__(self, pretrained, model_name, feature_dim):
         super(MyNet_Metric, self).__init__()
-        # !!!该属性必须保留，以区分是否为度量学习!!!
-        self.embedding_size = embedding_size
-
         # 特征提取器
         self.features = timm.create_model(
             model_name,
             pretrained=pretrained,
-            num_classes=embedding_size,  # 修改输出维度
+            num_classes=feature_dim,  # 修改输出维度
         )
-        self.bn = nn.BatchNorm1d(embedding_size)
+        self.bn = nn.BatchNorm1d(feature_dim)
 
     def forward(self, imgs):
         features = self.features(imgs)
@@ -39,16 +36,13 @@ class MyNet_Metric(nn.Module):
 
 
 @register_model
-def mynet_metric(
-    pretrained, num_classes, model_name="efficientnet_b0", embedding_size=128
-):
+def mynet_metric(pretrained, num_classes, model_name="efficientnet_b0"):
     """
     pretrained: 是否加载ImageNet预训练参数（接收timm.create_model传参）
-    num_classes: 类别数（接收timm.create_model传参）
+    num_classes: 特征维度（接收timm.create_model传参）
 
     model_name: timm主干网络名
-    embedding_size: 特征维度
     """
     print("Backbone_Metric come from user-defined")
-    model = MyNet_Metric(pretrained, model_name, embedding_size)
+    model = MyNet_Metric(pretrained, model_name, num_classes)
     return model
