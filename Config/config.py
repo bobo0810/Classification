@@ -7,13 +7,13 @@ Txt = "./Config/dataset.txt"  # 数据集路径
 Optimizer = "sgd"  # 优化器
 
 # 常规分类
-# Backbone="mynet"   # 主干网络
-# Loss="cross_entropy"    # 损失函数
+Backbone="mynet"   # 主干网络
+Loss="cross_entropy"    # 损失函数
 
-# 度量学习
-Backbone = "mynet_metric"
-Loss = "arcface"
-Feature_dim = 128
+# # 度量学习
+# Backbone = "mynet_metric"
+# Loss = "arcface"
+# Feature_dim = 128
 
 # ======训练============
 LR = 0.01  # 学习率
