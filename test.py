@@ -11,7 +11,7 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="测试")
     # 默认参数
-    parser.add_argument("--size", type=list, help="图像尺寸", default=[224, 224])
+    parser.add_argument("--size",  help="图像尺寸", default=[224, 224])
     parser.add_argument("--batch", type=int, help="推理batch", default=8)
     # 参数
     parser.add_argument("--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt")
@@ -50,5 +50,5 @@ if __name__ == "__main__":
         train_set = create_datasets(txt=args.txt, size=args.size, mode="train")
         test_set = create_datasets(txt=args.txt, size=args.size, mode="test")
         # 统计精确率
-        precision = eval_metric_model(model, train_set, test_set)
+        precision = eval_metric_model(model, train_set, test_set,args.batch)
         print("precision is %.3f \n" % precision)
