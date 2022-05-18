@@ -32,8 +32,7 @@ if __name__ == "__main__":
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
-    model = create_backbone(cfg.Backbone, num_classes=cfg.Feature_dim)
-    model.metric = True  # 区分任务的标志位
+    model = create_backbone(cfg.Backbone, cfg.Feature_dim,metric=True)
     cp_model = copy_model(model, cur_rank)
 
     # 分类器
