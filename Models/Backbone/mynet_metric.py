@@ -45,4 +45,5 @@ def mynet_metric(pretrained, num_classes, model_name="efficientnet_b0"):
     """
     print("Backbone_Metric come from user-defined")
     model = MyNet_Metric(pretrained, model_name, num_classes)
+    model.metric = True  # 区分任务的标志位
     return model
