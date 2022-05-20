@@ -76,7 +76,7 @@
 | 采样策略     | Sampler   | - normal     常规采样<br>- dataset_balance    类别平衡采样(数据集维度)  <br>- batch_balance    类别平衡采样(batch维度)⭐️        |
 | 主干网络     | Backbone  | - [600+ SOTA预训练模型](https://github.com/bobo0810/Classification/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E5%B9%B2%E7%BD%91%E7%BB%9C)  |
 | 损失函数     | Loss      | - cross_entropy<br>- label_smooth         |
-| 学习率调度器      | Scheduler | - cosine <br/>- multistep|
+| 学习率调度器      | Scheduler | - cosine⭐️ <br/>- multistep|
 | 优化器       | Optimizer | - sgd<br/>- adam<br/>- lamb<br/>- rmsproptf  |
 
 
