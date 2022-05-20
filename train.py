@@ -94,9 +94,7 @@ if __name__ == "__main__":
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
 
-        ##############
-        # 验证集评估  #
-        ##############
+        # 验证集评估
         engine.eval()
         acc = eval_model(engine, val_dataloader).Overall_ACC
         if best_acc <= acc:

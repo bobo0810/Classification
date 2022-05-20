@@ -102,11 +102,9 @@ if __name__ == "__main__":
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
 
-        ##############
-        # 验证集评估  #
-        ##############
+        # 验证集评估  
         engine.eval()
-        precision = eval_metric_model(engine, train_set_for_val, val_set)
+        precision = eval_metric_model(engine, train_set_for_val, val_set,cfg.Batch)
         if best_score <= precision:
             best_score = precision
             save_model(
