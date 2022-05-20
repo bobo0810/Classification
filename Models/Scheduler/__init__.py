@@ -1,8 +1,6 @@
-from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR
+from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR, MultiStepWarmupLR
 
-scheduler_list = [
-    "cosine",
-]
+scheduler_list = ["cosine", "multistep"]
 
 
 def create_scheduler(sched_name, epochs, optimizer):
@@ -14,10 +12,17 @@ def create_scheduler(sched_name, epochs, optimizer):
     optimizer: 优化器
     """
     if sched_name == "cosine":
-        # warmup_steps 预热轮数 
-        lr_scheduler = CosineAnnealingWarmupLR(
-            optimizer, epochs, warmup_steps=int(epochs * 0.1)  
+        scheduler = CosineAnnealingWarmupLR(
+            optimizer, epochs, warmup_steps=int(epochs * 0.1)
+        )
+    elif sched_name == "multistep":
+        scheduler = MultiStepWarmupLR(
+            optimizer,
+            epochs,
+            warmup_steps=int(epochs * 0.1),  # 预热轮数
+            milestones=[int(epochs * 0.7), int(epochs * 0.9)],  # 总轮数的70%、90%时调整学习率
+            gamma=0.1,  # 学习率下降的倍数
         )
     else:
         raise NotImplementedError()
-    return lr_scheduler
+    return scheduler
