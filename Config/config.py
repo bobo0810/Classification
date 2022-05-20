@@ -1,16 +1,17 @@
 # ======数据集============
-Size = [224, 224]            # 图像尺寸
-Sampler = "batch_balance"    # 采样策略
+Size = [224, 224]  # 图像尺寸
+Sampler = "batch_balance"  # 采样策略
 Txt = "./Config/dataset.txt"  # 数据集路径
 
 # ======模型============
 Optimizer = "sgd"  # 优化器
 
-# 常规分类
-Backbone = "resnet18"   # 主干网络
+# 常规分类(train.py)
+Backbone = "resnet18"  # 主干网络
 Loss = "cross_entropy"  # 损失函数
 
-# # 度量学习
+
+# # 度量学习(train_metric.py)
 # Backbone = "resnet18"
 # Loss = "arcface"
 # Feature_dim = 128
@@ -19,7 +20,7 @@ Loss = "cross_entropy"  # 损失函数
 LR = 0.01  # 学习率
 Batch = 64  # 批次
 Epochs = 80  # 总轮数
-
+Scheduler = "cosine"  # 学习率调度器
 
 # ======分布式============
 from colossalai.amp import AMP_TYPE
@@ -33,5 +34,4 @@ fp16 = dict(mode=AMP_TYPE.TORCH)
 # 梯度裁剪
 # clip_grad_norm = 1.0
 
-# 流水线并行
-# Tensor并行
+# 即将支持：流水线并行,Tensor并行

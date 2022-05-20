@@ -9,10 +9,10 @@ from Utils.ddp_tools import create_folder, save_model, copy_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
+from Models.Scheduler import create_scheduler
 from torchinfo import summary
 from pytorch_metric_learning import miners
 from colossalai.core import global_context as gpc
-from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR
 from colossalai.logging import get_dist_logger
 import colossalai
 
@@ -47,9 +47,7 @@ if __name__ == "__main__":
     optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
-    lr_scheduler = CosineAnnealingWarmupLR(
-        optimizer, cfg.Epochs, warmup_steps=int(cfg.Epochs * 0.1)
-    )
+    lr_scheduler = create_scheduler(cfg.Scheduler,cfg.Epochs, optimizer)
 
     # 数据集
     train_set_for_val = create_datasets(
