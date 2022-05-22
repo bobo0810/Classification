@@ -4,8 +4,7 @@ import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_model
-from Utils.ddp_tsdb import DDP_SummaryWriter
-from Utils.ddp_tools import create_folder, save_model, copy_model
+from Utils.ddp_tools import create_folder, save_model, copy_model,DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss
 from Models.Optimizer import create_optimizer
