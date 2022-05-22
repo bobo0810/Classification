@@ -4,7 +4,7 @@ import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_metric_model
-from Utils.ddp_tools import create_folder, save_model, copy_model,DDP_SummaryWriter
+from Utils.ddp_tools import create_folder,save_model, copy_model,DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -24,15 +24,14 @@ if __name__ == "__main__":
     # 初始化环境
     colossalai.launch_from_torch(config=parser.parse_args().config_file)
     cfg = gpc.config
-    cur_rank = gpc.get_global_rank()
     logger = get_dist_logger()
     ckpt_path, tb_path = init_env()
-    create_folder(ckpt_path, cur_rank)
+    create_folder(ckpt_path)
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, cfg.Feature_dim,metric=True)
-    cp_model = copy_model(model, cur_rank)
+    cp_model = copy_model(model)
 
     # 分类器
     mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘
@@ -62,7 +61,7 @@ if __name__ == "__main__":
 
     # 日志
     logger.info(f"tensorboard save in {tb_path}", ranks=[0])
-    tb_writer = DDP_SummaryWriter(tb_path, rank=cur_rank)
+    tb_writer = DDP_SummaryWriter(tb_path)
 
     # 参数可视化
     tb_writer.add_text("Config", str(cfg))
@@ -105,7 +104,7 @@ if __name__ == "__main__":
         if best_score <= precision:
             best_score = precision
             save_model(
-                engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt", cur_rank
+                engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt"
             )
 
         # 可视化
@@ -113,5 +112,5 @@ if __name__ == "__main__":
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_scalar("Eval/precision", precision, epoch)
         lr_scheduler.step()
-    save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt", cur_rank)
+    save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
     tb_writer.close()

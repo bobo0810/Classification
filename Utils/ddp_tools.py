@@ -8,21 +8,21 @@ from collections import OrderedDict
 from torch.utils.tensorboard import SummaryWriter
 from torchinfo import summary
 from Utils.tools import convert_vis
-
-def create_folder(path, rank):
+from colossalai.core import global_context as gpc
+def create_folder(path):
     """
     创建指定文件夹
     """
-    if not os.path.exists(path) and rank == 0:
+    if not os.path.exists(path) and gpc.get_global_rank() == 0:
         os.makedirs(path)
 
-def copy_model(model,rank):
-    if rank==0:
+def copy_model(model):
+    if gpc.get_global_rank()==0:
         return copy.deepcopy(model)
     else:
         return None
 
-def save_model(model, cp_model,ckpt_path, rank):
+def save_model(model, cp_model,ckpt_path):
     """
     保存模型权重 
     因无法保存DDP模型，故DDP模型参数赋值给原生模型再保存。
@@ -31,7 +31,7 @@ def save_model(model, cp_model,ckpt_path, rank):
     cp_model: 未封装的原生模型
     ckpt_path: 保存路径  eg:/home/xxx/xxx.pt
     """
-    if rank==0:
+    if gpc.get_global_rank()==0:
         state_dict=model.state_dict()
 
         # 复制权重
@@ -64,12 +64,11 @@ class DDP_SummaryWriter:
     分布式并行训练时，仅当rank=0的进程写入日志
     """
 
-    def __init__(self, tb_path, rank):
+    def __init__(self, tb_path):
         """
         tb_path: 保存日志的路径
-        rank: 当前进程号
         """
-        self.rank = rank
+        self.rank = gpc.get_global_rank()
         if self.rank == 0:
             self.tb_writer = SummaryWriter(tb_path)
 
