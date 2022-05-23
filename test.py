@@ -24,8 +24,9 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
- 
-    if not model.info["metric"]:  # 常规分类
+    print(f"extra info is {model.info}")
+
+    if model.info["task"]=="class":  # 常规分类
         # 数据集
         test_set = create_datasets(txt=args.txt, mode="test", size=args.size)
         test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)
@@ -46,10 +47,12 @@ if __name__ == "__main__":
         # 输出全部指标
         cm.print_normalized_matrix()
         print(cm)
-    else:  # 度量学习
+    elif model.info["task"]=="metric":  # 度量学习
         # 数据集
         train_set = create_datasets(txt=args.txt, size=args.size, mode="train")
         test_set = create_datasets(txt=args.txt, size=args.size, mode="test")
         # 统计精确率
         precision = eval_metric_model(model, train_set, test_set,args.batch)
         print("precision is %.3f \n" % precision)
+    else:
+        raise NotImplemented
