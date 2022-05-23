@@ -17,11 +17,9 @@ def create_backbone(model_name, num_classes, metric=False):
     """
     if metric:
         model = MetricModel(model_name, pretrained=True, feature_dim=num_classes)
-        model.metric = True  # 区分任务的标志位
-        return model
     else:
-        return timm.create_model(model_name, pretrained=True, num_classes=num_classes)
-
+        model = timm.create_model(model_name, pretrained=True, num_classes=num_classes)
+    return model
 
 class MetricModel(nn.Module):
     """

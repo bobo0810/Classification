@@ -11,11 +11,11 @@ class MyNet_Metric(nn.Module):
     特征提取网络 输出feature
     """
 
-    def __init__(self, pretrained, model_name, feature_dim):
+    def __init__(self, pretrained, feature_dim):
         super(MyNet_Metric, self).__init__()
         # 特征提取器
         self.features = timm.create_model(
-            model_name,
+            model_name="efficientnet_b0",
             pretrained=pretrained,
             num_classes=feature_dim,  # 修改输出维度
         )
@@ -36,14 +36,10 @@ class MyNet_Metric(nn.Module):
 
 
 @register_model
-def mynet_metric(pretrained, num_classes, model_name="efficientnet_b0"):
+def mynet_metric(pretrained, num_classes):
     """
     pretrained: 是否加载ImageNet预训练参数（接收timm.create_model传参）
     num_classes: 特征维度（接收timm.create_model传参）
-
-    model_name: timm主干网络名
     """
     print("Backbone_Metric come from user-defined")
-    model = MyNet_Metric(pretrained, model_name, num_classes)
-    model.metric = True  # 区分任务的标志位
-    return model
+    return MyNet_Metric(pretrained, num_classes)
