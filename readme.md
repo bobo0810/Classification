@@ -4,8 +4,8 @@
 
 - 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
 - [更新日志](https://github.com/bobo0810/Classification/releases)
-- 0.5.0版本开始，仅支持分布式训练。
-
+- [Wiki文档](https://github.com/bobo0810/Classification/wiki)
+> 自0.5.0版本开始，仅支持分布式训练。
 
 ## 亮点
 
@@ -22,20 +22,6 @@
 
 - 图像分类✅
 - 度量学习✅ : 人像比对、图像检索等
-
-## [Wiki文档](https://github.com/bobo0810/Classification/wiki)
-
-- [最佳实践](https://github.com/bobo0810/Classification/wiki/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5) ⭐️ ⭐️ ⭐️
-
-- 自定义数据集
-
-- 自定义主干网络
-
-  (1)Timm库   (2)自定义   (3)基于Timm库定制
-
-- 模型部署
-
-  全流程支持 转换->加载->推理->验证误差。
 
 ## 可视化
 
