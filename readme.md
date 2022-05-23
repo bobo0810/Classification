@@ -1,4 +1,4 @@
-# 图像识别框架Classification
+# 图像识别框架🔨
 
 [![Actions Status](https://github.com/bobo0810/Classification/workflows/build/badge.svg)](https://github.com/bobo0810/Classification/actions)
 
@@ -21,7 +21,7 @@
 ## 支持任务
 
 - 图像分类✅
-- 度量学习/特征对比✅
+- 度量学习✅ : 人像比对、图像检索等
 
 ## [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 
