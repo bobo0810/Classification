@@ -30,6 +30,7 @@ if __name__ == "__main__":
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
+    model.info={"metric": False,"labels":labels_list} # 区分任务的标志位
     cp_model = copy_model(model)
 
     # 损失函数

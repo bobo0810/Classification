@@ -24,7 +24,8 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
-    if not hasattr(model, "metric"):  # 常规分类
+ 
+    if not model.info["metric"]:  # 常规分类
         # 数据集
         test_set = create_datasets(txt=args.txt, mode="test", size=args.size)
         test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)

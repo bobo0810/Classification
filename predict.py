@@ -17,13 +17,6 @@ if __name__ == "__main__":
         default=cur_path + "/CatDog/cat/cat_1.jpg",
         help="测试图片路径",
     )
-    parser.add_argument(
-        "--txt",
-        type=str,
-        default=cur_path + "/Config/dataset.txt",
-        help="数据集文件路径，以获取类别名",
-    )
-
     # 模型
     parser.add_argument("--img_size", default=[224, 224], help="推理尺寸")
     parser.add_argument("--weights", type=str, help="模型权重", required=True)
@@ -32,9 +25,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-
-    # 类别
-    labels= analysis_dataset(args.txt)["labels"]
 
     # 图像预处理
     img_tensor = PreProcess.transforms(
@@ -46,6 +36,9 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
+
+    # 类别
+    labels= model.info["labels"]
 
     # 推理
     scores = model(img_tensor)

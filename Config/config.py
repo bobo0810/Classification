@@ -6,12 +6,12 @@ Txt = "./Config/dataset.txt"  # 数据集路径
 # ======模型============
 Optimizer = "sgd"  # 优化器
 
-# 常规分类(train.py)
+# 常规分类
 Backbone = "resnet18"  # 主干网络
 Loss = "cross_entropy"  # 损失函数
 
 
-# # 度量学习(train_metric.py)
+# 度量学习
 # Backbone = "resnet18"
 # Loss = "arcface"
 # Feature_dim = 128
