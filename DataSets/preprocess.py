@@ -6,10 +6,11 @@ import numpy as np
 import torchvision
 from torchvision.transforms import transforms
 from timm.data.transforms_factory import create_transform as timm_transform
-preprocess_list=[
-    ImageNet_PreProcess,# ImageNet预处理
-    Face_PreProcess,# 人脸比对预处理
-]
+
+# 当前支持
+# ImageNet_PreProcess ImageNet预处理
+# Face_PreProcess     人脸比对预处理
+
 
 def ImageNet_PreProcess(img_path, use_augment=False, img_size=[224, 224]):
     '''
