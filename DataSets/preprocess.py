@@ -8,11 +8,11 @@ from torchvision.transforms import transforms
 from timm.data.transforms_factory import create_transform as timm_transform
 
 # 当前支持
-# ImageNet_PreProcess ImageNet预处理
-# Face_PreProcess     人脸比对预处理
+# ImageNet      ImageNet预处理
+# FaceCompare   人脸比对预处理
 
 
-def ImageNet_PreProcess(cv2_img, use_augment=False, img_size=[224, 224]):
+def ImageNet(cv2_img, use_augment=False, img_size=[224, 224]):
     """
     ImageNet预处理
 
@@ -37,7 +37,7 @@ def ImageNet_PreProcess(cv2_img, use_augment=False, img_size=[224, 224]):
     return img_transforms(img)
 
 
-def Face_PreProcess(cv2_img, use_augment=False, img_size=[112, 112]):
+def FaceCompare(cv2_img, use_augment=False, img_size=[112, 112]):
     """
     人脸比对预处理
     注：人脸比对数据集 默认已基于关键点裁剪并对齐。
