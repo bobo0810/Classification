@@ -7,10 +7,12 @@ from Utils.tools import analysis_dataset
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
+
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 # 预处理策略
-preprocess=ImageNet_PreProcess
+preprocess = ImageNet_PreProcess
+
 
 class create_datasets(data.Dataset):
     """初始化数据集"""
@@ -24,20 +26,25 @@ class create_datasets(data.Dataset):
         """
         assert mode in ["train", "val", "test"]
         self.size = size
-        self.mode=mode
+        self.mode = mode
         self.use_augment = use_augment
-        
+
         # 解析数据集
         dataset = analysis_dataset(txt)
         self.imgs_list = dataset[mode]["imgs"]
         self.label_list = dataset[mode]["labels"]
         self.labels = dataset["labels"]
+
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
         category = self.label_list[index]  # 类别名称
         label = int(self.labels.index(category))  # 类别标签
-        image = preprocess(img_path, self.use_augment, self.size)  # 图像预处理
-        return image, label
+
+        # 图像预处理
+        assert os.path.exists(img_path), "图像不存在"
+        cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        img = preprocess(cv2_img, self.use_augment, self.size)
+        return img, label
 
     def __len__(self):
         return len(self.imgs_list)
@@ -47,14 +54,16 @@ class create_datasets(data.Dataset):
         构造 类别均衡的数据加载器，用于训练
         """
         return self.label_list
+
     def get_info(self):
-        '''
+        """
         获取类别信息
-        '''
-        info="The nums of %s: %d ." % (self.mode, len(self.imgs_list))
-        info+="The nums of each class: %s."%dict(Counter(self.label_list))
+        """
+        info = "The nums of %s: %d ." % (self.mode, len(self.imgs_list))
+        info += "The nums of each class: %s." % dict(Counter(self.label_list))
         return info
-        
+
+
 def create_dataloader(batch_size, dataset, sampler_name="normal"):
     """
     初始化 数据加载器
@@ -92,4 +101,3 @@ def create_dataloader(batch_size, dataset, sampler_name="normal"):
             pin_memory=True,
         )
     return dataloader
-

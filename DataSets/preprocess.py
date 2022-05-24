@@ -12,17 +12,16 @@ from timm.data.transforms_factory import create_transform as timm_transform
 # Face_PreProcess     人脸比对预处理
 
 
-def ImageNet_PreProcess(img_path, use_augment=False, img_size=[224, 224]):
+def ImageNet_PreProcess(cv2_img, use_augment=False, img_size=[224, 224]):
     """
     ImageNet预处理
 
-    img_path: 图像路径
+    cv2_img: cv2读取的图像numpy
     use_augment: 是否图像增广
     img_size：训练图像尺寸
     """
-    assert os.path.exists(img_path), "图像文件不存在"
-    img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-    img = Image.fromarray(img)
+
+    img = Image.fromarray(cv2_img)
     if use_augment:
         # 增广：Random(缩放、裁剪、翻转、色彩...)
         img_transforms = timm_transform(
@@ -38,18 +37,16 @@ def ImageNet_PreProcess(img_path, use_augment=False, img_size=[224, 224]):
     return img_transforms(img)
 
 
-def Face_PreProcess(img_path, use_augment=False, img_size=[112, 112]):
+def Face_PreProcess(cv2_img, use_augment=False, img_size=[112, 112]):
     """
     人脸比对预处理
     注：人脸比对数据集 默认已基于关键点裁剪并对齐。
 
-    img_path: 图像路径
+    cv2_img: cv2读取的图像numpy
     use_augment:是否图像增广
-    img_size:训练图像尺寸
+    img_size:训练图像尺寸(暂不使用)
     """
-    assert os.path.exists(img_path), "图像文件不存在"
-    img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-    img = Image.fromarray(img)
+    img = Image.fromarray(cv2_img)
 
     # ImageNet均值方差
     mean = [0.485, 0.456, 0.406]
