@@ -7,9 +7,8 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 import shutil
-from ToolsLib.Img_Tools import Img_Tools
-from ToolsLib.TXT_Tools import TXT_Tools
-
+from botools.img_tools import Img_Tools
+from botools.txt_tools import TXT_Tools
 
 random.seed(227)
 cur_path = os.path.abspath(os.path.dirname(__file__))
