@@ -8,10 +8,8 @@ from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
 from .preprocess import *
-cur_path = os.path.abspath(os.path.dirname(__file__))
 
-# 预处理策略
-preprocess = eval(use_process)
+cur_path = os.path.abspath(os.path.dirname(__file__))
 
 
 class create_datasets(data.Dataset):
@@ -35,6 +33,9 @@ class create_datasets(data.Dataset):
         self.label_list = dataset[mode]["labels"]
         self.labels = dataset["labels"]
 
+        # 预处理策略
+        self.process = eval(use_process)
+
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
         category = self.label_list[index]  # 类别名称
@@ -43,7 +44,7 @@ class create_datasets(data.Dataset):
         # 图像预处理
         assert os.path.exists(img_path), "图像不存在"
         cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        img = preprocess(cv2_img, self.use_augment, self.size)
+        img = self.process(cv2_img, self.use_augment, self.size)
         return img, label
 
     def __len__(self):
