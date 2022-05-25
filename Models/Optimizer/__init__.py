@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import timm
 import timm.optim
-
+# 当前支持
 optimizer_list = [
     "sgd",
     "adam",

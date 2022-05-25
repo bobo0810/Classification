@@ -1,5 +1,6 @@
 from colossalai.nn.lr_scheduler import CosineAnnealingWarmupLR, MultiStepWarmupLR
 
+# 当前支持
 scheduler_list = ["cosine", "multistep"]
 
 
@@ -11,6 +12,7 @@ def create_scheduler(sched_name, epochs, optimizer):
     epochs: 总轮数
     optimizer: 优化器
     """
+    assert sched_name in scheduler_list, "NotImplementedError"
     if sched_name == "cosine":
         scheduler = CosineAnnealingWarmupLR(
             optimizer, epochs, warmup_steps=int(epochs * 0.1)
