@@ -3,16 +3,15 @@ import torch.utils.data as data
 import torch
 import cv2
 from collections import Counter
-from .preprocess import ImageNet,FaceCompare
 from Utils.tools import analysis_dataset
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
-
+from .preprocess import *
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 # 预处理策略
-preprocess = ImageNet
+preprocess = eval(use_process)
 
 
 class create_datasets(data.Dataset):

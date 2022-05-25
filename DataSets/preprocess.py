@@ -11,6 +11,9 @@ from timm.data.transforms_factory import create_transform as timm_transform
 # ImageNet      ImageNet预处理
 # FaceCompare   人脸比对预处理
 
+# 启用
+use_process = "ImageNet"
+
 
 def ImageNet(cv2_img, use_augment=False, img_size=[224, 224]):
     """
