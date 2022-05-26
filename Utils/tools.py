@@ -7,8 +7,8 @@ import cv2
 import sys
 import torchvision
 from pycm import ConfusionMatrix
-from botools.txt_tools import TXT_Tools
-from botools.img_tools import Img_Tools
+from bobotools.txt_tools import TXT_Tools
+from bobotools.img_tools import Img_Tools
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 from pytorch_grad_cam.utils.image import show_cam_on_image
