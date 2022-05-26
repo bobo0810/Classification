@@ -15,7 +15,7 @@
 | 模型     | 集成[Timm](https://github.com/rwightman/pytorch-image-models) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 训练 | 集成[ColossalAI](https://github.com/hpcaitech/ColossalAI) | 1. 大规模分布式并行、自动混合精度。<br/>2. 梯度积累、梯度裁剪等。 |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard) | 可视化参数、损失、图像、模型结构等。 |
-| 部署 | 服务器/移动端加速                                                        | <img src="Docs/imgs/deploy.svg" style="zoom:50%;" /> |
+| 部署 | 服务器/移动端加速                                                        | <img src="./Package/imgs/deploy.svg" style="zoom:50%;" /> |
 
 
 ## 支持任务
