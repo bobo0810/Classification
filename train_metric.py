@@ -4,7 +4,7 @@ import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, init_env, eval_metric_model
-from Utils.ddp_tools import create_folder,save_model, copy_model,DDP_SummaryWriter
+from Utils.ddp_tools import create_folder, save_model, copy_model, DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -30,8 +30,8 @@ if __name__ == "__main__":
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
-    model = create_backbone(cfg.Backbone, cfg.Feature_dim,metric=True)
-    model.info={"task": "metric","labels":labels_list} # 额外信息
+    model = create_backbone(cfg.Backbone, cfg.Feature_dim, metric=True)
+    model.info = {"task": "metric", "labels": labels_list}  # 额外信息
     cp_model = copy_model(model)
 
     # 分类器
@@ -46,16 +46,20 @@ if __name__ == "__main__":
     optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
-    lr_scheduler = create_scheduler(cfg.Scheduler,cfg.Epochs, optimizer)
+    lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)
 
     # 数据集
     train_set_for_val = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size
+        txt=cfg.Txt, mode="train", size=cfg.Size, process=cfg.Process
     )  # 用于评估
     train_set = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True
+        txt=cfg.Txt,
+        mode="train",
+        size=cfg.Size,
+        process=cfg.Process,
+        use_augment=True,
     )  # 用于训练
-    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
+    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size,process=cfg.Process)
 
     # 数据集加载器
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
@@ -99,14 +103,12 @@ if __name__ == "__main__":
                 iter_num = int(batch_idx + epoch * len(train_dataloader))
                 tb_writer.add_scalar("Train/loss", loss.item(), iter_num)
 
-        # 验证集评估  
+        # 验证集评估
         engine.eval()
-        precision = eval_metric_model(engine, train_set_for_val, val_set,cfg.Batch)
+        precision = eval_metric_model(engine, train_set_for_val, val_set, cfg.Batch)
         if best_score <= precision:
             best_score = precision
-            save_model(
-                engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt"
-            )
+            save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)

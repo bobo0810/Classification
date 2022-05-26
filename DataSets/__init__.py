@@ -7,7 +7,7 @@ from Utils.tools import analysis_dataset
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
-from .preprocess import *
+from .preprocess import create_process
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -15,11 +15,12 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 class create_datasets(data.Dataset):
     """初始化数据集"""
 
-    def __init__(self, txt, mode, size, use_augment=False):
+    def __init__(self, txt, mode, size, process, use_augment=False):
         """
-        txt:  数据集路径       eg:/home/xxx/dataset.txt
-        mode: 加载的数据集类型  train:训练集  val:验证集  test:测试集
-        size: 图像尺寸         eg: [224,224]
+        txt:  数据集路径           eg:/home/xxx/dataset.txt
+        mode: 加载的数据集类型      train:训练集  val:验证集  test:测试集
+        size: 图像尺寸             eg: [224,224]
+        process: 图像预处理的名称         eg:"ImageNet"
         use_augment: 是否开启图像增广
         """
         assert mode in ["train", "val", "test"]
@@ -34,7 +35,7 @@ class create_datasets(data.Dataset):
         self.labels = dataset["labels"]
 
         # 预处理策略
-        self.process = eval(use_process)
+        self.process = create_process(process)
 
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
@@ -44,7 +45,7 @@ class create_datasets(data.Dataset):
         # 图像预处理
         assert os.path.exists(img_path), "图像不存在"
         cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        img = self.process(cv2_img, self.use_augment, self.size)
+        img = self.process(cv2_img, self.size, self.use_augment)
         return img, label
 
     def __len__(self):

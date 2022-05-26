@@ -2,6 +2,7 @@
 Size = [224, 224]  # 图像尺寸
 Sampler = "batch_balance"  # 采样策略
 Txt = "./Config/dataset.txt"  # 数据集路径
+Process = "ImageNet"  # 图像预处理策略
 
 # ======模型============
 Optimizer = "sgd"  # 优化器

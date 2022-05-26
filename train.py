@@ -44,9 +44,9 @@ if __name__ == "__main__":
     
     # 数据集
     train_set = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size, use_augment=True
+        txt=cfg.Txt, mode="train", size=cfg.Size, process=cfg.Process,use_augment=True
     )
-    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size)
+    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size,process=cfg.Process)
 
     # 数据集加载器
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
