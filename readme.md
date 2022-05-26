@@ -27,15 +27,15 @@
 
 <center>训练</center>
 
-  <div align=center><img src="./Docs/imgs/tsdb.gif" width="500px"  height="500px"></div>
+  <div align=center><img src="./Package/imgs/tsdb.gif" width="500px"  height="500px"></div>
 
 <center>测试:支持120+评价指标</center>
 
-  <div align=center><img src="./Docs/imgs/matrix.jpg" width="1000px"  height="400px" ></div>
+  <div align=center><img src="./Package/imgs/matrix.jpg" width="1000px"  height="400px" ></div>
 
 <center>预测:类激活图</center>
 
-  <div align=center><img src="./Docs/imgs/cam_cat.jpg" ><img src="./Docs/imgs/cam_dog.jpg" ></div>
+  <div align=center><img src="./Package/imgs/cam_cat.jpg" ><img src="./Package/imgs/cam_dog.jpg" ></div>
 
 ## 扩展框架
 
@@ -82,6 +82,7 @@
   - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
   - [PyCM多类指标统计库](https://github.com/sepandhaghighi/pycm)![Github stars](https://img.shields.io/github/stars/sepandhaghighi/pycm.svg)
   - [torchinfo模型统计库](https://github.com/TylerYep/torchinfo)![Github stars](https://img.shields.io/github/stars/TylerYep/torchinfo.svg)
+  - [torchsampler均衡采样库](https://github.com/ufoym/imbalanced-dataset-sampler)![Github stars](https://img.shields.io/github/stars/ufoym/imbalanced-dataset-sampler.svg)
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
   - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
   - [ColossalAI大规模分布式训练库](https://github.com/hpcaitech/ColossalAI)![Github stars](https://img.shields.io/github/stars/hpcaitech/ColossalAI.svg)
