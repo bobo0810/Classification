@@ -7,7 +7,7 @@ from Utils.tools import analysis_dataset
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
-from .preprocess import create_process
+from .preprocess import *
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -35,7 +35,7 @@ class create_datasets(data.Dataset):
         self.labels = dataset["labels"]
 
         # 预处理策略
-        self.process = create_process(process)
+        self.process = eval(process)
 
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
