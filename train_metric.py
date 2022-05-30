@@ -3,8 +3,8 @@ import os
 import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, init_env, eval_metric_model
-from Utils.ddp_tools import create_folder, save_model, copy_model, DDP_SummaryWriter
+from Utils.tools import analysis_dataset, eval_metric_model
+from Utils.ddp_tools import init_env,save_model, copy_model, DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     cfg = gpc.config
     logger = get_dist_logger()
     ckpt_path, tb_path = init_env()
-    create_folder(ckpt_path)
+
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]

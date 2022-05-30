@@ -57,32 +57,6 @@ def analysis_dataset(txt):
     return dataset
 
 
-def init_env():
-    """
-    初始化训练环境
-    """
-    # 固定随机种子
-    seed = 227
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-
-    # 设置CUDA
-    torch.backends.cudnn.enabled = True
-    torch.backends.cudnn.benchmark = True
-    torch.backends.cudnn.deterministic = False
-    # 日志路径
-    exp_path = (
-        os.path.dirname(cur_path)
-        + "/ExpLog/"
-        + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        + "/"
-    )
-    ckpt_path = os.path.join(exp_path, "checkpoint/")
-    tb_path = os.path.join(exp_path, "tb_log/")
-    return ckpt_path, tb_path
 
 
 @torch.no_grad()
