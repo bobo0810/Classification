@@ -3,27 +3,35 @@ import torch.nn.functional as F
 import timm
 import torch
 from collections import OrderedDict
-from .mynet import mynet  # 注册自定义分类模型
-from .mynet_metric import mynet_metric  # 注册自定义特征提取模型
+from .backbone import *  # 导入自定义网络
 
 
 def create_backbone(model_name, num_classes, metric=False):
     """
     主干网络入口
+    优先顺序: 自定义>timm
 
-    model_name:  timm模型名称
+    model_name:  模型名称
     num_classes: 分类时为类别数   度量学习时为特征维度
     metric:      False分类任务   True度量学习
     """
-    if metric:
-        model = MetricModel(model_name, pretrained=True, feature_dim=num_classes)
-    else:
-        model = timm.create_model(model_name, pretrained=True, num_classes=num_classes)
+    try:
+        # 加载自定义网络
+        model = eval(model_name)(num_classes)
+    except:
+        # 加载Timm网络
+        if metric:
+            model = MetricModel(model_name, pretrained=True, feature_dim=num_classes)
+        else:
+            model = timm.create_model(
+                model_name, pretrained=True, num_classes=num_classes
+            )
     return model
+
 
 class MetricModel(nn.Module):
     """
-    度量学习：加载特征提取网络
+    度量学习：加载基于timm的特征提取网络
     """
 
     def __init__(self, model_name, pretrained, feature_dim):
