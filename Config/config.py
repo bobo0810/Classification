@@ -21,7 +21,7 @@ Loss = "cross_entropy"  # 损失函数
 LR = 0.01  # 学习率
 Batch = 64  # 批次
 Epochs = 80  # 总轮数
-Scheduler = "cosine"  # 学习率调度器
+Scheduler = "CosineLR"  # 学习率调度器
 
 # ======分布式============
 from colossalai.amp import AMP_TYPE
