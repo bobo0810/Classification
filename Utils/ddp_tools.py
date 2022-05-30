@@ -12,6 +12,8 @@ from torch.utils.tensorboard import SummaryWriter
 from torchinfo import summary
 from Utils.tools import convert_vis
 from colossalai.core import global_context as gpc
+from colossalai.logging import get_dist_logger
+import colossalai
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,7 +28,7 @@ def copy_model(model):
         return None
 
 
-def init_env():
+def init_env(config_file):
     """
     初始化训练环境
     """
@@ -42,6 +44,10 @@ def init_env():
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
+
+    # 初始化colossalai
+    colossalai.launch_from_torch(config=config_file)
+
     # 日志路径
     exp_path = (
         os.path.dirname(cur_path)
@@ -53,7 +59,7 @@ def init_env():
     tb_path = os.path.join(exp_path, "tb_log/")
     if not os.path.exists(ckpt_path) and gpc.get_global_rank() == 0:
         os.makedirs(ckpt_path)
-    return ckpt_path, tb_path
+    return ckpt_path, tb_path, gpc.config, get_dist_logger()
 
 
 def save_model(model, cp_model, ckpt_path):

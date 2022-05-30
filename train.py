@@ -10,8 +10,6 @@ from Models.Loss import create_class_loss
 from Models.Optimizer import create_optimizer
 from Models.Scheduler import create_scheduler
 from torchinfo import summary
-from colossalai.core import global_context as gpc
-from colossalai.logging import get_dist_logger
 import colossalai
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -21,10 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    colossalai.launch_from_torch(config=parser.parse_args().config_file)
-    cfg = gpc.config
-    logger = get_dist_logger()
-    ckpt_path, tb_path = init_env()
+    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config_file)
 
     
     # 模型

@@ -4,7 +4,7 @@ import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, eval_metric_model
-from Utils.ddp_tools import init_env,save_model, copy_model, DDP_SummaryWriter
+from Utils.ddp_tools import init_env, save_model, copy_model, DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -22,11 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    colossalai.launch_from_torch(config=parser.parse_args().config_file)
-    cfg = gpc.config
-    logger = get_dist_logger()
-    ckpt_path, tb_path = init_env()
-
+    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config_file)
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
@@ -59,7 +55,9 @@ if __name__ == "__main__":
         process=cfg.Process,
         use_augment=True,
     )  # 用于训练
-    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size,process=cfg.Process)
+    val_set = create_datasets(
+        txt=cfg.Txt, mode="val", size=cfg.Size, process=cfg.Process
+    )
 
     # 数据集加载器
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
