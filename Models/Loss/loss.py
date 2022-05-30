@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from timm.loss import LabelSmoothingCrossEntropy
 from pytorch_metric_learning import losses
@@ -29,7 +30,7 @@ def CosFace(embedding_size, num_classes):
     embedding_size: 特征维度
     num_classes: 类别数
     """
-    return losses.CosFaceLoss(embedding_size, num_classes)
+    return losses.CosFaceLoss(num_classes=num_classes, embedding_size=embedding_size)
 
 
 def ArcFace(embedding_size, num_classes):
@@ -39,7 +40,7 @@ def ArcFace(embedding_size, num_classes):
     embedding_size: 特征维度
     num_classes: 类别数
     """
-    return losses.ArcFaceLoss(embedding_size, num_classes)
+    return losses.ArcFaceLoss(num_classes=num_classes, embedding_size=embedding_size)
 
 
 def SubCenterArcFace(embedding_size, num_classes):
@@ -49,7 +50,7 @@ def SubCenterArcFace(embedding_size, num_classes):
     embedding_size: 特征维度
     num_classes: 类别数
     """
-    return losses.SubCenterArcFaceLoss(embedding_size, num_classes)
+    return losses.SubCenterArcFaceLoss(num_classes=num_classes, embedding_size=embedding_size)
 
 
 def CircleLoss(embedding_size, num_classes):
