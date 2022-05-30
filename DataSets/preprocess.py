@@ -7,6 +7,9 @@ import torchvision
 from torchvision.transforms import transforms
 from timm.data.transforms_factory import create_transform as timm_transform
 
+# ImageNet     ImageNet预处理
+# FaceCompare  人脸比对预处理
+
 
 def ImageNet(cv2_img, img_size, use_augment):
     """
