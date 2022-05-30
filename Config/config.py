@@ -9,12 +9,12 @@ Optimizer = "SGD"  # 优化器
 
 # 常规分类
 Backbone = "resnet18"  # 主干网络
-Loss = "cross_entropy"  # 损失函数
+Loss = "CrossEntropy"  # 损失函数
 
 
 # 度量学习
 # Backbone = "resnet18"
-# Loss = "arcface"
+# Loss = "ArcFace"
 # Feature_dim = 128
 
 # ======训练============

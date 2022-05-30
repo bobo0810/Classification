@@ -62,7 +62,7 @@
 | 图像预处理 | Process | - ImageNet           ImageNet预处理<br/>- FaceCompare    人脸比对预处理 |
 | 采样策略     | Sampler   | - normal     常规采样<br>- dataset_balance    类别平衡采样(数据集维度)  <br>- batch_balance    类别平衡采样(batch维度)⭐️        |
 | 主干网络     | Backbone  | - [600+ SOTA预训练模型](https://github.com/bobo0810/Classification/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E5%B9%B2%E7%BD%91%E7%BB%9C)  |
-| 损失函数     | Loss      | - cross_entropy<br>- label_smooth         |
+| 损失函数     | Loss      | - CrossEntropy<br>- LabelSmooth         |
 | 学习率调度器      | Scheduler | - CosineLR⭐️ <br/>- MultistepLR|
 | 优化器       | Optimizer | - SGD<br/>- Adam<br/>- Lamb  |
 
@@ -70,7 +70,7 @@
 | 度量学习 | 属性 | 支持                                                         |
 | -------- | -------- | ------------------------------------------------------------ |
 | 主干网络 | Backbone | - [600+ SOTA预训练模型](https://github.com/bobo0810/Classification/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E5%B9%B2%E7%BD%91%E7%BB%9C) |
-| 损失函数 | Loss     | - cosface<br/>- arcface⭐️<br/>- subcenter_arcface<br/>- circleloss |
+| 损失函数 | Loss     | - CosFace<br/>- ArcFace⭐️<br/>- SubCenterArcFace<br/>- CircleLoss |
 
 ## 感谢
 
