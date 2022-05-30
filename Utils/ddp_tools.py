@@ -28,7 +28,7 @@ def copy_model(model):
         return None
 
 
-def init_env(config_file):
+def init_env(config):
     """
     初始化训练环境
     """
@@ -46,7 +46,7 @@ def init_env(config_file):
     torch.backends.cudnn.deterministic = False
 
     # 初始化colossalai
-    colossalai.launch_from_torch(config=config_file)
+    colossalai.launch_from_torch(config=config)
 
     # 日志路径
     exp_path = (

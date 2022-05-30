@@ -4,7 +4,7 @@ import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.tools import analysis_dataset, eval_model
-from Utils.ddp_tools import init_env, save_model, copy_model,DDP_SummaryWriter
+from Utils.ddp_tools import init_env, save_model, copy_model, DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_class_loss
 from Models.Optimizer import create_optimizer
@@ -16,16 +16,15 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
     parser = colossalai.get_default_parser()
-    parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
+    parser.add_argument("--config", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config_file)
+    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config)
 
-    
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
     model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
-    model.info={"task": "class","labels":labels_list} # 额外信息
+    model.info = {"task": "class", "labels": labels_list}  # 额外信息
     cp_model = copy_model(model)
 
     # 损失函数
@@ -35,13 +34,15 @@ if __name__ == "__main__":
     optimizer = create_optimizer(model.parameters(), cfg.Optimizer, lr=cfg.LR)
 
     # 学习率调度器
-    lr_scheduler = create_scheduler(cfg.Scheduler,cfg.Epochs, optimizer)
-    
+    lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)
+
     # 数据集
     train_set = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size, process=cfg.Process,use_augment=True
+        txt=cfg.Txt, mode="train", size=cfg.Size, process=cfg.Process, use_augment=True
     )
-    val_set = create_datasets(txt=cfg.Txt, mode="val", size=cfg.Size,process=cfg.Process)
+    val_set = create_datasets(
+        txt=cfg.Txt, mode="val", size=cfg.Size, process=cfg.Process
+    )
 
     # 数据集加载器
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
@@ -91,9 +92,7 @@ if __name__ == "__main__":
         acc = eval_model(engine, val_dataloader).Overall_ACC
         if best_acc <= acc:
             best_acc = acc
-            save_model(
-                engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt"
-            )
+            save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)

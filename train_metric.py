@@ -19,10 +19,10 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
     parser = colossalai.get_default_parser()
-    parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
+    parser.add_argument("--config", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config_file)
+    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config)
 
     # 模型
     labels_list = analysis_dataset(cfg.Txt)["labels"]
