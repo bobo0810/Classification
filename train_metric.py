@@ -39,7 +39,7 @@ if __name__ == "__main__":
         {"params": model.parameters(), "lr": cfg.LR},
         {"params": criterion.parameters(), "lr": cfg.LR},
     ]
-    optimizer = create_optimizer(params, cfg.Optimizer, lr=cfg.LR)
+    optimizer = create_optimizer( cfg.Optimizer,params, lr=cfg.LR)
 
     # 学习率调度器
     lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)

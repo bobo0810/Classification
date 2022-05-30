@@ -5,7 +5,7 @@ Txt = "./Config/dataset.txt"  # 数据集路径
 Process = "ImageNet"  # 图像预处理策略
 
 # ======模型============
-Optimizer = "sgd"  # 优化器
+Optimizer = "SGD"  # 优化器
 
 # 常规分类
 Backbone = "resnet18"  # 主干网络

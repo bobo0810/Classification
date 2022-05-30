@@ -31,7 +31,7 @@ if __name__ == "__main__":
     criterion = create_class_loss(cfg.Loss)
 
     # 优化器
-    optimizer = create_optimizer(model.parameters(), cfg.Optimizer, lr=cfg.LR)
+    optimizer = create_optimizer( cfg.Optimizer, model.parameters(),lr=cfg.LR)
 
     # 学习率调度器
     lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)
