@@ -3,13 +3,13 @@ import os
 import torch
 import time
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, eval_model, eval_metric_model
+from Utils.tools import analysis_dataset, eval_model
 import argparse
 import matplotlib.pyplot as plt
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="测试")
+    parser = argparse.ArgumentParser(description="测试-分类任务")
     # 默认参数
     parser.add_argument("--size", help="图像尺寸", default=[224, 224])
     parser.add_argument("--batch", type=int, help="推理batch", default=8)
@@ -25,41 +25,28 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
-    print(f"extra info is {model.info}")
+    print(f"model info is {model.info}")
 
-    if model.info["task"] == "class":  # 常规分类
-        # 数据集
-        test_set = create_datasets(
-            txt=args.txt, mode="test", size=args.size, process=args.process
-        )
-        test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)
-        labels_list = analysis_dataset(args.txt)["labels_dict"]
+    # 常规分类
+    assert model.info["task"] == "class", "警告: 该模型不是分类任务模型"
 
-        # 统计指标
-        cm = eval_model(model, test_dataloader)
-        cm.relabel(mapping=labels_list)
-        print("Overall ACC is %.3f \n" % cm.Overall_ACC)
+    # 数据集
+    test_set = create_datasets(
+        txt=args.txt, mode="test", size=args.size, process=args.process
+    )
+    test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)
+    labels_list = analysis_dataset(args.txt)["labels_dict"]
 
-        # 可视化混淆矩阵
-        cm.plot(
-            cmap=plt.cm.Reds, normalized=True, number_label=True, plot_lib="seaborn"
-        )
-        plt.savefig(cur_path + "/matrix.jpg")
-        print("matrix save in ", cur_path + "/matrix.jpg \n")
+    # 统计指标
+    cm = eval_model(model, test_dataloader)
+    cm.relabel(mapping=labels_list)
+    print("Overall ACC is %.3f \n" % cm.Overall_ACC)
 
-        # 输出全部指标
-        cm.print_normalized_matrix()
-        print(cm)
-    elif model.info["task"] == "metric":  # 度量学习
-        # 数据集
-        train_set = create_datasets(
-            txt=args.txt, mode="train", size=args.size, process=args.process
-        )
-        test_set = create_datasets(
-            txt=args.txt, mode="test", size=args.size, process=args.process
-        )
-        # 统计精确率
-        precision = eval_metric_model(model, train_set, test_set, args.batch)
-        print("precision is %.3f \n" % precision)
-    else:
-        raise NotImplemented
+    # 可视化混淆矩阵
+    cm.plot(cmap=plt.cm.Reds, normalized=True, number_label=True, plot_lib="seaborn")
+    plt.savefig(cur_path + "/matrix.jpg")
+    print("matrix save in ", cur_path + "/matrix.jpg \n")
+
+    # 输出全部指标
+    cm.print_normalized_matrix()
+    print(cm)
