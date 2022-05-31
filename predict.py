@@ -3,7 +3,7 @@ import os
 import torch
 import cv2
 from PIL import Image
-from Utils.tools import vis_cam,analysis_dataset
+from Utils.tools import vis_cam
 from DataSets.preprocess import PreProcess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     model.eval()
 
     # 类别
-    labels= model.info["labels"]
+    labels = model.info["labels"]
 
     # 推理
     scores = model(img_tensor)

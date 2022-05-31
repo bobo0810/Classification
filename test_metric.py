@@ -3,7 +3,7 @@ import os
 import torch
 import time
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, eval_model, eval_metric_model
+from Utils.tools import eval_model, eval_metric_model
 import argparse
 import matplotlib.pyplot as plt
 
