@@ -15,6 +15,7 @@ import colossalai
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
+    '''分类任务'''
     parser = colossalai.get_default_parser()
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
