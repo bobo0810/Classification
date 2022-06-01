@@ -3,7 +3,8 @@ import os
 import torch
 import argparse
 from DataSets import create_datasets, create_dataloader
-from Utils.tools import analysis_dataset, eval_metric_model
+from Utils.eval import eval_metric_model
+from Utils.tools import analysis_dataset
 from Utils.ddp_tools import init_env, save_model, copy_model, DDP_SummaryWriter
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
