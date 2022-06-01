@@ -50,11 +50,9 @@ if __name__ == "__main__":
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
     val_dataloader = create_dataloader(cfg.Batch, val_set)
 
-    # 日志
+    # 可视化
     logger.info(f"tensorboard save in {tb_path}", ranks=[0])
     tb_writer = DDP_SummaryWriter(tb_path)
-
-    # 可视化
     tb_writer.add_text("Config", str(cfg))
     tb_writer.add_text("TrainSet", train_set.get_info())
     tb_writer.add_text("ValSet", val_set.get_info())
