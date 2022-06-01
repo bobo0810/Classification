@@ -46,9 +46,9 @@ def FaceCompare(cv2_img, img_size, use_augment):
     """
     img = Image.fromarray(cv2_img)
 
-    # ImageNet均值方差
-    mean = [0.485, 0.456, 0.406]
-    std = [0.229, 0.224, 0.225]
+    # 均值方差
+    mean = (0.5,)
+    std = (0.5,)
 
     if use_augment:
         # 增广
