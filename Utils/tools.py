@@ -27,7 +27,7 @@ def analysis_dataset(txt):
         "test": {"imgs": [], "labels": []},
     }
     labels = set()
-    for path, label, mode in imgs_list:
+    for mode, label, path in imgs_list:
         assert mode in ["train", "val", "test"]
         labels.add(label)
         dataset[mode]["imgs"].append(path)

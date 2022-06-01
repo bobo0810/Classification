@@ -56,7 +56,7 @@ def split(imgs_path, ratio, dataset_txt):
     def combin_dataset(imgs_list, type):
         for img_path in imgs_list:
             label = img_path.split("/")[-2]
-            dataset_list.append(img_path + "," + label + "," + type)
+            dataset_list.append(type+ "," + label + ","+ img_path)
 
     combin_dataset(train_list, "train")
     combin_dataset(val_list, "val")
@@ -69,10 +69,10 @@ if __name__ == "__main__":
     """
     读取数据集,划分训练集、验证集、测试集。
 
-    txt格式为[路径,类别,类型]
-    - 路径: 绝对路径or相对路径。 eg: /home/xx/a.jpg  or  ./xxx/a.jpg
-    - 类别: 类别名称。 eg: cat
-    - 类型: 指名所属类型。 train:训练集  val:验证集  test:测试集
+    txt格式为[类型,类别名,图片路径]
+    - 类型:  train:训练集  val:验证集  test:测试集
+    - 类别名: cat dog
+    - 路径: 绝对路径or相对路径
     """
     parser = argparse.ArgumentParser(description="划分数据集")
     parser.add_argument(
