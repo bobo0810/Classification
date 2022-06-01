@@ -16,7 +16,7 @@ import colossalai
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-    '''分类任务'''
+    """分类任务"""
     parser = colossalai.get_default_parser()
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     criterion = create_class_loss(cfg.Loss)
 
     # 优化器
-    optimizer = create_optimizer( cfg.Optimizer, model.parameters(),lr=cfg.LR)
+    optimizer = create_optimizer(cfg.Optimizer, model.parameters(), lr=cfg.LR)
 
     # 学习率调度器
     lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)
@@ -54,14 +54,10 @@ if __name__ == "__main__":
     logger.info(f"tensorboard save in {tb_path}", ranks=[0])
     tb_writer = DDP_SummaryWriter(tb_path)
 
-    # 参数可视化
+    # 可视化
     tb_writer.add_text("Config", str(cfg))
-
-    # 数据集可视化
     tb_writer.add_text("TrainSet", train_set.get_info())
     tb_writer.add_text("ValSet", val_set.get_info())
-
-    # 模型结构可视化
     tb_writer.add_graph(model, cfg.Size)
 
     # colossalai封装
