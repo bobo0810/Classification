@@ -4,7 +4,7 @@ import torch
 import cv2
 from PIL import Image
 from Utils.tools import vis_cam
-from DataSets.preprocess import PreProcess
+from DataSets.preprocess import *  # 导入预处理
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -17,6 +17,7 @@ if __name__ == "__main__":
         default=cur_path + "/CatDog/cat/cat_1.jpg",
         help="测试图片路径",
     )
+    parser.add_argument("--process", help="图像预处理", default="ImageNet")
     # 模型
     parser.add_argument("--img_size", default=[224, 224], help="推理尺寸")
     parser.add_argument("--weights", type=str, help="模型权重", required=True)
@@ -27,9 +28,10 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # 图像预处理
-    img_tensor = PreProcess.transforms(
-        img_path=args.img_path, use_augment=False, img_size=args.img_size
-    )
+    assert os.path.exists(args.img_path), "图像不存在"
+    cv2_img = cv2.imread(args.img_path, cv2.IMREAD_COLOR)
+    process = eval(args.process)  # 预处理
+    img_tensor = process(cv2_img, args.img_size, use_augment=False)
     img_tensor = img_tensor.unsqueeze(0).to(device)
 
     # 加载模型
