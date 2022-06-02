@@ -4,6 +4,7 @@ import torch
 import time
 from DataSets import create_datasets, create_dataloader
 from Utils.eval import eval_metric_model
+from Utils.tools import analysis_dataset
 import argparse
 import matplotlib.pyplot as plt
 
@@ -25,17 +26,14 @@ if __name__ == "__main__":
     model = torch.load(args.weights, map_location="cpu")
     model.to(device)
     model.eval()
-    print(f"extra info is {model.info}")
+    print(f"model info is {model.info}")
 
     # 度量学习
     assert model.info["task"] == "metric", "警告: 该模型不是度量学习模型"
     # 数据集
-    train_set = create_datasets(
-        txt=args.txt, mode="train", size=args.size, process=args.process
+    dataset = analysis_dataset(args.txt)
+    # 统计
+    precision = eval_metric_model(
+        model, dataset, args.size, args.process, args.batch, mode="test"
     )
-    test_set = create_datasets(
-        txt=args.txt, mode="test", size=args.size, process=args.process
-    )
-    # 统计精确率
-    precision = eval_metric_model(model, train_set, test_set, args.batch)
     print("precision is %.3f \n" % precision)
