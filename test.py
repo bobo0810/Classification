@@ -32,15 +32,16 @@ if __name__ == "__main__":
     assert model.info["task"] == "class", "警告: 该模型不是分类任务模型"
 
     # 数据集
+    dataset = analysis_dataset(args.txt)
     test_set = create_datasets(
-        txt=args.txt, mode="test", size=args.size, process=args.process
+        dataset=dataset["test"], size=args.size, process=args.process
     )
-    test_dataloader = create_dataloader(batch_size=args.batch, dataset=test_set)
-    labels_list = analysis_dataset(args.txt)["labels_dict"]
+    test_dataloader = create_dataloader(args.batch,test_set)
+    
 
     # 统计指标
     cm = eval_model(model, test_dataloader)
-    cm.relabel(mapping=labels_list)
+    cm.relabel(mapping=dict(zip(list(range(0, len(dataset["all_labels"]))), dataset["all_labels"])))    
     print("Overall ACC is %.3f \n" % cm.Overall_ACC)
 
     # 可视化混淆矩阵
