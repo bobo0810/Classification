@@ -21,13 +21,24 @@ if __name__ == "__main__":
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    ckpt_path, tb_path, cfg, logger = init_env(parser.parse_args().config_file)
+    ckpt_path, cfg, tb_writer,logger = init_env(parser.parse_args().config_file)
+
+    # 数据集
+    dataset = analysis_dataset(cfg.Txt)
+    train_set = create_datasets(
+        dataset=dataset["train"], size=cfg.Size, process=cfg.Process, use_augment=True
+    )
+    val_set = create_datasets(
+        dataset=dataset["val"], size=cfg.Size, process=cfg.Process
+    )
+    train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
+    val_dataloader = create_dataloader(cfg.Batch, val_set)
 
     # 模型
-    labels_list = analysis_dataset(cfg.Txt)["labels"]
-    model = create_backbone(cfg.Backbone, num_classes=len(labels_list))
-    model.info = {"task": "class", "labels": labels_list}  # 额外信息
+    model = create_backbone(cfg.Backbone, num_classes=len(dataset["all_labels"]))
+    model.info = {"task": "class", "all_labels": dataset["all_labels"]}
     cp_model = copy_model(model)
+    tb_writer.add_graph(model, cfg.Size)
 
     # 损失函数
     criterion = create_class_loss(cfg.Loss)
@@ -37,26 +48,6 @@ if __name__ == "__main__":
 
     # 学习率调度器
     lr_scheduler = create_scheduler(cfg.Scheduler, cfg.Epochs, optimizer)
-
-    # 数据集
-    train_set = create_datasets(
-        txt=cfg.Txt, mode="train", size=cfg.Size, process=cfg.Process, use_augment=True
-    )
-    val_set = create_datasets(
-        txt=cfg.Txt, mode="val", size=cfg.Size, process=cfg.Process
-    )
-
-    # 数据集加载器
-    train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
-    val_dataloader = create_dataloader(cfg.Batch, val_set)
-
-    # 可视化
-    logger.info(f"tensorboard save in {tb_path}", ranks=[0])
-    tb_writer = DDP_SummaryWriter(tb_path)
-    tb_writer.add_text("Config", str(cfg))
-    tb_writer.add_text("TrainSet", train_set.get_info())
-    tb_writer.add_text("ValSet", val_set.get_info())
-    tb_writer.add_graph(model, cfg.Size)
 
     # colossalai封装
     engine, train_dataloader, val_dataloader, _ = colossalai.initialize(
@@ -91,7 +82,7 @@ if __name__ == "__main__":
             save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
 
         # 可视化
-        tb_writer.add_augment_imgs(epoch, imgs, labels, labels_list)
+        tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_scalar("Eval/acc", acc, epoch)
         lr_scheduler.step()
