@@ -48,7 +48,7 @@ def init_env(config):
     # 初始化colossalai
     colossalai.launch_from_torch(config=config)
 
-    # 日志路径
+    # 日志
     exp_path = (
         os.path.dirname(cur_path)
         + "/ExpLog/"
@@ -56,10 +56,11 @@ def init_env(config):
         + "/"
     )
     ckpt_path = os.path.join(exp_path, "checkpoint/")
-    tb_path = os.path.join(exp_path, "tb_log/")
     if not os.path.exists(ckpt_path) and gpc.get_global_rank() == 0:
         os.makedirs(ckpt_path)
-    return ckpt_path, tb_path, gpc.config, get_dist_logger()
+    tb_writer = DDP_SummaryWriter(ckpt_path.replace("checkpoint/", "tb_log/"))
+    tb_writer.add_text("Config", str(gpc.config))
+    return ckpt_path, gpc.config, tb_writer, get_dist_logger()
 
 
 def save_model(model, cp_model, ckpt_path):
@@ -128,9 +129,7 @@ class DDP_SummaryWriter:
         if self.rank == 0:
             input_shape = [batch, channel, size[0], size[1]]
             self.tb_writer.add_graph(model, torch.ones(size=input_shape))
-
-            # 模型统计
-            summary(model, input_shape, device="cpu")
+            summary(model, input_shape, device="cpu")  # 打印网络结构
 
     def add_augment_imgs(self, epoch, imgs, labels, labels_list):
         """
