@@ -18,29 +18,105 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 def analysis_dataset(txt):
     """
     解析dataset.txt
+
+    训练集仅支持 [类型,类别名,图片1]
+
+    验证集、测试集 支持 [类型,类别名,图片1] 或  [类型,是否为同类,图片1,图片2]样本对
+
+    度量学习 用于对比两个图片的相似度。
+
+    eg:
+    [
+        train, dog,  img1.jpg
+
+        val,   true,  img1.jpg,  img2.jpg
+        val,   false, img3.jpg,  img4.jpg
+
+        test,  true,  img5.jpg,  img6.jpg
+        test,  false, img7.jpg,  img8.jpg
+    ]
+
+    return
+    [类型,类别名,图片1]          ->    "imgs": [],  "labels": [], "all_labels": []
+    [类型,是否为同类,图片1,图片2] ->    "imgs": [],  "positive_pairs"=[] ,"negative_pairs" = [], "all_labels": []
     """
     assert os.path.exists(txt), "错误: 文件不存在"
-    imgs_list = TXT_Tools.read_lines(txt, split_flag=",")
+    txt_list = TXT_Tools.read_lines(txt, split_flag=",")
+
+    all_labels = set()  # 所有类别
+    train_data = {"imgs": [], "labels": []}  # 训练集
+    val_data = {"imgs": []}  # 验证集
+    test_data = {"imgs": []}  # 测试集
+    for line in txt_list:
+        assert line[0] in ["train", "val", "test"]
+        if line[0] == "train":
+            # [类型,类别名,图像路径]格式
+            all_labels.add(line[1])
+            train_data["labels"].append(line[1])
+            train_data["imgs"].append(line[2])
+
+        elif line[0] == "val":
+            if len(line) == 3:
+                # [类型,类别名,图像路径]格式
+                if not "labels" in val_data.keys():
+                    val_data["labels"] = []
+
+                val_data["labels"].append(line[1])
+                val_data["imgs"].append(line[2])
+            else:
+                # [类型,是否为同类,图片1,图片2]样本对格式
+                assert line[1] in ["true", "false"]
+                if not "positive_pairs" in val_data.keys():
+                    val_data["positive_pairs"] = []
+                if not "negative_pairs" in val_data.keys():
+                    val_data["negative_pairs"] = []
+                val_data["imgs"].extend([line[2], line[3]])
+                if line[1] == "true":
+                    val_data["positive_pairs"].append([line[2], line[3]])
+                else:
+                    val_data["negative_pairs"].append([line[2], line[3]])
+        elif line[0] == "test":
+            if len(line) == 3:
+                # [类型,类别名,图像路径]格式
+                if not "labels" in test_data.keys():
+                    test_data["labels"] = []
+
+                test_data["labels"].append(line[1])
+                test_data["imgs"].append(line[2])
+            else:
+                # [类型,是否为同类,图片1,图片2]样本对格式
+                assert line[1] in ["true", "false"]
+                if not "positive_pairs" in test_data.keys():
+                    test_data["positive_pairs"] = []
+                if not "negative_pairs" in test_data.keys():
+                    test_data["negative_pairs"] = []
+
+                test_data["imgs"].extend([line[2], line[3]])
+                if line[1] == "true":
+                    test_data["positive_pairs"].append([line[2], line[3]])
+                else:
+                    test_data["negative_pairs"].append([line[2], line[3]])
+
+    # 提取训练集的所有类别
+    all_labels = list(all_labels)
+    all_labels.sort()
+
+    train_data["all_labels"] = all_labels
+    if "positive_pairs" in val_data.keys():
+        val_data["imgs"] = list(set(val_data["imgs"]))
+    else:
+        val_data["all_labels"] = all_labels
+    if "positive_pairs" in test_data.keys():
+        test_data["imgs"] = list(set(test_data["imgs"]))
+    else:
+        test_data["all_labels"] = all_labels
+
     dataset = {
-        "train": {"imgs": [], "labels": []},
-        "val": {"imgs": [], "labels": []},
-        "test": {"imgs": [], "labels": []},
+        "train": train_data,
+        "val": val_data,
+        "test": test_data,
+        "all_labels": all_labels,
     }
-    labels = set()
-    for mode, label, path in imgs_list:
-        assert mode in ["train", "val", "test"]
-        labels.add(label)
-        dataset[mode]["imgs"].append(path)
-        dataset[mode]["labels"].append(label)
-    labels = list(labels)
-    labels.sort()
-
-    index = list(range(0, len(labels)))
-    labels_dict = dict(zip(index, labels))
-
-    dataset["labels"] = labels
-    dataset["labels_dict"] = labels_dict
-
     return dataset
 
 
