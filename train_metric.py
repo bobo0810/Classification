@@ -82,17 +82,17 @@ if __name__ == "__main__":
 
         # 验证集评估
         engine.eval()
-        precision = eval_metric_model(
+        score = eval_metric_model(
             engine, dataset, cfg.Size, cfg.Process, cfg.Batch, mode="val"
         )
-        if best_score <= precision:
-            best_score = precision
+        if best_score <= score:
+            best_score = score
             save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
-        tb_writer.add_scalar("Eval/precision", precision, epoch)
+        tb_writer.add_scalar("Eval/score", score, epoch)
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
     tb_writer.close()

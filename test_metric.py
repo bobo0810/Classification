@@ -33,7 +33,13 @@ if __name__ == "__main__":
     # 数据集
     dataset = analysis_dataset(args.txt)
     # 统计
-    precision = eval_metric_model(
+    result = eval_metric_model(
         model, dataset, args.size, args.process, args.batch, mode="test"
     )
-    print("precision is %.3f \n" % precision)
+    if isinstance(result,dict):
+        # 误识率下通过率
+        print("FPR=1e-4，TPR= %.4f \n" % result[0.0001])
+        print("FPR=1e-3，TPR= %.4f \n" % result[0.001])
+    else:
+        # 精准率
+        print("precision is %.3f \n" % result)

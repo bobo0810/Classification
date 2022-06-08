@@ -4,7 +4,8 @@ from DataSets import create_datasets, create_dataloader
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 import numpy as np
-from .tools import cal_index,get_score,get_feature
+from .tools import cal_index, get_score, get_feature
+
 
 @torch.no_grad()
 def eval_model(model, data_loader):
@@ -55,11 +56,9 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
             dataset[mode]["positive_pairs"],
             dataset[mode]["negative_pairs"],
         )
-        # 统计
-        FPR_List, TPR_List = cal_index(positive_score, negative_score)
-        print("FPR_List", FPR_List)
-        print("TPR_List", TPR_List)
-        return TPR_List[1]  # 1e-4误识下的通过率
+        # 统计误识率下的通过率
+        FPR_TPR = cal_index(positive_score, negative_score)
+        return FPR_TPR[0.001] if mode == "val" else FPR_TPR
 
     else:
         # [类型,类别名,图像路径]格式，统计精确率
@@ -82,6 +81,3 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
         )
         precision = accuracies["precision_at_1"]
         return precision
-
-
-

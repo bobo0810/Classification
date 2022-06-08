@@ -187,7 +187,6 @@ def convert_vis(imgs, category, per_nums=4):
     return imgs_list
 
 
-
 @torch.no_grad()
 def get_feature(
     dataloader,
@@ -259,9 +258,9 @@ def cal_index(positive_score, negative_score):
     TPR = []
     FPR = []
 
-    # 二万分之一、万分之一、千分之一 误识率及对应通过率
-    FPR_List = [0.0, 0.0, 0.0]
-    TPR_List = [0.0, 0.0, 0.0]
+    # 万分之一、千分之一 误识率及对应通过率
+    FPR_List = [0.0001, 0.001]
+    TPR_List = [-1, -1]
 
     for idx in range(len(score)):
         FN = P - np.array(label_sort[0 : idx + 1]).sum()
@@ -270,15 +269,10 @@ def cal_index(positive_score, negative_score):
         false_reject_rate = FN / P
         TPR.append(1 - false_reject_rate)
         FPR.append(false_accept_rate)
-        if FPR[idx] > 0.00005 and FPR_List[0] == 0.0:
-            FPR_List[0] = FPR[idx]
+        if FPR[idx] > FPR_List[0] and TPR_List[0] == -1:
             TPR_List[0] = TPR[idx]
-        if FPR[idx] > 0.0001 and FPR_List[1] == 0.0:
-            FPR_List[1] = FPR[idx]
+        if FPR[idx] > FPR_List[1] and TPR_List[1] == -1:
             TPR_List[1] = TPR[idx]
-        if FPR[idx] > 0.001 and FPR_List[2] == 0.0:
-            FPR_List[2] = FPR[idx]
-            TPR_List[2] = TPR[idx]
             break
-    # 二万分之一、万分之一、千分之一 误识率下的通过率
-    return FPR_List, TPR_List
+    # 万分之一、千分之一 误识率下的通过率
+    return dict(zip(FPR_List, TPR_List))
