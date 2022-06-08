@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import timm
 import torch
 from collections import OrderedDict
-from .backbone import *  # 导入自定义网络
+from .backbone import create_custom_backbone  # 导入自定义网络
 
 
 def create_backbone(model_name, num_classes, metric=False):
@@ -11,13 +11,13 @@ def create_backbone(model_name, num_classes, metric=False):
     主干网络入口
     优先顺序: 自定义>timm
 
-    model_name:  模型名称
-    num_classes: 分类时为类别数   度量学习时为特征维度
+    model_name:  网络名称
+    num_classes: 网络输出
     metric:      False分类任务   True度量学习
     """
     try:
         # 加载自定义网络
-        model = eval(model_name)(num_classes)
+        model = create_custom_backbone(model_name, num_classes)
     except:
         # 加载Timm网络
         if metric:

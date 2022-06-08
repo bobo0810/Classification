@@ -7,12 +7,25 @@ import timm
 # ClassNet     分类网络示例
 # MetricNet    特征提取网络示例
 
+
+def create_custom_backbone(model_name, num_classes):
+    """
+    加载自定义网络
+
+    model_name:  网络名称  eg:"ClassNet"
+    num_classes: 网络输出
+    """
+    # 加载指定网络
+    method = eval(model_name)
+    return method(num_classes)
+
+
 class ClassNet(nn.Module):
     """
     示例: 自定义backbone = timm特征提取层 + 自定义分类层
     """
 
-    def __init__(self,num_classes):
+    def __init__(self, num_classes):
         super(ClassNet, self).__init__()
 
         # timm特征提取层,丢弃分类层
@@ -41,7 +54,7 @@ class MetricNet(nn.Module):
     def __init__(self, num_classes):
         super(MetricNet, self).__init__()
         feature_dim = num_classes
-        
+
         # 特征提取器
         self.features = timm.create_model(
             model_name="efficientnet_b0",
