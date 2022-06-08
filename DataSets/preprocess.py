@@ -11,11 +11,11 @@ from timm.data.transforms_factory import create_transform as timm_transform
 # FaceCompare  人脸比对预处理
 
 
-def preprocess(process, img_path, img_size, use_augment):
+def preprocess(process_name, img_path, img_size, use_augment):
     """
     执行图像预处理
 
-    process: 预处理的名称    eg:"ImageNet"
+    process_name: 预处理的名称    eg:"ImageNet"
     img_path: 图像路径
     img_size:训练图像尺寸
     use_augment:是否图像增广
@@ -25,7 +25,7 @@ def preprocess(process, img_path, img_size, use_augment):
     cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
     # 加载指定预处理
-    method = eval(process)
+    method = eval(process_name)
     return method(cv2_img, img_size, use_augment)
 
 
