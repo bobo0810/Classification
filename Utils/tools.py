@@ -188,16 +188,16 @@ def convert_vis(imgs, category, per_nums=4):
 
 
 @torch.no_grad()
-def get_feature(
+def get_all_embeddings(
     dataloader,
     model,
-    device,
     use_mirror=False,
 ):
     """
     度量学习：提取特征
     """
-    img_to_feature = {}
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    img_feature_dict = {}
     for i, (img, img_path) in enumerate(dataloader):
         img = img.to(device)
         feature_npy = model(img).detach().cpu().numpy()
@@ -205,11 +205,11 @@ def get_feature(
             feature_npy += model(img.flip(-1)).detach().cpu().numpy()
         # 保存图像及对应特征
         for j in range(len(img_path)):
-            img_to_feature[img_path[j]] = feature_npy[j]
-    return img_to_feature
+            img_feature_dict[img_path[j]] = feature_npy[j]
+    return img_feature_dict
 
 
-def get_score(img_to_feature, positive_pairs, negative_pairs):
+def get_score(img_feature_dict, positive_pairs, negative_pairs):
     """
     度量学习：根据特征结果 和 正负样本对，计算余弦分数
     """
@@ -217,8 +217,8 @@ def get_score(img_to_feature, positive_pairs, negative_pairs):
     # 保存 正样本对 每条记录的余弦相似度
     positive_score = []
     for img1, img2 in positive_pairs:
-        feature_1 = img_to_feature[img1]
-        feature_2 = img_to_feature[img2]
+        feature_1 = img_feature_dict[img1]
+        feature_2 = img_feature_dict[img2]
         # 计算 证件照和生活照的特征结果 的余弦相似度
         positive_score.append(
             np.inner(feature_1, feature_2)
@@ -229,8 +229,8 @@ def get_score(img_to_feature, positive_pairs, negative_pairs):
     # 保存 负样本对 每条记录的余弦相似度
     negative_score = []
     for img1, img2 in negative_pairs:
-        feature_1 = img_to_feature[img1]
-        feature_2 = img_to_feature[img2]
+        feature_1 = img_feature_dict[img1]
+        feature_2 = img_feature_dict[img2]
         negative_score.append(
             np.inner(feature_1, feature_2)
             / np.power(np.sum(np.power(feature_1, 2)), 0.5)

@@ -4,7 +4,7 @@ from DataSets import create_datasets, create_dataloader
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 import numpy as np
-from .tools import cal_index, get_score, get_feature
+from .tools import cal_index, get_score, get_all_embeddings
 
 
 @torch.no_grad()
@@ -41,6 +41,7 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
     mode: 指定评估类型
     """
     assert mode in ["val", "test"]
+
     if "positive_pairs" in dataset[mode].keys():
         # [类型,是否为同类,图片1,图片2] 样本对格式,统计误识率FPR下的通过率TPR
         val_set = create_datasets(
@@ -48,11 +49,10 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
         )
         val_dataloader = create_dataloader(batch_size, val_set)
         # 获得特征
-        device = torch.device("cuda:0")
-        img_to_feature = get_feature(val_dataloader, model, device, use_mirror=False)
+        img_feature_dict = get_all_embeddings(val_dataloader, model, use_mirror=False)
         # 计算余弦分数
         positive_score, negative_score = get_score(
-            img_to_feature,
+            img_feature_dict,
             dataset[mode]["positive_pairs"],
             dataset[mode]["negative_pairs"],
         )
