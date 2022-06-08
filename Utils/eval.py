@@ -4,7 +4,7 @@ from DataSets import create_datasets, create_dataloader
 from pytorch_metric_learning import losses, testers
 from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 import numpy as np
-
+from .tools import cal_index,get_score,get_feature
 
 @torch.no_grad()
 def eval_model(model, data_loader):
@@ -84,95 +84,4 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
         return precision
 
 
-@torch.no_grad()
-def get_feature(
-    dataloader,
-    model,
-    device,
-    use_mirror=False,
-):
-    """
-    提取特征
-    """
-    img_to_feature = {}
-    for i, (img, img_path) in enumerate(dataloader):
-        img = img.to(device)
-        feature_npy = model(img).detach().cpu().numpy()
-        if use_mirror:
-            feature_npy += model(img.flip(-1)).detach().cpu().numpy()
-        # 保存图像及对应特征
-        for j in range(len(img_path)):
-            img_to_feature[img_path[j]] = feature_npy[j]
-    return img_to_feature
 
-
-def get_score(img_to_feature, positive_pairs, negative_pairs):
-    """
-    根据特征结果 和 正负样本对，计算余弦分数
-    """
-
-    # 保存 正样本对 每条记录的余弦相似度
-    positive_score = []
-    for img1, img2 in positive_pairs:
-        feature_1 = img_to_feature[img1]
-        feature_2 = img_to_feature[img2]
-        # 计算 证件照和生活照的特征结果 的余弦相似度
-        positive_score.append(
-            np.inner(feature_1, feature_2)
-            / np.power(np.sum(np.power(feature_1, 2)), 0.5)
-            / np.power(np.sum(np.power(feature_2, 2)), 0.5)
-        )
-
-    # 保存 负样本对 每条记录的余弦相似度
-    negative_score = []
-    for img1, img2 in negative_pairs:
-        feature_1 = img_to_feature[img1]
-        feature_2 = img_to_feature[img2]
-        negative_score.append(
-            np.inner(feature_1, feature_2)
-            / np.power(np.sum(np.power(feature_1, 2)), 0.5)
-            / np.power(np.sum(np.power(feature_2, 2)), 0.5)
-        )
-    return positive_score, negative_score
-
-
-def cal_index(positive_score, negative_score):
-
-    P = len(positive_score)
-    N = len(negative_score)
-    score_cosin = positive_score
-    score_cosin.extend(negative_score)
-    label = [1] * P
-    label.extend([0] * N)
-    score = sorted(score_cosin, reverse=True)
-    index = np.argsort(-np.array(score_cosin))
-    label_sort = []
-    for i in range(len(index)):
-        label_sort.append(label[index[i]])
-
-    TPR = []
-    FPR = []
-
-    # 二万分之一、万分之一、千分之一 误识率及对应通过率
-    FPR_List = [0.0, 0.0, 0.0]
-    TPR_List = [0.0, 0.0, 0.0]
-
-    for idx in range(len(score)):
-        FN = P - np.array(label_sort[0 : idx + 1]).sum()
-        FP = idx + 1 - np.array(label_sort[0 : idx + 1]).sum()
-        false_accept_rate = FP / N
-        false_reject_rate = FN / P
-        TPR.append(1 - false_reject_rate)
-        FPR.append(false_accept_rate)
-        if FPR[idx] > 0.00005 and FPR_List[0] == 0.0:
-            FPR_List[0] = FPR[idx]
-            TPR_List[0] = TPR[idx]
-        if FPR[idx] > 0.0001 and FPR_List[1] == 0.0:
-            FPR_List[1] = FPR[idx]
-            TPR_List[1] = TPR[idx]
-        if FPR[idx] > 0.001 and FPR_List[2] == 0.0:
-            FPR_List[2] = FPR[idx]
-            TPR_List[2] = TPR[idx]
-            break
-    # 二万分之一、万分之一、千分之一 误识率下的通过率
-    return FPR_List, TPR_List
