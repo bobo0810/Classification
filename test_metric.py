@@ -18,7 +18,9 @@ if __name__ == "__main__":
     # 参数
     parser.add_argument("--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt")
     parser.add_argument("--process", help="图像预处理", default="ImageNet")
+    parser.add_argument("--mirror", help="融合镜像特征", default=False)
     parser.add_argument("--weights", help="模型权重", required=True)
+
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -35,7 +37,13 @@ if __name__ == "__main__":
     dataset = analysis_dataset(args.txt)
     # 统计
     result = eval_metric_model(
-        model, dataset, [args.height, args.width], args.process, args.batch, mode="test"
+        model,
+        dataset,
+        [args.height, args.width],
+        args.process,
+        args.batch,
+        "test",
+        args.mirror,
     )
     if isinstance(result, dict):
         # 误识率下通过率

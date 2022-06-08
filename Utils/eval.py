@@ -29,7 +29,9 @@ def eval_model(model, data_loader):
 
 
 @torch.no_grad()
-def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
+def eval_metric_model(
+    model, dataset, img_size, process_name, batch_size, mode, mirror=False
+):
     """
     度量学习：评估指标
 
@@ -39,6 +41,7 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
     process_name: 图像预处理的名称
     batch_size: 推理批次
     mode: 指定评估类型
+    mirror: 融合镜像特征，默认关闭
     """
     assert mode in ["val", "test"]
 
@@ -49,7 +52,7 @@ def eval_metric_model(model, dataset, img_size, process_name, batch_size, mode):
         )
         val_dataloader = create_dataloader(batch_size, val_set)
         # 获得特征
-        img_feature_dict = get_all_embeddings(val_dataloader, model, use_mirror=False)
+        img_feature_dict = get_all_embeddings(val_dataloader, model, mirror)
         # 计算余弦分数
         positive_score, negative_score = get_score(
             img_feature_dict,

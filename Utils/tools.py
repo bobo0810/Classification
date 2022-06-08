@@ -191,7 +191,7 @@ def convert_vis(imgs, category, per_nums=4):
 def get_all_embeddings(
     dataloader,
     model,
-    use_mirror=False,
+    mirror=False,
 ):
     """
     度量学习：提取特征
@@ -201,7 +201,7 @@ def get_all_embeddings(
     for i, (img, img_path) in enumerate(dataloader):
         img = img.to(device)
         feature_npy = model(img).detach().cpu().numpy()
-        if use_mirror:
+        if mirror:
             feature_npy += model(img.flip(-1)).detach().cpu().numpy()
         # 保存图像及对应特征
         for j in range(len(img_path)):
