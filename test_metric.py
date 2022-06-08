@@ -12,7 +12,8 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="测试-度量学习")
     # 默认参数
-    parser.add_argument("--size", help="图像尺寸", default=[224, 224])
+    parser.add_argument("--width", help="图像宽", default=224)
+    parser.add_argument("--height", help="图像高", default=224)
     parser.add_argument("--batch", type=int, help="推理batch", default=8)
     # 参数
     parser.add_argument("--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt")
@@ -34,9 +35,9 @@ if __name__ == "__main__":
     dataset = analysis_dataset(args.txt)
     # 统计
     result = eval_metric_model(
-        model, dataset, args.size, args.process, args.batch, mode="test"
+        model, dataset, [args.height, args.width], args.process, args.batch, mode="test"
     )
-    if isinstance(result,dict):
+    if isinstance(result, dict):
         # 误识率下通过率
         print("FPR=1e-4，TPR= %.4f \n" % result[0.0001])
         print("FPR=1e-3，TPR= %.4f \n" % result[0.001])
