@@ -6,7 +6,7 @@ from collections import Counter
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 from pytorch_metric_learning import samplers
-from .preprocess import *  # 导入预处理策略
+from .preprocess import preprocess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,7 +23,7 @@ class create_datasets(data.Dataset):
         """
         self.size = size
         self.use_augment = use_augment
-        self.process = eval(process)  # 图像预处理
+        self.process = process
 
         self.imgs_list = dataset["imgs"]
         if "labels" in dataset.keys():
@@ -34,9 +34,7 @@ class create_datasets(data.Dataset):
 
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
-        assert os.path.exists(img_path), "图像不存在"
-        cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        img = self.process(cv2_img, self.size, self.use_augment)
+        img = preprocess(process, img_path, self.size, self.use_augment)
 
         if self.label_list == []:
             return img, img_path
@@ -82,7 +80,7 @@ def create_dataloader(batch_size, dataset, sampler_name=None):
                 m=4,  # batch内每个类别的数量
             )
         else:
-            sampler=None
+            sampler = None
         dataloader = DataLoader(
             dataset,
             sampler=sampler,

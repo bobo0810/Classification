@@ -11,13 +11,27 @@ from timm.data.transforms_factory import create_transform as timm_transform
 # FaceCompare  人脸比对预处理
 
 
+def preprocess(process, img_path, img_size, use_augment):
+    """
+    执行图像预处理
+
+    process: 预处理的名称    eg:"ImageNet"
+    img_path: 图像路径
+    img_size:训练图像尺寸
+    use_augment:是否图像增广
+    """
+    # 读取图像
+    assert os.path.exists(img_path), "图像不存在"
+    cv2_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+
+    # 加载指定预处理
+    method = eval(process)
+    return method(cv2_img, img_size, use_augment)
+
+
 def ImageNet(cv2_img, img_size, use_augment):
     """
     ImageNet预处理
-
-    cv2_img: cv2读取的图像numpy
-    img_size:训练图像尺寸
-    use_augment:是否图像增广
     """
     img = Image.fromarray(cv2_img)
     if use_augment:
@@ -38,11 +52,7 @@ def ImageNet(cv2_img, img_size, use_augment):
 def FaceCompare(cv2_img, img_size, use_augment):
     """
     人脸比对预处理
-    注：人脸比对数据集 默认已基于关键点裁剪对齐。
-
-    cv2_img: cv2读取的图像numpy
-    img_size:训练图像尺寸,暂不使用
-    use_augment:是否图像增广
+    注：人脸比对数据集 默认已基于关键点裁剪对齐。故img_size暂不使用
     """
     img = Image.fromarray(cv2_img)
 

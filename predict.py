@@ -4,7 +4,7 @@ import torch
 import cv2
 from PIL import Image
 from Utils.tools import vis_cam
-from DataSets.preprocess import *  # 导入预处理
+from DataSets.preprocess import preprocess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,10 +28,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # 图像预处理
-    assert os.path.exists(args.img_path), "图像不存在"
-    cv2_img = cv2.imread(args.img_path, cv2.IMREAD_COLOR)
-    process = eval(args.process)  # 预处理
-    img_tensor = process(cv2_img, args.img_size, use_augment=False)
+    img_tensor = preprocess(args.process, img_path, args.img_size, use_augment=False)
     img_tensor = img_tensor.unsqueeze(0).to(device)
 
     # 加载模型
