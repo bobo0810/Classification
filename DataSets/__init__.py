@@ -34,7 +34,7 @@ class create_datasets(data.Dataset):
 
     def __getitem__(self, index):
         img_path = self.imgs_list[index]  # 图片路径
-        img = preprocess(process, img_path, self.size, self.use_augment)
+        img = preprocess(self.process, img_path, self.size, self.use_augment)
 
         if self.label_list == []:
             return img, img_path
