@@ -1,7 +1,6 @@
 import os
 import torch.utils.data as data
 import torch
-import cv2
 from collections import Counter
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler

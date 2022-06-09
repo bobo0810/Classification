@@ -3,7 +3,6 @@ import math
 import random
 import time
 import os
-import cv2
 import sys
 import torchvision
 from bobotools.txt_tools import TXT_Tools
