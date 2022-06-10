@@ -4,6 +4,7 @@ import torch
 import cv2
 from PIL import Image
 from Utils.tools import vis_cam
+from bobotools.torch_tools import Torch_Tools
 from DataSets.preprocess import preprocess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -25,22 +26,19 @@ if __name__ == "__main__":
     parser.add_argument("--vis_cam", action="store_true", help="可视化注意力图,默认关闭")
 
     args = parser.parse_args()
-    device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # 图像预处理
-    img_tensor = preprocess(args.process, img_path, args.img_size, use_augment=False)
-    img_tensor = img_tensor.unsqueeze(0).to(device)
+    img = preprocess(args.process, args.img_path, args.img_size, use_augment=False).unsqueeze(0)
 
     # 加载模型
     model = torch.load(args.weights, map_location="cpu")
-    model.to(device)
     model.eval()
 
     # 类别
-    labels = model.info["labels"]
+    labels = model.info["all_labels"]
 
     # 推理
-    scores = model(img_tensor)
+    scores = model(img)
     scores = torch.nn.functional.softmax(scores, dim=1)
 
     score_sort, idx_sort = torch.sort(scores, dim=1, descending=True)
@@ -52,7 +50,11 @@ if __name__ == "__main__":
 
     # 可视化注意力图
     if args.vis_cam:
-        cam_image = vis_cam(model, img_tensor)
+        cam_image = vis_cam(model, img)
         save_path = cur_path + "/cam_img.jpg"
         cv2.imwrite(save_path, cam_image)
         print("cam_image are generated in ", save_path)
+    
+    # 耗时统计
+    time_dict=Torch_Tools.cal_model_time(img.shape, model)
+    print(time_dict)
