@@ -86,4 +86,3 @@ def preprocess(process_name, img_path, img_size, use_augment):
         return method(cv2_img, img_size, use_augment)
     except:
         raise NotImplemented
-    
