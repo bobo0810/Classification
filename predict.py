@@ -4,7 +4,6 @@ import torch
 import cv2
 from PIL import Image
 from Utils.tools import vis_cam
-from bobotools.torch_tools import Torch_Tools
 from DataSets.preprocess import preprocess
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
@@ -54,7 +53,3 @@ if __name__ == "__main__":
         save_path = cur_path + "/cam_img.jpg"
         cv2.imwrite(save_path, cam_image)
         print("cam_image are generated in ", save_path)
-    
-    # 耗时统计
-    time_dict=Torch_Tools.cal_model_time(img.shape, model)
-    print(time_dict)
