@@ -37,7 +37,7 @@ if __name__ == "__main__":
     model = create_backbone(cfg.Backbone, cfg.Feature_dim, metric=True)
     model.info = {"task": "metric", "all_labels": dataset["all_labels"]}  # 额外信息
     cp_model = copy_model(model)
-    tb_writer.add_graph(model, cfg.Size)
+    tb_writer.add_model_info(model, cfg.Size)
 
     # 损失函数/分类器
     mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘

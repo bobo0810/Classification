@@ -11,6 +11,7 @@ from collections import OrderedDict
 from torch.utils.tensorboard import SummaryWriter
 from torchinfo import summary
 from Utils.tools import convert_vis
+from bobotools.torch_tools import Torch_Tools
 from colossalai.core import global_context as gpc
 from colossalai.logging import get_dist_logger
 import colossalai
@@ -121,15 +122,18 @@ class DDP_SummaryWriter:
         if self.rank == 0:
             self.tb_writer.add_scalar(tag, scalar_value, global_step)
 
-    def add_graph(self, model, size, batch=1, channel=3):
+    def add_model_info(self, model, size, batch=1, channel=3):
         """
-        可视化模型结构
+        可视化模型信息
         size: 图像高、宽[224,224]
         """
         if self.rank == 0:
             input_shape = [batch, channel, size[0], size[1]]
-            self.tb_writer.add_graph(model, torch.ones(size=input_shape))
-            summary(model, input_shape, device="cpu")  # 打印网络结构
+            self.tb_writer.add_graph(model, torch.ones(size=input_shape)) # 可视化网络结构
+            summary(model, input_shape, device="cpu") # 打印网络信息
+            
+            time_dict=Torch_Tools.cal_model_time(input_shape, model) # 耗时统计
+            self.tb_writer.add_text("infer time", str(time_dict))
 
     def add_augment_imgs(self, epoch, imgs, labels, labels_list):
         """

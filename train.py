@@ -38,7 +38,7 @@ if __name__ == "__main__":
     model = create_backbone(cfg.Backbone, num_classes=len(dataset["all_labels"]))
     model.info = {"task": "class", "all_labels": dataset["all_labels"]}
     cp_model = copy_model(model)
-    tb_writer.add_graph(model, cfg.Size)
+    tb_writer.add_model_info(model, cfg.Size)
 
     # 损失函数
     criterion = create_class_loss(cfg.Loss)
