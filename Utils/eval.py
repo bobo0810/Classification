@@ -61,7 +61,10 @@ def eval_metric_model(
         )
         # 统计误识率下的通过率
         FPR_TPR = cal_index(positive_score, negative_score)
-        return FPR_TPR[0.001] if mode == "val" else FPR_TPR
+        if mode == "val":
+            return {"index": "1e-4FPR", "value": FPR_TPR[0.0001]}
+        else:
+            return {"1e-4FPR": FPR_TPR[0.0001], "1e-3FPR": FPR_TPR[0.001]}
 
     else:
         # [类型,类别名,图像路径]格式，统计精确率
@@ -83,4 +86,7 @@ def eval_metric_model(
             test_embeddings, train_embeddings, test_labels, train_labels, False
         )
         precision = accuracies["precision_at_1"]
-        return precision
+        if mode == "val":
+            return {"index": "precision", "value": precision}
+        else:
+            return {"precision": precision}

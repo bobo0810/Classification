@@ -45,10 +45,4 @@ if __name__ == "__main__":
         "test",
         args.mirror,
     )
-    if isinstance(result, dict):
-        # 误识率下通过率
-        print("FPR=1e-4，TPR= %.4f \n" % result[0.0001])
-        print("FPR=1e-3，TPR= %.4f \n" % result[0.001])
-    else:
-        # 精准率
-        print("precision is %.3f \n" % result)
+    print(result)

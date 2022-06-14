@@ -84,7 +84,7 @@ if __name__ == "__main__":
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
-        tb_writer.add_scalar("Eval/acc", acc, epoch)
+        tb_writer.add_scalar("Val/acc", acc, epoch)
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
     tb_writer.close()
