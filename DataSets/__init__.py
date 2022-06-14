@@ -65,7 +65,7 @@ def create_dataloader(batch_size, dataset, sampler_name=None):
             dataset,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=4,
+            num_workers=8,
             pin_memory=True,
         )
     else:  # 训练集
@@ -84,7 +84,7 @@ def create_dataloader(batch_size, dataset, sampler_name=None):
             dataset,
             sampler=sampler,
             batch_size=batch_size,
-            num_workers=4,
+            num_workers=8,
             pin_memory=True,
             shuffle=True if sampler is None else False,
             drop_last=True if sampler is None else False,

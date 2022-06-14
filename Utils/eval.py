@@ -76,7 +76,7 @@ def eval_metric_model(
             dataset=dataset[mode], size=img_size, process=process_name
         )
 
-        tester = testers.BaseTester(batch_size=batch_size, dataloader_num_workers=4)
+        tester = testers.BaseTester(batch_size=batch_size, dataloader_num_workers=8)
         train_embeddings, train_labels = tester.get_all_embeddings(train_set, model)
         test_embeddings, test_labels = tester.get_all_embeddings(val_set, model)
         train_labels, test_labels = train_labels.squeeze(1), test_labels.squeeze(1)
