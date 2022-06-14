@@ -21,10 +21,11 @@ if __name__ == "__main__":
     parser.add_argument("--config_file", help="训练配置", default="./Config/config.py")
 
     # 初始化环境
-    ckpt_path, cfg, tb_writer,logger = init_env(parser.parse_args().config_file)
+    ckpt_path, cfg, tb_writer, logger = init_env(parser.parse_args().config_file)
 
     # 数据集
     dataset = analysis_dataset(cfg.Txt)
+    tb_writer.add_dataset_info(dataset)
     train_set = create_datasets(
         dataset=dataset["train"], size=cfg.Size, process=cfg.Process, use_augment=True
     )

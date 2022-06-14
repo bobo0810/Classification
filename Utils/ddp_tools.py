@@ -7,7 +7,7 @@ import copy
 import random
 import time
 import numpy as np
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from torch.utils.tensorboard import SummaryWriter
 from torchinfo import summary
 from Utils.tools import convert_vis
@@ -129,11 +129,32 @@ class DDP_SummaryWriter:
         """
         if self.rank == 0:
             input_shape = [batch, channel, size[0], size[1]]
-            self.tb_writer.add_graph(model, torch.ones(size=input_shape)) # 可视化网络结构
-            summary(model, input_shape, device="cpu") # 打印网络信息
-            
-            time_dict=Torch_Tools.cal_model_time(input_shape, model) # 耗时统计
+            self.tb_writer.add_graph(model, torch.ones(size=input_shape))  # 可视化网络结构
+            summary(model, input_shape, device="cpu")  # 打印网络信息
+
+            time_dict = Torch_Tools.cal_model_time(input_shape, model)  # 耗时统计
             self.tb_writer.add_text("infer time", str(time_dict))
+
+    def add_dataset_info(self, dataset):
+        """
+        可视化数据集信息
+        """
+        if self.rank == 0:
+            mode_list = ["train", "val", "test"]
+            for mode in mode_list:
+                info = "the total nums is %s" % (len(dataset[mode]["imgs"]))
+                if "positive_pairs" in dataset[mode].keys():  # 样本对格式
+                    info += "  \n positive_pairs: %s" % (
+                        len(dataset[mode]["positive_pairs"])
+                    )
+                    info += "  \n negative_pairs: %s" % (
+                        len(dataset[mode]["negative_pairs"])
+                    )
+                else:
+                    info += "  \n labels is %s" % (dataset["all_labels"])
+                    if "labels" in dataset[mode].keys():
+                        info += "  \n  %s" % (dict(Counter(dataset[mode]["labels"])))
+                self.tb_writer.add_text(mode, info)
 
     def add_augment_imgs(self, epoch, imgs, labels, labels_list):
         """
@@ -146,5 +167,8 @@ class DDP_SummaryWriter:
                 self.tb_writer.add_image("Train/" + vis_name, vis_img, epoch)
 
     def close(self):
+        """
+        关闭TensorBoard
+        """
         if self.rank == 0:
             self.tb_writer.close()

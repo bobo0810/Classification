@@ -28,6 +28,7 @@ if __name__ == "__main__":
 
     # 数据集
     dataset = analysis_dataset(cfg.Txt)
+    tb_writer.add_dataset_info(dataset)
     train_set = create_datasets(
         dataset=dataset["train"], size=cfg.Size, process=cfg.Process, use_augment=True
     )
@@ -92,7 +93,7 @@ if __name__ == "__main__":
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
-        tb_writer.add_scalar("Val/"+score["index"], score["value"], epoch)
+        tb_writer.add_scalar("Val/" + score["index"], score["value"], epoch)
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
     tb_writer.close()
