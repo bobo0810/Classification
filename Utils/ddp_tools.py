@@ -101,6 +101,17 @@ def save_model(model, cp_model, ckpt_path):
         torch.save(cp_model, ckpt_path)
 
 
+def save_criterion(criterion, ckpt_path):
+    """
+    保存分类器权重（度量学习）
+
+    criterion: 分类器
+    ckpt_path: 保存路径  eg:/home/xxx/xxx.pt
+    """
+    if gpc.get_global_rank() == 0:
+        torch.save(criterion, ckpt_path)
+
+
 class DDP_SummaryWriter:
     """
     分布式并行训练时，仅当rank=0的进程写入日志

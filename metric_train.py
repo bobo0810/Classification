@@ -5,7 +5,7 @@ import argparse
 from DataSets import create_datasets, create_dataloader
 from Utils.eval import eval_metric_model
 from Utils.tools import analysis_dataset
-from Utils.ddp_tools import init_env, save_model, copy_model
+from Utils.ddp_tools import init_env, save_model, save_criterion, copy_model
 from Models.Backbone import create_backbone
 from Models.Loss import create_metric_loss
 from Models.Optimizer import create_optimizer
@@ -41,10 +41,11 @@ if __name__ == "__main__":
     tb_writer.add_model_info(model, cfg.Size)
 
     # 损失函数/分类器
-    mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘
-    criterion = create_metric_loss(
-        cfg.Loss, cfg.Feature_dim, len(dataset["all_labels"])
-    )
+    mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘  
+    if os.path.isfile(cfg.Loss):
+        criterion = torch.load(cfg.Loss)
+    else:
+        criterion = create_metric_loss(cfg.Loss, cfg.Feature_dim, len(dataset["all_labels"]))
 
     # 优化器
     params = [
@@ -89,6 +90,7 @@ if __name__ == "__main__":
         if best_score <= score["value"]:
             best_score = score["value"]
             save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
+            save_criterion(engine.criterion, ckpt_path+ "loss_best.pt")
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
@@ -96,4 +98,5 @@ if __name__ == "__main__":
         tb_writer.add_scalar("Val/" + score["index"], score["value"], epoch)
         lr_scheduler.step()
     save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
+    save_criterion(engine.criterion, ckpt_path + "loss_last.pt")
     tb_writer.close()
