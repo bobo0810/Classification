@@ -143,7 +143,7 @@ class DDP_SummaryWriter:
             self.tb_writer.add_graph(model, torch.ones(size=input_shape))  # 可视化网络结构
             summary(model, input_shape, device="cpu")  # 打印网络信息
 
-            time_dict = Torch_Tools.cal_model_time(input_shape, model)  # 耗时统计
+            time_dict = Torch_Tools.get_model_info(input_shape, model)  # 获取模型信息
             self.tb_writer.add_text("infer time", str(time_dict))
 
     def add_dataset_info(self, dataset):
