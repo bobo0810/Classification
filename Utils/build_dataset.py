@@ -30,10 +30,11 @@ def split(imgs_path, ratio, dataset_txt):
     每类按比例,划分数据集
 
     imgs_path: 数据集根路径  eg: /home/xxx/CatDog/
-    ratio: 训练集、验证集、测试集的比例  eg:[0.7,0.1,0.2]
+    ratio: 训练集、验证集、测试集的比例
     dataset_txt: dataset.txt保存路径
     """
-    assert sum(ratio) == 1.0
+    ratio = [float(line) for line in ratio.split(",")]  # 解析为[0.7,0.1,0.2]
+    assert abs(sum(ratio) - 1.0) < 1e-5
 
     class_list = glob.glob(os.path.join(imgs_path, "*"))  # 所有类别
     train_list, val_list, test_list = [], [], []
@@ -55,7 +56,7 @@ def split(imgs_path, ratio, dataset_txt):
     def combin_dataset(imgs_list, type):
         for img_path in imgs_list:
             label = img_path.split("/")[-2]
-            dataset_list.append(type+ "," + label + ","+ img_path)
+            dataset_list.append(type + "," + label + "," + img_path)
 
     combin_dataset(train_list, "train")
     combin_dataset(val_list, "val")
@@ -77,7 +78,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ImgsPath", required=True, help="数据集根路径  eg: /home/xxx/CatDog/"
     )
-    parser.add_argument("--Ratio", default=[0.7, 0.1, 0.2], help="训练集:验证集:测试集的各类别划分比例")
+    parser.add_argument(
+        "--Ratio", type=str, default="0.7,0.1,0.2", help="训练集:验证集:测试集的各类别划分比例"
+    )
     parser.add_argument("--Verify", action="store_true", help="验证图像完整性(耗时,可选)")
     parser.add_argument(
         "--TxtPath",
