@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 import argparse
+from pathlib import Path
 from DataSets import create_datasets, create_dataloader
 from Utils.eval import eval_metric_model
 from Utils.tools import analysis_dataset
@@ -35,17 +36,22 @@ if __name__ == "__main__":
     train_dataloader = create_dataloader(cfg.Batch, train_set, cfg.Sampler)
 
     # 模型
-    model = create_backbone(cfg.Backbone, cfg.Feature_dim, metric=True)
+    if os.path.isfile(cfg.Backbone):
+        model = torch.load(cfg.Backbone, map_location="cpu")
+    else:
+        model = create_backbone(cfg.Backbone, cfg.Feature_dim, metric=True)
     model.info = {"task": "metric", "all_labels": dataset["all_labels"]}  # 额外信息
     cp_model = copy_model(model)
     tb_writer.add_model_info(model, cfg.Size)
 
     # 损失函数/分类器
-    mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘  
+    mining_func = miners.MultiSimilarityMiner()  # 难样例挖掘
     if os.path.isfile(cfg.Loss):
         criterion = torch.load(cfg.Loss)
     else:
-        criterion = create_metric_loss(cfg.Loss, cfg.Feature_dim, len(dataset["all_labels"]))
+        criterion = create_metric_loss(
+            cfg.Loss, cfg.Feature_dim, len(dataset["all_labels"])
+        )
 
     # 优化器
     params = [
@@ -89,14 +95,15 @@ if __name__ == "__main__":
         )
         if best_score <= score["value"]:
             best_score = score["value"]
-            save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
-            save_criterion(engine.criterion, ckpt_path+ "loss_best.pt")
+
+            save_model(engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_best.pt")
+            save_criterion(engine.criterion, ckpt_path + Path(cfg.Loss).stem + "_best.pt")
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_scalar("Val/" + score["index"], score["value"], epoch)
         lr_scheduler.step()
-    save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
-    save_criterion(engine.criterion, ckpt_path + "loss_last.pt")
+    save_model(engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_last.pt")
+    save_criterion(engine.criterion, ckpt_path + Path(cfg.Loss).stem + "_last.pt")
     tb_writer.close()

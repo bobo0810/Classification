@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 import argparse
+from pathlib import Path
 from DataSets import create_datasets, create_dataloader
 from Utils.eval import eval_model
 from Utils.tools import analysis_dataset
@@ -36,7 +37,11 @@ if __name__ == "__main__":
     val_dataloader = create_dataloader(cfg.Batch, val_set)
 
     # 模型
-    model = create_backbone(cfg.Backbone, num_classes=len(dataset["all_labels"]))
+    if os.path.isfile(cfg.Backbone):
+        model = torch.load(cfg.Backbone, map_location="cpu")
+    else:
+        model = create_backbone(cfg.Backbone, num_classes=len(dataset["all_labels"]))
+
     model.info = {"task": "class", "all_labels": dataset["all_labels"]}
     cp_model = copy_model(model)
     tb_writer.add_model_info(model, cfg.Size)
@@ -80,12 +85,14 @@ if __name__ == "__main__":
         acc = eval_model(engine, val_dataloader).Overall_ACC
         if best_acc <= acc:
             best_acc = acc
-            save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_best.pt")
+            save_model(
+                engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_best.pt"
+            )
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
         tb_writer.add_scalar("Train/lr", lr_scheduler.get_last_lr()[0], epoch)
         tb_writer.add_scalar("Val/acc", acc, epoch)
         lr_scheduler.step()
-    save_model(engine.model, cp_model, ckpt_path + cfg.Backbone + "_last.pt")
+    save_model(engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_last.pt")
     tb_writer.close()
