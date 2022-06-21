@@ -88,6 +88,7 @@ if __name__ == "__main__":
         help="dataset.txt保存路径",
     )
     args = parser.parse_args()
+    assert ".txt" in args.TxtPath
 
     if args.Verify:
         verifyImgs(args.ImgsPath)
