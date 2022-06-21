@@ -12,8 +12,7 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="测试-度量学习")
     # 默认参数
-    parser.add_argument("--width", help="图像宽", default=224)
-    parser.add_argument("--height", help="图像高", default=224)
+    parser.add_argument("--size", type=str, help="图像宽高", default="224,224")
     parser.add_argument("--batch", type=int, help="推理batch", default=8)
     # 参数
     parser.add_argument("--txt", help="数据集路径", default=cur_path + "/Config/dataset.txt")
@@ -22,6 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("--weights", help="模型权重", required=True)
 
     args = parser.parse_args()
+    args.size = [int(line) for line in args.size.split(",")]
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     result = eval_metric_model(
         model,
         dataset,
-        [args.height, args.width],
+        args.size,
         args.process,
         args.batch,
         "test",
