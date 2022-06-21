@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 import argparse
+import numpy as np
 from pathlib import Path
 from DataSets import create_datasets, create_dataloader
 from Utils.eval import eval_metric_model
@@ -53,6 +54,10 @@ if __name__ == "__main__":
             cfg.Loss, cfg.Feature_dim, len(dataset["all_labels"])
         )
 
+    # # 分类器:基于类中心,加载权重
+    # classcenter = np.load("home/xxx.npy")
+    # criterion.W.data = torch.from_numpy(classcenter.T)  # 类中心转置
+
     # 优化器
     params = [
         {"params": model.parameters(), "lr": cfg.LR},
@@ -96,8 +101,12 @@ if __name__ == "__main__":
         if best_score <= score["value"]:
             best_score = score["value"]
 
-            save_model(engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_best.pt")
-            save_criterion(engine.criterion, ckpt_path + Path(cfg.Loss).stem + "_best.pt")
+            save_model(
+                engine.model, cp_model, ckpt_path + Path(cfg.Backbone).stem + "_best.pt"
+            )
+            save_criterion(
+                engine.criterion, ckpt_path + Path(cfg.Loss).stem + "_best.pt"
+            )
 
         # 可视化
         tb_writer.add_augment_imgs(epoch, imgs, labels, dataset["all_labels"])
