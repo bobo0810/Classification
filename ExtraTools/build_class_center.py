@@ -56,7 +56,7 @@ if __name__ == "__main__":
     parser.add_argument("--process", help="图像预处理", default="FaceCompare")
     parser.add_argument("--batch", type=int, help="推理batch", default=512)
     # 参数
-    parser.add_argument("--txt_path", help="数据集路径", required=True)
+    parser.add_argument("--txt_path", help="新数据集路径 eg:/home/dataset.txt", required=True)
     parser.add_argument("--weight_path", help="特征模型路径", required=True)
     parser.add_argument("--save_npy", help="类中心的保存路径  eg:/home/xx.npy", required=True)
     args = parser.parse_args()
