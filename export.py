@@ -7,7 +7,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Export model")
 
     # torch
-    parser.add_argument("--img_size", default=[1, 3, 224, 224], help="推理尺寸")
+    parser.add_argument("--img_size", type=str,default="1,3,224,224", help="推理尺寸")
     parser.add_argument("--weights", help="模型权重", required=True)
 
     # torchscript
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     cfg = parser.parse_args()
 
     # ==========================torch===============================
+    cfg.img_size = [int(line) for line in cfg.img_size.split(",")]
     imgs = torch.ones(tuple(cfg.img_size))
     model = torch.load(cfg.weights, map_location="cpu")  # 直接加载model，而非model.state_dict
     model.eval()
