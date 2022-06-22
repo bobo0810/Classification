@@ -144,7 +144,7 @@ class DDP_SummaryWriter:
             summary(model, input_shape, device="cpu")  # 打印网络信息
 
             time_dict = Torch_Tools.get_model_info(input_shape, model)  # 获取模型信息
-            self.tb_writer.add_text("infer time", str(time_dict))
+            self.tb_writer.add_text("model info", str(time_dict))
 
     def add_dataset_info(self, dataset):
         """
