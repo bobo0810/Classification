@@ -28,7 +28,7 @@ def ImageNet(cv2_img, img_size, use_augment):
     else:
         # 不增广：ReSize256 -> CenterCrop224
         img_transforms = timm_transform(img_size)
-    return img_transforms(img)
+    return img_transforms(img)  # BGR通道
 
 
 def FaceCompare(cv2_img, img_size, use_augment):
@@ -64,7 +64,7 @@ def FaceCompare(cv2_img, img_size, use_augment):
                 torchvision.transforms.Normalize(mean=mean, std=std),
             ]
         )
-    return img_transforms(img)
+    return img_transforms(img)  # BGR通道
 
 
 # ======================================加载==========================================
