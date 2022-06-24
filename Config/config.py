@@ -9,13 +9,13 @@ Optimizer = "SGD"  # 优化器
 Backbone = "resnet18"  # 主干网络(名称or权重路径)
 
 # 常规分类
-# Backbone = "resnet18"  # 主干网络(名称or权重路径)
-# Loss = "CrossEntropy"  # 损失函数
+Backbone = "resnet18"  # 主干网络(名称or权重路径)
+Loss = "CrossEntropy"  # 损失函数
 
 # 度量学习
-Backbone = "resnet18"  # 主干网络(名称or权重路径)
-Loss = "ArcFace"       # 损失函数|分类器(名称or权重路径)
-Feature_dim = 128
+# Backbone = "resnet18"  # 主干网络(名称or权重路径)
+# Loss = "ArcFace"       # 损失函数|分类器(名称or权重路径)
+# Feature_dim = 128
 
 # ======训练============
 LR = 0.01  # 学习率
