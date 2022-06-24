@@ -19,11 +19,13 @@ bobotools  # 常用工具库
 
 # ======部署======
 # 1.onnx环境
-# onnx
-# onnxruntime
-# onnx-simplifier
-# protobuf>=3.20.0
+onnx
+onnxruntime
+onnx-simplifier
+protobuf>=3.20.0
 # 2.openvino环境
-# openvino-dev
+openvino-dev
+# 3.mnn环境
+mnn
 
 

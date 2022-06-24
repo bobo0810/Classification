@@ -7,7 +7,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Export model")
 
     # torch
-    parser.add_argument("--img_size", type=str,default="1,3,224,224", help="推理尺寸")
+    parser.add_argument("--img_size", type=str, default="1,3,224,224", help="推理尺寸")
     parser.add_argument("--weights", help="模型权重", required=True)
 
     # torchscript
@@ -21,11 +21,14 @@ if __name__ == "__main__":
 
     # tensorrt
     parser.add_argument("--onnx2trt", action="store_true", help="(可选)转为tensorrt")
-    parser.add_argument("--fp16", action="store_true", help="(可选)开启fp16预测")
+    parser.add_argument("--trt_fp16", action="store_true", help="(可选)保存为fp16模型")
 
     # openvino
     parser.add_argument("--onnx2openvino", action="store_true", help="(可选)转为openvino")
 
+    # mnn
+    parser.add_argument("--onnx2mnn", action="store_true", help="(可选)转为mnn")
+    parser.add_argument("--mnn_fp16", action="store_true", help="(可选)保存为fp16模型")
     cfg = parser.parse_args()
 
     # ==========================torch===============================
@@ -80,7 +83,7 @@ if __name__ == "__main__":
         TensorrtBackend.convert(
             onnx_weights=onnx_weights,
             trt_weights=trt_weights,
-            fp16=cfg.fp16,
+            fp16=cfg.trt_fp16,
         )
         output_trt = TensorrtBackend.infer(
             weights=trt_weights, imgs=imgs.numpy(), output_shape=output_onnx.shape
@@ -98,6 +101,15 @@ if __name__ == "__main__":
         output_openvino = OpennVINOBackend.infer(
             weights=openvino_weights, imgs=imgs.numpy()
         )
+    # ==========================导出MNN===============================
+    if cfg.onnx2mnn:
+        assert os.path.exists(onnx_weights), "Warn: %s no exist" % onnx_weights
+        mnn_weights = onnx_weights.split(".")[0] + ".mnn"
+
+        from Models.Backend.mnn import MNNBackbend
+
+        MNNBackbend.convert(onnx_weights,mnn_weights,fp16=cfg.mnn_fp16)
+        output_mnn = MNNBackbend.infer(mnn_weights, imgs.numpy(),output_shape=output_onnx.shape)
     # ==========================验证结果===============================
     print("\n", "*" * 28)
     if cfg.torch2script:
@@ -110,3 +122,5 @@ if __name__ == "__main__":
         print(
             "output_torch - output_openvino = ", (output_torch - output_openvino).max()
         )
+    if cfg.onnx2mnn:
+        print("output_torch - output_mnn = ", (output_torch - output_mnn).max())

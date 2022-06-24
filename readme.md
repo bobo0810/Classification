@@ -94,5 +94,6 @@
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
   - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
   - [ColossalAI大规模分布式训练库](https://github.com/hpcaitech/ColossalAI)![Github stars](https://img.shields.io/github/stars/hpcaitech/ColossalAI.svg)
+  - [MNN移动端推理框架](https://github.com/alibaba/MNN)![Github stars](https://img.shields.io/github/stars/alibaba/MNN.svg)
   
 
