@@ -47,9 +47,6 @@ class MNNBackbend:
         """
         # ---------------------------初始化模型-------------------------------------
         interpreter = MNN.Interpreter(weights)  # 加载模型（解释器）
-        interpreter.setCacheFile(".tempcache")  # 设置缓存，提升初始化速度
-        config = {}
-        config["precision"] = "low"  # 精度
         session = interpreter.createSession()  # 创建会话
         input_tensor = interpreter.getSessionInput(session)  # 定义模型输入
         # -------------------------------图像预处理---------------------------------
