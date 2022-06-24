@@ -1,11 +1,12 @@
 # 图像识别框架🔨
 
-[![Actions Status](https://github.com/bobo0810/Classification/workflows/build/badge.svg)](https://github.com/bobo0810/Classification/actions)
 
 - 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
 - [更新日志](https://github.com/bobo0810/Classification/releases)
 - [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 > 自0.5.0版本开始，仅支持分布式训练。
+
+**!!!基于安全及合规要求，后续仅修复bug，不再支持新特性!!!** 
 
 ## 亮点
 
