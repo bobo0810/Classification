@@ -13,7 +13,7 @@ class OnnxBackend:
         pass
 
     @staticmethod
-    def convert(model, imgs, weights, dynamic, simplify):
+    def convert(model, imgs, weights, dynamic):
         """
         torch模型转为onnx模型
 
@@ -21,7 +21,6 @@ class OnnxBackend:
         imgs: [B,C,H,W]Tensor
         weights: onnx权重保存路径
         dynamic: batch轴是否设为动态维度
-        simplify: 是否简化onnx
         """
         torch.onnx.export(
             model,
@@ -37,17 +36,18 @@ class OnnxBackend:
         )
         model_onnx = onnx.load(weights)  # load onnx model
         onnx.checker.check_model(model_onnx)  # check onnx model
-        if simplify:
-            try:
-                model_onnx, check = onnxsim.simplify(
-                    model_onnx,
-                    dynamic_input_shape=dynamic,
-                    input_shapes={"input": list(imgs.shape)} if dynamic else None,
-                )
-                assert check, "assert check failed"
-                onnx.save(model_onnx, weights)
-            except Exception as e:
-                print(f"simplifer failure: {e}")
+
+        try:
+            # 简化onnx
+            model_onnx, check = onnxsim.simplify(
+                model_onnx,
+                dynamic_input_shape=dynamic,
+                input_shapes={"input": list(imgs.shape)} if dynamic else None,
+            )
+            assert check, "assert check failed"
+            onnx.save(model_onnx, weights)
+        except Exception as e:
+            print(f"simplifer failure: {e}")
 
         print("*" * 28)
         print("ONNX export success, saved as %s" % weights)

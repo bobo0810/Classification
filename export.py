@@ -16,7 +16,6 @@ if __name__ == "__main__":
 
     # onnx
     parser.add_argument("--torch2onnx", action="store_true", help="(可选)转为onnx")
-    parser.add_argument("--simplify", action="store_true", help="(可选)简化onnx")
     parser.add_argument("--dynamic", action="store_true", help="(可选)batch轴设为动态")
 
     # tensorrt
@@ -67,8 +66,7 @@ if __name__ == "__main__":
             model=model,
             imgs=imgs,
             weights=onnx_weights,
-            dynamic=cfg.dynamic,
-            simplify=cfg.simplify,
+            dynamic=cfg.dynamic
         )
         output_onnx = OnnxBackend.infer(weights=onnx_weights, imgs=imgs.numpy())
 
@@ -108,8 +106,10 @@ if __name__ == "__main__":
 
         from Models.Backend.mnn import MNNBackbend
 
-        MNNBackbend.convert(onnx_weights,mnn_weights,fp16=cfg.mnn_fp16)
-        output_mnn = MNNBackbend.infer(mnn_weights, imgs.numpy(),output_shape=output_onnx.shape)
+        MNNBackbend.convert(onnx_weights, mnn_weights, fp16=cfg.mnn_fp16)
+        output_mnn = MNNBackbend.infer(
+            mnn_weights, imgs.numpy(), output_shape=output_onnx.shape
+        )
     # ==========================验证结果===============================
     print("\n", "*" * 28)
     if cfg.torch2script:
