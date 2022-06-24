@@ -15,7 +15,7 @@
 | 模型     | 集成[Timm](https://github.com/rwightman/pytorch-image-models) | 1. 持续更新SOTA的预训练模型(600+)。<br/>2. 轻松定制模型。                                   |
 | 训练 | 集成[ColossalAI](https://github.com/hpcaitech/ColossalAI) | 1. 大规模分布式并行、自动混合精度。<br/>2. 梯度积累、梯度裁剪等。 |
 | 可视化   | 集成[TensorBoard](https://github.com/tensorflow/tensorboard) | 1. 数据集: 总体结构、各类占比<br/>2. 模型: 结构、耗时、计算量、参数量等<br/>3. 训练: 参数、损失、图像等 |
-| 部署 | 服务器/移动端加速                                                        | <img src="./Package/imgs/deploy.svg" style="zoom:50%;" /> |
+| 部署 | 服务器/移动端加速                                                        | <img src="./Package/imgs/deploy.svg" style="zoom:60%;" /> |
 
 
 ## 支持任务
@@ -94,6 +94,6 @@
   - [pytorch-grad-cam类激活映射库](https://github.com/jacobgil/pytorch-grad-cam)![Github stars](https://img.shields.io/github/stars/jacobgil/pytorch-grad-cam.svg)
   - [pytorch-metric-learning度量学习库](https://github.com/KevinMusgrave/pytorch-metric-learning)![Github stars](https://img.shields.io/github/stars/KevinMusgrave/pytorch-metric-learning.svg)
   - [ColossalAI大规模分布式训练库](https://github.com/hpcaitech/ColossalAI)![Github stars](https://img.shields.io/github/stars/hpcaitech/ColossalAI.svg)
-  - [MNN移动端推理框架](https://github.com/alibaba/MNN)![Github stars](https://img.shields.io/github/stars/alibaba/MNN.svg)
+  - [MNN移动端推理库](https://github.com/alibaba/MNN)![Github stars](https://img.shields.io/github/stars/alibaba/MNN.svg)
   
 
