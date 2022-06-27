@@ -15,7 +15,7 @@ pytorch_metric_learning #度量学习库
 torchsampler # 均衡采样库
 faiss-cpu  # 加速矩阵运算
 colossalai # 分布式并行库
-bobotools  # 常用工具库
+bobotools==0.4.7.3  # 常用工具库
 
 # ======部署======
 # 1.onnx环境
