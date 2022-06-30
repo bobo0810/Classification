@@ -35,4 +35,4 @@ fp16 = dict(mode=AMP_TYPE.TORCH)
 # 梯度裁剪
 # clip_grad_norm = 1.0
 
-# 即将支持：流水线并行,Tensor并行
+# 流水线并行,Tensor并行 请查阅文档https://www.colossalai.org/zh-Hans/docs/features/pipeline_parallel

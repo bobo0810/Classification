@@ -2,12 +2,12 @@
 
 
 - 收录到[PytorchNetHub](https://github.com/bobo0810/PytorchNetHub)
-- [更新日志](https://github.com/bobo0810/Classification/releases)
+- [版本详情](https://github.com/bobo0810/Classification/releases)
 - [Wiki文档](https://github.com/bobo0810/Classification/wiki)
 - [研发看板](https://github.com/bobo0810/Classification/projects?type=classic)
 > 自v0.5.0版本开始，仅支持分布式训练。
 
-**!!!基于安全及合规要求，v0.7.0之后的开源版本仅修复bug，不再支持新特性!!!** 
+**!!!基于安全及合规要求，v0.7.0之后的开源版本仅修复bug，暂缓支持新特性!!!** 
 
 ## 亮点
 
