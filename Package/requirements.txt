@@ -1,6 +1,7 @@
 # ======训练|测试======
 ipdb
-opencv-python-headless<4.3
+opencv-python-headless==4.2.0.34
+opencv-python==4.2.0.34
 numpy>1.22.2
 seaborn
 matplotlib
