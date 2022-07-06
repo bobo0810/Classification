@@ -9,6 +9,23 @@
 
 **!!!基于安全及合规要求，v0.7.0之后的开源版本仅修复bug，暂缓支持新特性!!!** 
 
+<details>
+<summary>v0.8.0更新内容</summary>
+
+### 改进功能
+- 可视化：新增梯度直方图。
+- 新增移动端推理框架MNN，训练支持自动剪枝，部署支持转化->加载->验证误差。
+- MNN支持fp16(无损降2倍)、权值量化(无损降4倍)、自动剪枝(无损降6倍)
+
+### 优化结构
+- 简化模型加载
+- 移除融合镜像特征。
+- 简化度量学习的模型评估。
+- 简化训练图像、注意力图可视化，由bobotools工具库提供。
+- 重构模型部署：增强扩展性，简化使用。
+
+</details>
+
 ## 亮点
 
 |          | 功能                                                         | 备注                                                         |
@@ -81,12 +98,15 @@
 | 损失函数 | Loss     | - CosFace<br/>- ArcFace⭐️<br/>- SubCenterArcFace<br/>- CircleLoss |
 
 
-
 ## 感谢
+<details>
+<summary>文档&开源库</summary>
 
-- 教程
+
+- 文档
   - [Timm快速上手](https://towardsdatascience.com/getting-started-with-pytorch-image-models-timm-a-practitioners-guide-4e77b4bf9055)
   - [TensorRT安装教程](https://www.codeleading.com/article/48816068405/)
+  - [MNN官方文档](https://www.yuque.com/mnn/cn)
 - 开源库
   - [Yolov5目标检测库](https://github.com/ultralytics/yolov5)![Github stars](https://img.shields.io/github/stars/ultralytics/yolov5.svg)
   - [Timm预训练模型库](https://github.com/rwightman/pytorch-image-models)![Github stars](https://img.shields.io/github/stars/rwightman/pytorch-image-models.svg)
@@ -98,4 +118,5 @@
   - [ColossalAI大规模分布式训练库](https://github.com/hpcaitech/ColossalAI)![Github stars](https://img.shields.io/github/stars/hpcaitech/ColossalAI.svg)
   - [MNN移动端推理库](https://github.com/alibaba/MNN)![Github stars](https://img.shields.io/github/stars/alibaba/MNN.svg)
   
+  </details>
 
