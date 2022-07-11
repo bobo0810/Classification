@@ -6,7 +6,6 @@ Process = "ImageNet"  # 图像预处理策略
 
 # ======模型============
 Optimizer = "SGD"  # 优化器
-Backbone = "resnet18"  # 主干网络(名称or权重路径)
 
 # 常规分类
 Backbone = "resnet18"  # 主干网络(名称or权重路径)
