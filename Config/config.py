@@ -8,12 +8,12 @@ Process = "ImageNet"  # 图像预处理策略
 Optimizer = "SGD"  # 优化器
 
 # 常规分类
-Backbone = "resnet18"  # 主干网络(名称or权重路径)
+Backbone = "resnet18"  # 主干网络(名称or模型路径)
 Loss = "CrossEntropy"  # 损失函数
 
 # 度量学习
-# Backbone = "resnet18"  # 主干网络(名称or权重路径)
-# Loss = "ArcFace"       # 损失函数|分类器(名称or权重路径)
+# Backbone = "resnet18"  # 主干网络(名称or模型路径)
+# Loss = "ArcFace"       # 损失函数|分类器(名称or模型路径)
 # Feature_dim = 128
 
 # ======训练============
